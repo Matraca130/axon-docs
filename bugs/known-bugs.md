@@ -96,9 +96,9 @@
 
 ## Low / Info
 
-### BUG-014: Bundle size 3.2 MB
+### BUG-014: Bundle size 3.2 MB — FIXED
 
-- Single chunk: `index-CMBHrIfe.js` = 3,236 KB (879 KB gzipped)
-- No code-splitting, no lazy routes
-- **Fix:** Add `React.lazy()` + route-based splitting
-- **Status:** PENDING
+- **Was:** Single chunk 3,236 KB (879 KB gzipped)
+- **Fix:** Route-level code splitting with React Router `lazy` + vendor manualChunks
+- **Details:** See `frontend/bundle-optimization.md`
+- **Status:** DONE (2025-02-27)
