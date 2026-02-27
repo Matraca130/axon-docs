@@ -82,25 +82,21 @@
 - **Fix:** Use single UPDATE with CASE or unnest
 - **Status:** PENDING
 
-### BUG-012: `reviews` table payload mismatch — RECLASSIFIED
+### BUG-012: `reviews` table payload mismatch — FIXED
 
-- **Was:** Build error (HF-B)
-- **Now:** Runtime payload bug (RT-003, RT-004)
-- Frontend sends `response_time_ms` (doesn't exist), `subtopic_id`/`keyword_id` (don't exist)
-- See `bugs/runtime-payload-bugs.md`
-- **Status:** PENDING
+- **Was:** Build error (HF-B) → reclassified as RT-003, RT-004
+- **Fix:** Removed `response_time_ms`, `subtopic_id`, `keyword_id` from payloads
+- **Status:** DONE (2025-02-27)
 
-### BUG-013: `study_sessions` payload mismatch — RECLASSIFIED
+### BUG-013: `study_sessions` payload mismatch — FIXED
 
-- **Was:** Build error (HF-B)
-- **Now:** Runtime payload bug (RT-001, RT-002)
-- Frontend sends `ended_at` (should be `completed_at`), `duration_seconds` (doesn't exist)
-- See `bugs/runtime-payload-bugs.md`
-- **Status:** PENDING
+- **Was:** Build error (HF-B) → reclassified as RT-001, RT-002
+- **Fix:** `ended_at` → `completed_at`, removed `duration_seconds`, `user_id` → `student_id`
+- **Status:** DONE (2025-02-27)
 
 ## Low / Info
 
-### BUG-014 (NEW): Bundle size 3.2 MB
+### BUG-014: Bundle size 3.2 MB
 
 - Single chunk: `index-CMBHrIfe.js` = 3,236 KB (879 KB gzipped)
 - No code-splitting, no lazy routes
