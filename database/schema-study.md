@@ -1,87 +1,145 @@
 # Schema: Study
 
-> Tables for flashcards, quizzes, and study sessions.
-> Source: Query 1 output cross-referenced with backend code.
+> Flashcards, quizzes, study sessions, reviews, spaced repetition.
+> **VERIFIED against Query 2 constraints data.**
 
 ## flashcards
 
-⚠️ **RLS DISABLED** — see `bugs/security-audit.md`
+⚠️ **RLS DISABLED**
 
-| Column | Type | Nullable | Default | Notes |
-|---|---|---|---|---|
-| id | UUID | NO | gen_random_uuid() | PK |
-| keyword_id | UUID | **YES** | | FK → keywords.id ⚠️ NULLABLE in DB but REQUIRED in backend |
-| front | TEXT | NO | | Question side |
-| back | TEXT | NO | | Answer side |
-| difficulty | **INTEGER** | YES | | 1, 2, 3 — NOT a string! |
-| created_at | TIMESTAMPTZ | NO | now() | |
-| updated_at | TIMESTAMPTZ | NO | now() | |
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| keyword_id | UUID | YES | FK → keywords.id (nullable!) |
+| summary_id | UUID | NO | FK → summaries.id |
+| subtopic_id | UUID | YES | FK → subtopics.id |
+| front | TEXT | NO | Question side |
+| back | TEXT | NO | Answer side |
+| source | TEXT | NO | CHECK: `manual`, `ai` |
+| created_by | UUID | NO | FK → profiles.id |
+| is_active | BOOLEAN | NO | |
+| difficulty | INTEGER | YES | 1, 2, 3 — NOT string |
+| created_at | TIMESTAMPTZ | NO | |
+| updated_at | TIMESTAMPTZ | NO | |
 
 ## quizzes
 
 ⚠️ **RLS DISABLED**
 
-| Column | Type | Nullable | Default | Notes |
-|---|---|---|---|---|
-| id | UUID | NO | gen_random_uuid() | PK |
-| keyword_id | UUID | YES | | FK → keywords.id |
-| title | TEXT | YES | | |
-| description | TEXT | YES | | |
-| is_active | BOOLEAN | NO | true | |
-| created_at | TIMESTAMPTZ | NO | now() | |
-| updated_at | TIMESTAMPTZ | NO | now() | |
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| summary_id | UUID | NO | FK → summaries.id ⚠️ NOT keyword_id |
+| title | TEXT | NO | |
+| description | TEXT | YES | |
+| source | TEXT | NO | CHECK: `manual`, `ai` |
+| created_by | UUID | NO | FK → profiles.id |
+| is_active | BOOLEAN | NO | |
+| created_at | TIMESTAMPTZ | NO | |
+| updated_at | TIMESTAMPTZ | NO | |
 
 ## quiz_questions
 
-⚠️ **RLS DISABLED** — ⚠️ **NO `name` COLUMN** (phantom field in old docs)
+⚠️ **RLS DISABLED** — ⚠️ **NO `name` COLUMN**
 
-| Column | Type | Nullable | Default | Notes |
-|---|---|---|---|---|
-| id | UUID | NO | gen_random_uuid() | PK |
-| keyword_id | UUID | NO | | FK → keywords.id |
-| question_type | TEXT | NO | | `"mcq"`, `"true_false"`, `"fill_blank"`, `"open"` |
-| question | TEXT | NO | | The question text |
-| correct_answer | TEXT | NO | | |
-| options | JSONB | YES | | For mcq: array of option strings |
-| explanation | TEXT | YES | | Why the answer is correct |
-| difficulty | **INTEGER** | YES | | 1, 2, 3 — NOT a string! |
-| priority | **INTEGER** | YES | | 1, 2, 3 — NOT a string! |
-| created_at | TIMESTAMPTZ | NO | now() | |
-| updated_at | TIMESTAMPTZ | NO | now() | |
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| keyword_id | UUID | YES | FK → keywords.id |
+| summary_id | UUID | NO | FK → summaries.id |
+| quiz_id | UUID | YES | FK → quizzes.id |
+| subtopic_id | UUID | YES | FK → subtopics.id |
+| question_type | TEXT | NO | CHECK: `mcq`, `true_false`, `fill_blank`, `open` |
+| question | TEXT | NO | |
+| options | JSONB | YES | For mcq |
+| correct_answer | TEXT | NO | |
+| explanation | TEXT | YES | |
+| difficulty | INTEGER | NO | ⚠️ NOT NULL, INTEGER (1,2,3) |
+| source | TEXT | NO | CHECK: `manual`, `ai` |
+| created_by | UUID | NO | FK → profiles.id |
+| is_active | BOOLEAN | NO | |
+| priority | INTEGER | YES | |
+| created_at | TIMESTAMPTZ | NO | |
+| updated_at | TIMESTAMPTZ | NO | |
 
-**Required fields (backend):** `keyword_id`, `question_type`, `question`, `correct_answer`
+## quiz_attempts
+
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| student_id | UUID | NO | FK → profiles.id |
+| quiz_question_id | UUID | NO | FK → quiz_questions.id |
+| quiz_id | UUID | YES | FK → quizzes.id |
+| session_id | UUID | YES | FK → study_sessions.id |
+| answer | TEXT | NO | |
+| is_correct | BOOLEAN | NO | |
+| response_time_ms | INTEGER | YES | |
+| created_at | TIMESTAMPTZ | NO | |
 
 ## study_sessions
 
-| Column | Type | Nullable | Default | Notes |
-|---|---|---|---|---|
-| id | UUID | NO | gen_random_uuid() | PK |
-| user_id | UUID | NO | | FK → profiles.id |
-| topic_id | UUID | YES | | FK → topics.id |
-| session_type | TEXT | YES | | e.g. "flashcard", "quiz" |
-| started_at | TIMESTAMPTZ | NO | now() | |
-| completed_at | TIMESTAMPTZ | YES | | null = in progress |
-| score | NUMERIC | YES | | Final score if applicable |
-| created_at | TIMESTAMPTZ | NO | now() | |
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| student_id | UUID | NO | FK → profiles.id ⚠️ NOT `user_id` |
+| course_id | UUID | YES | FK → courses.id ⚠️ NOT `topic_id` |
+| session_type | TEXT | NO | CHECK: `flashcard`, `quiz`, `reading`, `mixed` |
+| started_at | TIMESTAMPTZ | NO | |
+| completed_at | TIMESTAMPTZ | YES | |
+| duration_seconds | INTEGER | YES | |
+| total_reviews | INTEGER | NO | |
+| correct_reviews | INTEGER | NO | |
+| created_at | TIMESTAMPTZ | NO | |
 
 ## reviews
 
-Spaced repetition review records.
+⚠️ **Structure different from initial docs!**
 
-| Column | Type | Nullable | Default | Notes |
-|---|---|---|---|---|
-| id | UUID | NO | gen_random_uuid() | PK |
-| user_id | UUID | NO | | FK → profiles.id |
-| flashcard_id | UUID | YES | | FK → flashcards.id |
-| quiz_question_id | UUID | YES | | FK → quiz_questions.id |
-| rating | INTEGER | NO | | User's self-rating |
-| response_time_ms | INTEGER | YES | | How long they took |
-| reviewed_at | TIMESTAMPTZ | NO | now() | |
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| session_id | UUID | NO | FK → study_sessions.id |
+| item_id | UUID | NO | Generic ref to flashcard or quiz_question |
+| instrument_type | TEXT | NO | CHECK: `flashcard`, `quiz` |
+| grade | INTEGER | NO | Rating/grade value |
+| created_at | TIMESTAMPTZ | NO | |
 
-## Critical Reminders
+**Key difference:** Reviews use `item_id` + `instrument_type` pattern (polymorphic), NOT separate `flashcard_id`/`quiz_question_id` columns.
 
-- `difficulty` and `priority` are **INTEGER** (1, 2, 3), never strings
-- `quiz_questions` has **NO `name` column**
-- `question_type` valid values: `"mcq"`, `"true_false"`, `"fill_blank"`, `"open"`
-- `flashcards.keyword_id` is NULLABLE in DB but REQUIRED by backend (BUG-005)
-- Both flashcards and quiz_questions use `ensureGeneralKeyword`
+## fsrs_states (Free Spaced Repetition Scheduler)
+
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| student_id | UUID | NO | FK → profiles.id |
+| flashcard_id | UUID | YES | FK → flashcards.id |
+| stability | NUMERIC | NO | FSRS parameter |
+| difficulty | NUMERIC | NO | FSRS parameter |
+| due_date | TIMESTAMPTZ | YES | Next review date |
+| last_review | TIMESTAMPTZ | YES | |
+| reps | INTEGER | NO | Total repetitions |
+| lapses | INTEGER | NO | Times forgotten |
+| state | TEXT | NO | CHECK: `new`, `learning`, `review`, `relearning` |
+| created_at | TIMESTAMPTZ | NO | |
+| updated_at | TIMESTAMPTZ | NO | |
+
+UNIQUE: `(student_id, flashcard_id)`
+
+## bkt_states (Bayesian Knowledge Tracing)
+
+| Column | Type | Nullable | Notes |
+|---|---|---|---|
+| id | UUID | NO | PK |
+| student_id | UUID | NO | FK → profiles.id |
+| subtopic_id | UUID | NO | FK → subtopics.id |
+| p_know | NUMERIC | NO | Probability of knowing |
+| p_transit | NUMERIC | NO | |
+| p_slip | NUMERIC | NO | |
+| p_guess | NUMERIC | NO | |
+| delta | NUMERIC | NO | |
+| total_attempts | INTEGER | NO | |
+| correct_attempts | INTEGER | NO | |
+| created_at | TIMESTAMPTZ | NO | |
+| updated_at | TIMESTAMPTZ | NO | |
+
+UNIQUE: `(student_id, subtopic_id)`

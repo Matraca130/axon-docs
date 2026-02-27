@@ -1,25 +1,52 @@
 # 02 — Data Hierarchy
 
-> The core data model of Axon. Every entity belongs to a parent in this tree.
+> The core data model of Axon. Updated with Query 2 real data.
 
-## Hierarchy
+## Hierarchy (corrected)
 
 ```
 Institution
-  └── Course
-        └── Semester
-              └── Section
-                    └── Topic
-                          └── Summary
-                                ├── Chunks
-                                ├── Keywords
-                                │     ├── Flashcards
-                                │     ├── Quiz Questions
-                                │     └── Videos
-                                └── (direct children)
+  ├── Course
+  │     └── Semester
+  │           └── Section
+  │                 └── Topic
+  │                       ├── Summary
+  │                       │     ├── Chunks
+  │                       │     ├── Keywords → Subtopics
+  │                       │     │              └── BKT States (per student)
+  │                       │     ├── Keyword Connections (many-to-many)
+  │                       │     ├── Flashcards → FSRS States (per student)
+  │                       │     ├── Quiz Questions
+  │                       │     ├── Videos → Video Views (per student)
+  │                       │     ├── Reading States (per student)
+  │                       │     ├── Text Annotations (per student)
+  │                       │     └── Summary Diagnostics (AI)
+  │                       └── Models 3D
+  │                             ├── Pins
+  │                             ├── Layers
+  │                             ├── Parts
+  │                             └── Notes (per student)
+  ├── Institution Plans
+  │     └── Plan Access Rules
+  └── Memberships
+        └── Admin Scopes
+
+Quizzes (linked to Summary)
+  └── Quiz Questions
+       └── Quiz Attempts (per student)
+
+Study Sessions (per student + course)
+  ├── Reviews
+  └── Quiz Attempts
+
+Study Plans (per student + course)
+  └── Study Plan Tasks
+
+Student Stats / Daily Activities (per student)
+AI Generations (per institution)
 ```
 
-## Key Relationships
+## Key Relationships (corrected)
 
 | Parent | Child | FK Column | Notes |
 |---|---|---|---|
@@ -28,16 +55,22 @@ Institution
 | Semester | Section | `semester_id` | |
 | Section | Topic | `section_id` | |
 | Topic | Summary | `topic_id` | Usually 1:1 |
-| Summary | Chunk | `summary_id` | Ordered pieces of content |
-| Summary | Keyword | `summary_id` | Key terms extracted |
-| Keyword | Flashcard | `keyword_id` | **NULLABLE in DB, REQUIRED in backend** |
-| Keyword | Quiz Question | `keyword_id` | Required |
-| Keyword | Video | `keyword_id` | |
-
-## Multi-Tenancy
-
-All queries are scoped by `institution_id`. A user can only access data from institutions they belong to via `memberships`.
+| Topic | Model 3D | `topic_id` | |
+| Summary | Chunk | `summary_id` | |
+| Summary | Keyword | `summary_id` | |
+| Summary | Flashcard | `summary_id` | ⚠️ Links to summary, not just keyword |
+| Summary | Quiz Question | `summary_id` | ⚠️ Links to summary |
+| Summary | Quiz | `summary_id` | ⚠️ Links to summary |
+| Summary | Video | `summary_id` | ⚠️ Links to summary, not keyword |
+| Keyword | Subtopic | `keyword_id` | |
+| Membership | Admin Scope | `membership_id` | Granular perms |
+| Institution | Institution Plan | `institution_id` | |
+| Institution Plan | Plan Access Rule | `plan_id` | |
 
 ## Ordering
 
-Many entities have a `sort_order` or `position` column for manual reordering. The reorder endpoint currently does N individual UPDATE queries (known scalability issue).
+All orderable entities use `order_index` (INTEGER, NOT NULL), NOT `sort_order`.
+
+## Real Table Count
+
+~35 real application tables + ~25 `kv_store_*` junk tables.
