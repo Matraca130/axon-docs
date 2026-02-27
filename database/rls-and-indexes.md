@@ -1,7 +1,7 @@
 # RLS Status & Indexes
 
 > Index data from Query 3a. RLS data from Query 3b. Updated: 2025-02-27.
-> **Status: COMPLETE** — All queries executed.
+> **Status: COMPLETE** — All queries executed. Cleanup applied.
 
 ## RLS Status (VERIFIED — Query 3b)
 
@@ -93,48 +93,24 @@ Since the backend (Hono on Deno) uses `service_role` key to talk to Supabase, RL
 
 ---
 
-## New Tables Discovered (Query 3b)
-
-These 2 tables appeared in the RLS query but weren't in previous documentation:
-
-| Table | Likely Purpose | Needs Schema Query |
-|---|---|---|
-| `model_layers` | 3D model layer definitions (child of models_3d) | YES |
-| `model_parts` | 3D model part definitions (child of models_3d) | YES |
-
-> **Action:** Run column query for these 2 tables and add to `schema-3d-ai.md`.
-
-```sql
-SELECT column_name, data_type, is_nullable, column_default
-FROM information_schema.columns
-WHERE table_schema = 'public'
-  AND table_name IN ('model_layers', 'model_parts')
-ORDER BY table_name, ordinal_position;
-```
-
----
-
 ## Indexes (VERIFIED from Query 3a)
 
-### Legitimate Table Indexes (43 tables, 74 indexes)
+### Legitimate Table Indexes (43 tables, 68 indexes after cleanup)
 
 | Table | Index | Type | Definition |
 |---|---|---|---|
 | **admin_scopes** | idx_admin_scopes_membership | btree | (membership_id) |
 | **ai_generations** | idx_ai_gen_institution | btree | (institution_id) |
-| **bkt_states** | ~~idx_bkt_student_subtopic~~ | UNIQUE | (student_id, subtopic_id) **DUPLICATE — DROP** |
-| **bkt_states** | uq_bkt_states_student_subtopic | UNIQUE | (student_id, subtopic_id) **KEEP** |
+| **bkt_states** | uq_bkt_states_student_subtopic | UNIQUE | (student_id, subtopic_id) |
 | **chunks** | idx_chunks_summary | btree | (summary_id, order_index) |
 | **courses** | idx_courses_institution | btree | (institution_id) |
 | **courses** | idx_courses_order | btree | (institution_id, order_index) |
-| **daily_activities** | ~~idx_daily_student_date~~ | UNIQUE | (student_id, activity_date) **DUPLICATE — DROP** |
-| **daily_activities** | uq_daily_activities_student_date | UNIQUE | (student_id, activity_date) **KEEP** |
+| **daily_activities** | uq_daily_activities_student_date | UNIQUE | (student_id, activity_date) |
 | **flashcards** | idx_fc_subtopic | partial | (subtopic_id) WHERE deleted_at IS NULL |
 | **flashcards** | idx_flashcards_keyword | btree | (keyword_id) |
 | **flashcards** | idx_flashcards_summary | btree | (summary_id) |
 | **fsrs_states** | idx_fsrs_due | partial | (student_id, due_at) WHERE due_at IS NOT NULL |
-| **fsrs_states** | ~~idx_fsrs_student_fc~~ | UNIQUE | (student_id, flashcard_id) **DUPLICATE — DROP** |
-| **fsrs_states** | uq_fsrs_states_student_flashcard | UNIQUE | (student_id, flashcard_id) **KEEP** |
+| **fsrs_states** | uq_fsrs_states_student_flashcard | UNIQUE | (student_id, flashcard_id) |
 | **institution_plans** | idx_inst_plans_institution | btree | (institution_id) |
 | **institution_subscriptions** | idx_inst_subs_institution | btree | (institution_id) |
 | **institution_subscriptions** | idx_inst_subs_plan | btree | (plan_id) |
@@ -146,8 +122,7 @@ ORDER BY table_name, ordinal_position;
 | **keywords** | idx_keywords_active | partial | (summary_id) WHERE deleted_at IS NULL |
 | **keywords** | idx_keywords_summary | btree | (summary_id) |
 | **kw_prof_notes** | idx_kw_prof_notes_keyword | btree | (keyword_id) |
-| **kw_prof_notes** | ~~idx_kw_prof_notes_unique~~ | UNIQUE | (professor_id, keyword_id) **DUPLICATE — DROP** |
-| **kw_prof_notes** | uq_kw_prof_notes_prof_keyword | UNIQUE | (professor_id, keyword_id) **KEEP** |
+| **kw_prof_notes** | uq_kw_prof_notes_prof_keyword | UNIQUE | (professor_id, keyword_id) |
 | **kw_student_notes** | idx_kw_student_notes | UNIQUE | (student_id, keyword_id) |
 | **memberships** | idx_memberships_institution | btree | (institution_id) |
 | **memberships** | idx_memberships_plan | btree | (institution_plan_id) |
@@ -170,13 +145,11 @@ ORDER BY table_name, ordinal_position;
 | **quiz_questions** | idx_quiz_summary | btree | (summary_id) |
 | **quizzes** | idx_quizzes_created_by | btree | (created_by) |
 | **quizzes** | idx_quizzes_summary | partial | (summary_id) WHERE deleted_at IS NULL |
-| **reading_states** | ~~idx_reading_student_summary~~ | UNIQUE | (student_id, summary_id) **DUPLICATE — DROP** |
-| **reading_states** | uq_reading_states_student_summary | UNIQUE | (student_id, summary_id) **KEEP** |
+| **reading_states** | uq_reading_states_student_summary | UNIQUE | (student_id, summary_id) |
 | **reviews** | idx_reviews_session | btree | (session_id) |
 | **sections** | idx_sections_semester | btree | (semester_id, order_index) |
 | **semesters** | idx_semesters_course | btree | (course_id, order_index) |
-| **student_stats** | ~~idx_student_stats~~ | UNIQUE | (student_id) **DUPLICATE — DROP** |
-| **student_stats** | uq_student_stats_student | UNIQUE | (student_id) **KEEP** |
+| **student_stats** | uq_student_stats_student | UNIQUE | (student_id) |
 | **study_plan_tasks** | idx_plan_tasks | btree | (study_plan_id, order_index) |
 | **study_plans** | idx_study_plans_student | btree | (student_id) |
 | **study_sessions** | idx_sessions_student | btree | (student_id, started_at DESC) |
@@ -198,6 +171,28 @@ ORDER BY table_name, ordinal_position;
 | **videos** | idx_videos_summary | btree | (summary_id, order_index) |
 
 > **model_layers** and **model_parts** have no custom indexes (only PK).
+
+---
+
+## Cleanup Log
+
+### ✅ kv_store Cleanup — DONE (2025-02-27)
+
+- Dropped ~25 `kv_store_*` tables via `cleanup-kv-store.sql`
+- ~150+ junk indexes removed automatically (CASCADE)
+
+### ✅ Duplicate Index Cleanup — DONE (2025-02-27)
+
+Dropped 6 duplicate indexes via `cleanup-duplicate-indexes.sql`:
+
+| Table | Dropped | Kept |
+|---|---|---|
+| bkt_states | idx_bkt_student_subtopic | uq_bkt_states_student_subtopic |
+| daily_activities | idx_daily_student_date | uq_daily_activities_student_date |
+| fsrs_states | idx_fsrs_student_fc | uq_fsrs_states_student_flashcard |
+| kw_prof_notes | idx_kw_prof_notes_unique | uq_kw_prof_notes_prof_keyword |
+| reading_states | idx_reading_student_summary | uq_reading_states_student_summary |
+| student_stats | idx_student_stats | uq_student_stats_student |
 
 ---
 
@@ -226,25 +221,6 @@ The FSRS due date column is `due_at` not `due`.
 - `mux_asset_id` (indexed, partial WHERE NOT NULL)
 - `mux_upload_id` (indexed, partial WHERE NOT NULL)
 
-### 4. Duplicate Indexes (6 pairs) — CLEANUP PENDING
-
-| Table | Drop This | Keep This |
-|---|---|---|
-| bkt_states | idx_bkt_student_subtopic | uq_bkt_states_student_subtopic |
-| daily_activities | idx_daily_student_date | uq_daily_activities_student_date |
-| fsrs_states | idx_fsrs_student_fc | uq_fsrs_states_student_flashcard |
-| kw_prof_notes | idx_kw_prof_notes_unique | uq_kw_prof_notes_prof_keyword |
-| reading_states | idx_reading_student_summary | uq_reading_states_student_summary |
-| student_stats | idx_student_stats | uq_student_stats_student |
-
-> **Script:** `database/cleanup-duplicate-indexes.sql`
-
-### 5. kv_store Index Bloat — CLEANUP PENDING
-
-~150+ junk indexes across ~25 kv_store_* tables.
-
-> **Script:** `database/cleanup-kv-store.sql`
-
 ---
 
 ## Missing Indexes (Recommendations)
@@ -256,3 +232,5 @@ The FSRS due date column is `due_at` not `due`.
 | study_sessions | (course_id) | Filter sessions by course |
 | text_annotations | (summary_id) | Load annotations for a summary |
 | quiz_attempts | (quiz_question_id) | Stats per question |
+| model_layers | (model_id) | Query layers by model |
+| model_parts | (model_id) | Query parts by model |
