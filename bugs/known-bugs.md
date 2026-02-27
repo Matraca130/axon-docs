@@ -4,14 +4,13 @@
 
 ## Critical
 
-### BUG-001: `resolution_tier` vs `max_resolution` column mismatch
+### BUG-001: `resolution_tier` vs `max_resolution` column mismatch — FIXED
 
 - **Location:** `routes-mux.ts` (webhook handler)
-- **Problem:** Webhook writes to `resolution_tier` but the DB column is `max_resolution`
-- **Impact:** Video resolution data never saves
-- **Fix:** Change column name in the INSERT/UPDATE query
-- **Hotfix ID:** HF-D
-- **Status:** PENDING
+- **Problem:** Webhook wrote to `resolution_tier` but the DB column is `max_resolution`
+- **Fix:** Changed column name in the UPDATE query (`resolution_tier` → `max_resolution`)
+- **Commit:** `06af298` on axon-backend
+- **Status:** DONE (2025-02-27)
 
 ### BUG-002: RLS disabled on all 43 tables
 
@@ -23,20 +22,20 @@
 
 ### BUG-003: JWT not cryptographically verified
 
-- **Location:** Auth middleware
+- **Location:** Auth middleware (`db.ts` → `authenticate()`)
 - **Problem:** Backend accepts JWTs without verifying the signature
 - **Impact:** Anyone can forge a valid-looking token
 - **Fix:** Verify JWT signature against Supabase JWT secret
-- **Status:** PENDING
+- **Status:** DEFERRED — will apply in security hardening phase
 
 ## High
 
 ### BUG-004: CORS origin: "*"
 
-- **Location:** CORS middleware
+- **Location:** CORS middleware (`index.ts`)
 - **Problem:** Accepts requests from any origin
 - **Fix:** Restrict to Vercel deployment URLs
-- **Status:** PENDING
+- **Status:** DEFERRED — will apply in security hardening phase
 
 ### BUG-005: `flashcards.keyword_id` nullable inconsistency
 
