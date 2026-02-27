@@ -1,65 +1,74 @@
 # 05 -- Current Status
 
-> What works, what's broken, and what's next. Updated: 2025-02-27.
+> What works, what's broken, and what's next. Updated: 2026-02-27.
 
 ## Build Status
 
 | Repo | Status | Notes |
 |---|---|---|
-| Frontend (Vercel) | BROKEN | Missing functions in `platformApi.ts` |
-| Backend (Deno Deploy) | Running | Has bugs but deploys fine |
-| Supabase | Running | RLS issues pending |
+| Frontend (Vercel) | In development | Separate session |
+| Backend (Deno Deploy) | Running | 3 audits completed, all fixes deployed |
+| Supabase | Running | RLS deferred, 3 pending migrations |
 
-## Database Documentation Status
+## Backend Optimization History
 
-| Query | Purpose | Status |
-|---|---|---|
-| Query 1 | Full schema dump | DONE |
-| Query 2 | Constraints (CHECK, UNIQUE, FK, PK) | DONE |
-| Query 3a | Indexes | DONE |
-| Query 3b | RLS status + policies | PENDING |
+Three successive audits performed on 2026-02-27:
 
-## Major Corrections Applied
+### Audit #1: Architecture Audit (M-1 to M-5) — ALL DONE
 
-- 4 roles not 3 (+ `admin` with `admin_scopes`)
-- ~15 new tables discovered
-- `order_index` not `sort_order`
-- `is_active` BOOLEAN not `status` enum on memberships
-- `videos`/`quizzes` FK to `summary_id` not `keyword_id`
-- `reviews` uses session_id/item_id/instrument_type/grade pattern
-- `study_sessions` uses student_id/course_id (not user_id/topic_id)
-- Soft-delete via `deleted_at` on 7 tables (alongside `is_active`)
-- `fsrs_states.due_at` not `due`
-- Videos have `mux_asset_id`/`mux_upload_id` columns
+See `backend-architecture-audit.md` for details.
 
-## New Bugs Found
+| ID | Fix | Commit | Migration |
+|----|-----|--------|-----------|
+| M-5 | Remove phantom `duration_seconds`, `ended_at` → `completed_at` | `54ff57d` | None |
+| M-4 | Delete dead frontend files `admin-routes.tsx`, `owner-routes.tsx` | `e92fa06` + `c4c1a5d` | None |
+| M-2 | Verify `scopeToUser` already covers student_id auto-set | Already covered | None |
+| M-3 | Reorder N+1 → `bulk_reorder()` DB function | `899a26f` | `20260227_01_bulk_reorder.sql` ✅ |
+| M-1 | Study-queue parallel + `get_course_summary_ids()` RPC | `49ae13d` | `20260227_02_get_course_summary_ids.sql` ✅ |
 
-- BUG-010: 7 duplicate index pairs + ~150 kv_store junk indexes
-- BUG-011: `deleted_at` vs `is_active` dual soft-delete ambiguity
-- BUG-012: `reviews` table structure completely different from docs
-- BUG-013: `study_sessions` structure mismatch
+### Audit #2: Deep Audit (N-1 to N-10) — 8/10 DONE
 
-## Real Table Count
+See `backend-deep-audit-2.md` for details.
 
-~38 legitimate tables + ~25 kv_store junk tables = ~63 total.
+| ID | Fix | Commit | Migration |
+|----|-----|--------|-----------|
+| N-6 | BUG: GET /me auto-profile `user_metadata` fix | `f40d349` | None |
+| N-1 | Search parallel + batch path resolution | `f40d349` | None |
+| N-2 | Trash `Promise.all` | `f40d349` | None |
+| N-8 | `escapeLike()` sanitization | `f40d349` | None |
+| N-9 | Pagination cap at 500 | `f40d349` | None |
+| N-7 | Atomic `view_count` via `upsert_video_view()` | `b1bd2c0` | `20260227_03_upsert_video_view.sql` 🟡 |
+| N-3 | Billing checkout parallel | SKIPPED | Billing not implemented yet |
+| N-4 | Content-access embedded select | SKIPPED | Billing not implemented yet |
+| N-5 | Content-tree DB function | DEFERRED | Phase 3 backlog |
+| N-10 | Stripe constant-time comparison | DEFERRED | Security hardening phase |
 
-## Pending
+### Audit #3: Ultra-Deep Audit (O-1 to O-8)
 
-| Item | Status |
-|---|---|
-| Query 3b (RLS/policies) | PENDING |
-| HF-B (platformApi functions) | PENDING - needs correct column names from Query 2! |
-| HF-D (resolution_tier webhook) | PENDING |
-| Drop kv_store tables (~150 junk indexes) | PENDING |
-| Drop 7 duplicate index pairs | PENDING |
-| Enable RLS on 3 tables | PENDING |
+See `backend-deep-audit-3.md` for details. 8 new findings.
 
-## Next Steps
+## Pending Migrations
 
-1. Run RLS query -> complete `rls-and-indexes.md`
-2. Drop kv_store_* tables (cleanup SQL in rls-and-indexes.md)
-3. Drop 7 duplicate indexes
-4. Fix HF-B with CORRECT column names (see BUG-012, BUG-013)
-5. Fix HF-D
-6. Enable RLS
-7. Resolve deleted_at vs is_active ambiguity
+| Migration | Status | Notes |
+|-----------|--------|-------|
+| `20260227_01_bulk_reorder.sql` | ✅ Applied | M-3 reorder |
+| `20260227_02_get_course_summary_ids.sql` | ✅ Applied | M-1 study-queue |
+| `20260227_03_upsert_video_view.sql` | 🟡 Pending | N-7 track-view (fallback works) |
+
+## Database
+
+- ~43 legitimate tables
+- 0 RLS policies (DEFERRED until feature-complete)
+- 3 DB functions deployed: `bulk_reorder()`, `get_course_summary_ids()`, `upsert_video_view()` (pending)
+
+## Known Deferred Items
+
+| Item | Phase | Notes |
+|------|-------|-------|
+| RLS policies (0 currently) | Security hardening | BUG-003 |
+| JWT signature verification | Security hardening | BUG-003 |
+| CORS whitelist (currently `*`) | Security hardening | BUG-004 |
+| Stripe timing-safe comparison | Security hardening | N-10 |
+| Content-tree DB function | Phase 3 | N-5 |
+| Rate limiting | Pre-launch | O-8 |
+| Billing integration (Stripe) | Not started | Routes exist but env vars not set |
