@@ -1,6 +1,6 @@
 # Known Bugs
 
-> Confirmed bugs from the backend audit. Cross-referenced against DB schema.
+> Confirmed bugs from audits. **UPDATED with Query 2/3 corrections.**
 
 ## Critical
 
@@ -11,13 +11,14 @@
 - **Impact:** Video resolution data never saves
 - **Fix:** Change column name in the INSERT/UPDATE query
 - **Hotfix ID:** HF-D
+- **New info:** Videos also have `mux_asset_id` and `mux_upload_id` columns (indexed)
 
 ### BUG-002: RLS disabled on study tables
 
 - **Tables:** `flashcards`, `quiz_questions`, `quizzes`
-- **Problem:** No Row Level Security — any authenticated user can read/write any row
-- **Impact:** Data leakage between institutions (multi-tenancy broken)
-- **Fix:** Enable RLS + add policies scoped by institution_id via memberships
+- **Problem:** No Row Level Security
+- **Impact:** Data leakage between institutions
+- **Fix:** Enable RLS + add policies scoped by institution_id via summaries chain
 
 ### BUG-003: JWT not cryptographically verified
 
@@ -32,42 +33,55 @@
 
 - **Location:** CORS middleware
 - **Problem:** Accepts requests from any origin
-- **Impact:** Any website can make API calls to your backend
 - **Fix:** Restrict to Vercel deployment URLs
 
 ### BUG-005: `flashcards.keyword_id` nullable inconsistency
 
 - **DB:** `keyword_id` is NULLABLE
-- **Backend:** `keyword_id` is in `requiredFields` array
-- **Impact:** Backend rejects null but DB allows it. `ensureGeneralKeyword` masks this.
-- **Fix:** Either make DB column NOT NULL, or remove from requiredFields
+- **Backend:** `keyword_id` is in `requiredFields`
+- **Fix:** Align DB and backend (pick one)
+
+### BUG-010 (NEW): Duplicate indexes waste storage
+
+- **7 pairs** of identical unique indexes on legitimate tables
+- **~150+ junk indexes** on kv_store_* tables
+- **Fix:** See `database/rls-and-indexes.md` cleanup SQL
+
+### BUG-011 (NEW): `deleted_at` vs `is_active` dual soft-delete
+
+- **Tables:** flashcards, keywords, models_3d, quiz_questions, quizzes, subtopics, summaries
+- **Problem:** These tables have BOTH `is_active` boolean AND `deleted_at` timestamp
+- **Impact:** Unclear which one controls visibility; indexes use `deleted_at IS NULL`
+- **Fix:** Standardize on one pattern across all tables
 
 ## Medium
 
 ### BUG-006: Study Queue ~5 sequential queries
 
-- **Location:** Study queue endpoint
-- **Problem:** Makes ~5 DB queries one after another instead of a single optimized query
-- **Impact:** Slow response under load
 - **Fix:** Combine into 1-2 queries or use a DB function
 
 ### BUG-007: Content Tree filters in JS
 
-- **Location:** Content tree endpoint
-- **Problem:** Fetches all records then filters inactive ones in JavaScript
-- **Impact:** Wastes bandwidth and memory; slow for large datasets
 - **Fix:** Add WHERE clause to filter at DB level
 
 ### BUG-008: Search makes ~100 queries
 
-- **Location:** Search endpoint
-- **Problem:** Searches across multiple tables with individual queries
-- **Impact:** Very slow; O(n) queries per search
-- **Fix:** Use PostgreSQL full-text search or a single UNION query
+- **Fix:** Use PostgreSQL full-text search or UNION query
 
 ### BUG-009: Reorder does N individual UPDATEs
 
-- **Location:** Reorder endpoint
-- **Problem:** Updates each item's `sort_order` one at a time
-- **Impact:** Slow for large lists; no transaction wrapping
-- **Fix:** Use a single UPDATE with CASE or unnest
+- **Fix:** Use single UPDATE with CASE or unnest
+
+### BUG-012 (NEW): `reviews` table structure mismatch
+
+- **What was documented:** `user_id`, `flashcard_id`, `quiz_question_id`, `rating`
+- **What actually exists:** `session_id`, `item_id`, `instrument_type`, `grade`
+- **Impact:** Frontend `submitReview` function (HF-B) must use correct column names
+- **Fix:** Update platformApi.ts to match actual schema
+
+### BUG-013 (NEW): `study_sessions` structure mismatch
+
+- **What was documented:** `user_id`, `topic_id`, `score`
+- **What actually exists:** `student_id`, `course_id`, `total_reviews`, `correct_reviews`
+- **Impact:** Frontend `createStudySession`/`updateStudySession` (HF-B) must use correct columns
+- **Fix:** Update platformApi.ts to match actual schema
