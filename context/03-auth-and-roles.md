@@ -1,6 +1,6 @@
-# 03 — Auth & Roles
+# 03 -- Auth & Roles
 
-> Authentication and authorization model. Updated with Query 2 real data.
+> **UPDATED with Query 2 corrections.**
 
 ## Double Token System
 
@@ -11,58 +11,58 @@ Authorization: Bearer <SUPABASE_ANON_KEY>
 X-Access-Token: <USER_JWT>
 ```
 
-## Roles (CORRECTED — 4 roles, not 3)
+## Roles (CORRECTED: 4 roles)
 
 | Role | Value | Permissions |
 |---|---|---|
-| Student | `student` | Read content, study flashcards, take quizzes |
+| Student | `student` | Read content, take quizzes, study flashcards |
 | Professor | `professor` | All student perms + create/edit content |
-| Admin | `admin` | Scoped admin — permissions defined by `admin_scopes` |
-| Owner | `owner` | Full institution access + manage billing |
+| Admin | `admin` | Scoped admin (see admin_scopes table) |
+| Owner | `owner` | Full institution management |
 
-### Admin Scopes
+## Platform Roles (separate from institution roles)
 
-The `admin` role gets granular permissions via the `admin_scopes` table:
+| Role | Value | Notes |
+|---|---|---|
+| User | `user` | Default for all users |
+| Platform Admin | `platform_admin` | Super-admin across all institutions |
 
-| scope_type | Meaning |
-|---|---|
-| `full` | Same as owner (all permissions) |
-| `course` | Admin access to a specific course |
-| `semester` | Admin access to a specific semester |
-| `section` | Admin access to a specific section |
+## Access Control
 
-## Platform Role (separate from membership role)
-
-`profiles.platform_role`:
-- `user` — normal user
-- `platform_admin` — super admin across all institutions
-
-## Access Control Tables
-
-### memberships
+### Table: `memberships`
 
 ```sql
-user_id          → profiles.id
-institution_id   → institutions.id
-role             → 'owner' | 'admin' | 'professor' | 'student'
-is_active        → BOOLEAN (not text status!)
-institution_plan_id → institution_plans.id (nullable)
+user_id          -> profiles.id
+institution_id   -> institutions.id
+role             -> 'owner' | 'admin' | 'professor' | 'student'
+is_active        -> BOOLEAN (NOT status enum!)
+institution_plan_id -> institution_plans.id (nullable)
 ```
 
-### plan_access_rules
+### Table: `admin_scopes` (NEW)
 
-Content gating based on subscription plan. Links `institution_plans.id` to a scoped entity:
+Limits admin access to specific parts of the content tree:
 
 ```sql
-plan_id      → institution_plans.id
-scope_type   → 'course' | 'semester' | 'section' | 'topic' | 'summary'
-scope_id     → UUID of the gated entity
+membership_id -> memberships.id
+scope_type    -> 'full' | 'course' | 'semester' | 'section'
+scope_id      -> UUID of the scoped entity (nullable for 'full')
+```
+
+### Table: `plan_access_rules`
+
+Controls content access based on subscription plan:
+
+```sql
+plan_id    -> institution_plans.id
+scope_type -> 'course' | 'semester' | 'section' | 'topic' | 'summary'
+scope_id   -> UUID of the accessible entity
 ```
 
 ## Known Security Issues
 
-- ⚠️ **JWT not cryptographically verified**
-- ⚠️ **RLS disabled** on flashcards, quiz_questions, quizzes
-- ⚠️ **CORS: origin "*"**
+- JWT not cryptographically verified
+- RLS disabled on flashcards, quiz_questions, quizzes
+- CORS: origin "*"
 
-See `bugs/security-audit.md` for details.
+See `bugs/security-audit.md` for full details.

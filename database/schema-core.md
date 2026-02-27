@@ -1,79 +1,69 @@
 # Schema: Core (Organizational)
 
 > Tables that form the organizational backbone of Axon.
-> **VERIFIED against Query 2 constraints data.**
+> **VERIFIED** against Query 2 constraint output.
 
 ## institutions
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| name | TEXT | NO | |
-| slug | TEXT | NO | URL-friendly identifier |
-| owner_id | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | Soft delete |
-| settings | JSONB | NO | Institution configuration |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+The root entity. All data is scoped by institution (multi-tenancy).
 
-**FKs:** `owner_id` → `profiles.id`
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| name | TEXT | NO | | Institution name |
+| slug | TEXT | NO | | URL-friendly identifier |
+| owner_id | UUID | NO | | FK -> profiles.id |
+| is_active | BOOLEAN | NO | true | Soft delete |
+| settings | JSONB | NO | '{}' | Institution settings |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
+
+> Note: `logo_url` may exist but is nullable (no NOT NULL constraint found).
 
 ## courses
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| institution_id | UUID | NO | FK → institutions.id |
-| name | TEXT | NO | |
-| description | TEXT | YES | |
-| order_index | INTEGER | NO | Manual ordering |
-| created_by | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| institution_id | UUID | NO | | FK -> institutions.id |
+| name | TEXT | NO | | |
+| order_index | INTEGER | NO | 0 | **Not `sort_order`!** |
+| created_by | UUID | NO | | FK -> profiles.id |
+| is_active | BOOLEAN | NO | true | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
+
+> Note: `description`, `code` may exist but are nullable.
 
 ## semesters
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| course_id | UUID | NO | FK → courses.id |
-| name | TEXT | NO | |
-| order_index | INTEGER | NO | Manual ordering |
-| created_by | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| course_id | UUID | NO | | FK -> courses.id |
+| name | TEXT | NO | | e.g. "Fall 2025" |
+| order_index | INTEGER | NO | 0 | **Not `sort_order`!** |
+| created_by | UUID | NO | | FK -> profiles.id |
+| is_active | BOOLEAN | NO | true | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
 
 ## sections
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| semester_id | UUID | NO | FK → semesters.id |
-| name | TEXT | NO | |
-| order_index | INTEGER | NO | Manual ordering |
-| created_by | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| semester_id | UUID | NO | | FK -> semesters.id |
+| name | TEXT | NO | | |
+| order_index | INTEGER | NO | 0 | **Not `sort_order`!** |
+| created_by | UUID | NO | | FK -> profiles.id |
+| is_active | BOOLEAN | NO | true | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
 
-## topics
+## Critical Corrections vs Initial Docs
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| section_id | UUID | NO | FK → sections.id |
-| name | TEXT | NO | |
-| order_index | INTEGER | NO | Manual ordering |
-| created_by | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
-
-## Key Patterns
-
-- All core tables have `order_index` (INTEGER, NOT NULL) for manual ordering
-- All have `created_by` FK → profiles.id (tracks who created it)
-- All have `is_active` (BOOLEAN, NOT NULL) for soft-delete
-- Multi-tenancy chain: institutions → courses → semesters → sections → topics
+- All ordering columns are `order_index` NOT `sort_order`
+- All entities have `created_by` FK -> profiles.id (NOT NULL)
+- `institutions.owner_id` is NOT NULL (was incorrectly marked nullable)
+- `institutions.settings` JSONB is NOT NULL

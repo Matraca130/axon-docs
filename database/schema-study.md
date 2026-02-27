@@ -1,145 +1,214 @@
 # Schema: Study
 
-> Flashcards, quizzes, study sessions, reviews, spaced repetition.
-> **VERIFIED against Query 2 constraints data.**
+> Tables for flashcards, quizzes, study sessions, and spaced repetition.
+> **VERIFIED** against Query 2 constraint output.
 
 ## flashcards
 
-⚠️ **RLS DISABLED**
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| keyword_id | UUID | **YES** | | FK -> keywords.id (NULLABLE) |
+| summary_id | UUID | NO | | FK -> summaries.id |
+| subtopic_id | UUID | YES | | FK -> subtopics.id |
+| front | TEXT | NO | | Question side |
+| back | TEXT | NO | | Answer side |
+| source | TEXT | NO | | CHECK: `manual`, `ai` |
+| created_by | UUID | NO | | FK -> profiles.id |
+| is_active | BOOLEAN | NO | true | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| keyword_id | UUID | YES | FK → keywords.id (nullable!) |
-| summary_id | UUID | NO | FK → summaries.id |
-| subtopic_id | UUID | YES | FK → subtopics.id |
-| front | TEXT | NO | Question side |
-| back | TEXT | NO | Answer side |
-| source | TEXT | NO | CHECK: `manual`, `ai` |
-| created_by | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | |
-| difficulty | INTEGER | YES | 1, 2, 3 — NOT string |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+> Note: `difficulty` column exists but is NULLABLE (no NOT NULL constraint found in Query 2).
+> Has 4 FKs: keyword_id, summary_id, subtopic_id, created_by.
 
 ## quizzes
 
-⚠️ **RLS DISABLED**
-
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| summary_id | UUID | NO | FK → summaries.id ⚠️ NOT keyword_id |
-| title | TEXT | NO | |
-| description | TEXT | YES | |
-| source | TEXT | NO | CHECK: `manual`, `ai` |
-| created_by | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| summary_id | UUID | NO | | FK -> summaries.id **NOT keyword_id!** |
+| title | TEXT | NO | | |
+| source | TEXT | NO | | CHECK: `manual`, `ai` |
+| created_by | UUID | NO | | FK -> profiles.id |
+| is_active | BOOLEAN | NO | true | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
 
 ## quiz_questions
 
-⚠️ **RLS DISABLED** — ⚠️ **NO `name` COLUMN**
+**NO `name` COLUMN** (confirmed by Query 2)
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| keyword_id | UUID | YES | FK → keywords.id |
-| summary_id | UUID | NO | FK → summaries.id |
-| quiz_id | UUID | YES | FK → quizzes.id |
-| subtopic_id | UUID | YES | FK → subtopics.id |
-| question_type | TEXT | NO | CHECK: `mcq`, `true_false`, `fill_blank`, `open` |
-| question | TEXT | NO | |
-| options | JSONB | YES | For mcq |
-| correct_answer | TEXT | NO | |
-| explanation | TEXT | YES | |
-| difficulty | INTEGER | NO | ⚠️ NOT NULL, INTEGER (1,2,3) |
-| source | TEXT | NO | CHECK: `manual`, `ai` |
-| created_by | UUID | NO | FK → profiles.id |
-| is_active | BOOLEAN | NO | |
-| priority | INTEGER | YES | |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| keyword_id | UUID | YES | | FK -> keywords.id (NULLABLE!) |
+| summary_id | UUID | NO | | FK -> summaries.id |
+| subtopic_id | UUID | YES | | FK -> subtopics.id |
+| quiz_id | UUID | YES | | FK -> quizzes.id |
+| question_type | TEXT | NO | | CHECK: `mcq`, `true_false`, `fill_blank`, `open` |
+| question | TEXT | NO | | |
+| correct_answer | TEXT | NO | | |
+| difficulty | **INTEGER** | NO | | **NOT NULL, INTEGER** |
+| source | TEXT | NO | | CHECK: `manual`, `ai` |
+| created_by | UUID | NO | | FK -> profiles.id |
+| is_active | BOOLEAN | NO | true | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
+
+> Note: `options` (JSONB), `explanation` (TEXT), `priority` may exist but are nullable.
 
 ## quiz_attempts
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| quiz_question_id | UUID | NO | FK → quiz_questions.id |
-| quiz_id | UUID | YES | FK → quizzes.id |
-| session_id | UUID | YES | FK → study_sessions.id |
-| answer | TEXT | NO | |
-| is_correct | BOOLEAN | NO | |
-| response_time_ms | INTEGER | YES | |
-| created_at | TIMESTAMPTZ | NO | |
+**NEW TABLE** - individual question attempt records.
+
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| student_id | UUID | NO | | FK -> profiles.id |
+| quiz_question_id | UUID | NO | | FK -> quiz_questions.id |
+| quiz_id | UUID | YES | | FK -> quizzes.id |
+| session_id | UUID | YES | | FK -> study_sessions.id |
+| answer | TEXT | NO | | Student's answer |
+| is_correct | BOOLEAN | NO | | |
+| created_at | TIMESTAMPTZ | NO | now() | |
 
 ## study_sessions
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id ⚠️ NOT `user_id` |
-| course_id | UUID | YES | FK → courses.id ⚠️ NOT `topic_id` |
-| session_type | TEXT | NO | CHECK: `flashcard`, `quiz`, `reading`, `mixed` |
-| started_at | TIMESTAMPTZ | NO | |
-| completed_at | TIMESTAMPTZ | YES | |
-| duration_seconds | INTEGER | YES | |
-| total_reviews | INTEGER | NO | |
-| correct_reviews | INTEGER | NO | |
-| created_at | TIMESTAMPTZ | NO | |
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| student_id | UUID | NO | | FK -> profiles.id **NOT `user_id`!** |
+| course_id | UUID | YES | | FK -> courses.id |
+| session_type | TEXT | NO | | CHECK: `flashcard`, `quiz`, `reading`, `mixed` |
+| started_at | TIMESTAMPTZ | NO | now() | |
+| completed_at | TIMESTAMPTZ | YES | | null = in progress |
+| total_reviews | INTEGER | NO | 0 | |
+| correct_reviews | INTEGER | NO | 0 | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+
+> Note: NO `score` or `topic_id` columns! Uses `course_id` instead.
 
 ## reviews
 
-⚠️ **Structure different from initial docs!**
+**COMPLETELY DIFFERENT from initial docs!**
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| session_id | UUID | NO | FK → study_sessions.id |
-| item_id | UUID | NO | Generic ref to flashcard or quiz_question |
-| instrument_type | TEXT | NO | CHECK: `flashcard`, `quiz` |
-| grade | INTEGER | NO | Rating/grade value |
-| created_at | TIMESTAMPTZ | NO | |
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| session_id | UUID | NO | | FK -> study_sessions.id |
+| item_id | UUID | NO | | Generic item reference |
+| instrument_type | TEXT | NO | | CHECK: `flashcard`, `quiz` |
+| grade | INTEGER | NO | | Rating/grade value |
+| created_at | TIMESTAMPTZ | NO | now() | |
 
-**Key difference:** Reviews use `item_id` + `instrument_type` pattern (polymorphic), NOT separate `flashcard_id`/`quiz_question_id` columns.
+> **NO** `user_id`, `flashcard_id`, `quiz_question_id`, `rating`, `response_time_ms`, or `reviewed_at` columns!
+> Uses generic `item_id` + `instrument_type` pattern instead.
 
-## fsrs_states (Free Spaced Repetition Scheduler)
+## fsrs_states
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| flashcard_id | UUID | YES | FK → flashcards.id |
-| stability | NUMERIC | NO | FSRS parameter |
-| difficulty | NUMERIC | NO | FSRS parameter |
-| due_date | TIMESTAMPTZ | YES | Next review date |
-| last_review | TIMESTAMPTZ | YES | |
-| reps | INTEGER | NO | Total repetitions |
-| lapses | INTEGER | NO | Times forgotten |
-| state | TEXT | NO | CHECK: `new`, `learning`, `review`, `relearning` |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+**NEW TABLE** - Free Spaced Repetition Scheduler state per student+flashcard.
 
-UNIQUE: `(student_id, flashcard_id)`
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| student_id | UUID | NO | | FK -> profiles.id |
+| flashcard_id | UUID | YES | | FK -> flashcards.id |
+| stability | NUMERIC | NO | | FSRS parameter |
+| difficulty | NUMERIC | NO | | FSRS parameter (NOT integer) |
+| reps | INTEGER | NO | 0 | Repetition count |
+| lapses | INTEGER | NO | 0 | Lapse count |
+| state | TEXT | NO | | CHECK: `new`, `learning`, `review`, `relearning` |
+| due | TIMESTAMPTZ | YES | | Next review date |
+| last_review | TIMESTAMPTZ | YES | | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
 
-## bkt_states (Bayesian Knowledge Tracing)
+**UNIQUE:** (student_id, flashcard_id)
 
-| Column | Type | Nullable | Notes |
-|---|---|---|---|
-| id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| subtopic_id | UUID | NO | FK → subtopics.id |
-| p_know | NUMERIC | NO | Probability of knowing |
-| p_transit | NUMERIC | NO | |
-| p_slip | NUMERIC | NO | |
-| p_guess | NUMERIC | NO | |
-| delta | NUMERIC | NO | |
-| total_attempts | INTEGER | NO | |
-| correct_attempts | INTEGER | NO | |
-| created_at | TIMESTAMPTZ | NO | |
-| updated_at | TIMESTAMPTZ | NO | |
+## bkt_states
 
-UNIQUE: `(student_id, subtopic_id)`
+**NEW TABLE** - Bayesian Knowledge Tracing per student+subtopic.
+
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| student_id | UUID | NO | | FK -> profiles.id |
+| subtopic_id | UUID | NO | | FK -> subtopics.id |
+| p_know | NUMERIC | NO | | Probability of knowing |
+| p_transit | NUMERIC | NO | | Transition probability |
+| p_slip | NUMERIC | NO | | Slip probability |
+| p_guess | NUMERIC | NO | | Guess probability |
+| delta | NUMERIC | NO | | Change metric |
+| total_attempts | INTEGER | NO | 0 | |
+| correct_attempts | INTEGER | NO | 0 | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
+
+**UNIQUE:** (student_id, subtopic_id)
+
+## student_stats
+
+**NEW TABLE** - aggregated per-student statistics.
+
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| student_id | UUID | NO | | FK -> profiles.id |
+| current_streak | INTEGER | NO | 0 | |
+| longest_streak | INTEGER | NO | 0 | |
+| total_reviews | INTEGER | NO | 0 | |
+| total_time_seconds | INTEGER | NO | 0 | |
+| total_sessions | INTEGER | NO | 0 | |
+| last_study_date | DATE | YES | | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
+
+**UNIQUE:** (student_id)
+
+## daily_activities
+
+**NEW TABLE** - daily study activity log.
+
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| student_id | UUID | NO | | FK -> profiles.id |
+| activity_date | DATE | NO | | |
+| reviews_count | INTEGER | NO | 0 | |
+| correct_count | INTEGER | NO | 0 | |
+| time_spent_seconds | INTEGER | NO | 0 | |
+| sessions_count | INTEGER | NO | 0 | |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
+
+**UNIQUE:** (student_id, activity_date)
+
+## study_plans
+
+**NEW TABLE** - student study plans.
+
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| student_id | UUID | NO | | FK -> profiles.id |
+| course_id | UUID | YES | | FK -> courses.id |
+| name | TEXT | NO | | |
+| status | TEXT | NO | | CHECK: `active`, `completed`, `archived` |
+| created_at | TIMESTAMPTZ | NO | now() | |
+| updated_at | TIMESTAMPTZ | NO | now() | |
+
+## study_plan_tasks
+
+**NEW TABLE** - tasks within a study plan.
+
+| Column | Type | Nullable | Default | Notes |
+|---|---|---|---|---|
+| id | UUID | NO | gen_random_uuid() | PK |
+| study_plan_id | UUID | NO | | FK -> study_plans.id |
+| item_type | TEXT | NO | | CHECK: `flashcard`, `quiz`, `reading`, `keyword` |
+| item_id | UUID | NO | | Generic item reference |
+| status | TEXT | NO | | CHECK: `pending`, `completed`, `skipped` |
+| order_index | INTEGER | NO | 0 | |
+| completed_at | TIMESTAMPTZ | YES | | |
+| created_at | TIMESTAMPTZ | NO | now() | |
