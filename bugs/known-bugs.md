@@ -1,6 +1,6 @@
 # Known Bugs
 
-> Confirmed bugs from audits. **UPDATED with Query 2/3 corrections.**
+> Confirmed bugs from audits. **UPDATED 2025-02-27.**
 
 ## Critical
 
@@ -11,14 +11,15 @@
 - **Impact:** Video resolution data never saves
 - **Fix:** Change column name in the INSERT/UPDATE query
 - **Hotfix ID:** HF-D
-- **New info:** Videos also have `mux_asset_id` and `mux_upload_id` columns (indexed)
+- **Status:** PENDING
 
-### BUG-002: RLS disabled on study tables
+### BUG-002: RLS disabled on all 43 tables
 
-- **Tables:** `flashcards`, `quiz_questions`, `quizzes`
-- **Problem:** No Row Level Security
-- **Impact:** Data leakage between institutions
-- **Fix:** Enable RLS + add policies scoped by institution_id via summaries chain
+- **Tables:** ALL (confirmed via Query 3b: 0 policies, 0 RLS enabled)
+- **Problem:** No Row Level Security anywhere
+- **Impact:** Defense-in-depth missing (backend uses service_role so primary security is OK)
+- **Fix:** Enable RLS + add policies on high-priority tables
+- **Status:** DEFERRED — will apply after site is feature-complete
 
 ### BUG-003: JWT not cryptographically verified
 
@@ -26,6 +27,7 @@
 - **Problem:** Backend accepts JWTs without verifying the signature
 - **Impact:** Anyone can forge a valid-looking token
 - **Fix:** Verify JWT signature against Supabase JWT secret
+- **Status:** PENDING
 
 ## High
 
@@ -34,54 +36,73 @@
 - **Location:** CORS middleware
 - **Problem:** Accepts requests from any origin
 - **Fix:** Restrict to Vercel deployment URLs
+- **Status:** PENDING
 
 ### BUG-005: `flashcards.keyword_id` nullable inconsistency
 
 - **DB:** `keyword_id` is NULLABLE
 - **Backend:** `keyword_id` is in `requiredFields`
 - **Fix:** Align DB and backend (pick one)
+- **Status:** PENDING
 
-### BUG-010 (NEW): Duplicate indexes waste storage
+### BUG-010: Duplicate indexes — FIXED
 
-- **7 pairs** of identical unique indexes on legitimate tables
-- **~150+ junk indexes** on kv_store_* tables
-- **Fix:** See `database/rls-and-indexes.md` cleanup SQL
+- **Status:** DONE (2025-02-27)
+- ~25 `kv_store_*` tables dropped (~150 junk indexes)
+- 6 duplicate indexes on legitimate tables dropped
+- See `database/rls-and-indexes.md` cleanup log
 
-### BUG-011 (NEW): `deleted_at` vs `is_active` dual soft-delete
+### BUG-011: `deleted_at` vs `is_active` dual soft-delete
 
 - **Tables:** flashcards, keywords, models_3d, quiz_questions, quizzes, subtopics, summaries
 - **Problem:** These tables have BOTH `is_active` boolean AND `deleted_at` timestamp
 - **Impact:** Unclear which one controls visibility; indexes use `deleted_at IS NULL`
 - **Fix:** Standardize on one pattern across all tables
+- **Status:** PENDING
 
 ## Medium
 
 ### BUG-006: Study Queue ~5 sequential queries
 
 - **Fix:** Combine into 1-2 queries or use a DB function
+- **Status:** PENDING
 
 ### BUG-007: Content Tree filters in JS
 
 - **Fix:** Add WHERE clause to filter at DB level
+- **Status:** PENDING
 
 ### BUG-008: Search makes ~100 queries
 
 - **Fix:** Use PostgreSQL full-text search or UNION query
+- **Status:** PENDING
 
 ### BUG-009: Reorder does N individual UPDATEs
 
 - **Fix:** Use single UPDATE with CASE or unnest
+- **Status:** PENDING
 
-### BUG-012 (NEW): `reviews` table structure mismatch
+### BUG-012: `reviews` table payload mismatch — RECLASSIFIED
 
-- **What was documented:** `user_id`, `flashcard_id`, `quiz_question_id`, `rating`
-- **What actually exists:** `session_id`, `item_id`, `instrument_type`, `grade`
-- **Impact:** Frontend `submitReview` function (HF-B) must use correct column names
-- **Fix:** Update platformApi.ts to match actual schema
+- **Was:** Build error (HF-B)
+- **Now:** Runtime payload bug (RT-003, RT-004)
+- Frontend sends `response_time_ms` (doesn't exist), `subtopic_id`/`keyword_id` (don't exist)
+- See `bugs/runtime-payload-bugs.md`
+- **Status:** PENDING
 
-### BUG-013 (NEW): `study_sessions` structure mismatch
+### BUG-013: `study_sessions` payload mismatch — RECLASSIFIED
 
-- **What was documented:** `user_id`, `topic_id`, `score`
-- **What actually exists:** `student_id`, `course_id`, `total_reviews`, `correct_reviews`
-- **Impact:** Frontend `createStudySession`/`updateStudySession` (HF-B) must use correct columns
-- **Fix:** Update platformApi.ts to match actual schema
+- **Was:** Build error (HF-B)
+- **Now:** Runtime payload bug (RT-001, RT-002)
+- Frontend sends `ended_at` (should be `completed_at`), `duration_seconds` (doesn't exist)
+- See `bugs/runtime-payload-bugs.md`
+- **Status:** PENDING
+
+## Low / Info
+
+### BUG-014 (NEW): Bundle size 3.2 MB
+
+- Single chunk: `index-CMBHrIfe.js` = 3,236 KB (879 KB gzipped)
+- No code-splitting, no lazy routes
+- **Fix:** Add `React.lazy()` + route-based splitting
+- **Status:** PENDING

@@ -1,53 +1,65 @@
-# Frontend → Backend API Map
+# Frontend -> Backend API Map
 
 > Maps frontend function calls to backend endpoints.
-> Used to identify what's connected and what's missing.
+> **UPDATED 2025-02-27** with actual code audit results.
 
 ## Status Legend
 
-- ✅ Connected — function exists in `platformApi.ts` and backend has the endpoint
-- ❌ Missing — frontend calls it but function doesn't exist in `platformApi.ts`
-- ❓ Unknown — needs verification against backend code
+- CONNECTED — function exists and is imported by components
+- RUNTIME BUG — function exists but sends wrong payload
+- UNUSED — function exists but nothing imports it
 
-## Known Missing Functions (Build Blockers)
+## Study Sessions
 
-These functions are CALLED by frontend components but do NOT exist in `platformApi.ts`:
+| Function | Defined In | Called By | Endpoint | Status |
+|---|---|---|---|---|
+| `createStudySession` | studySessionApi.ts | FlashcardReviewer, ReviewSessionView, useFlashcardEngine | `POST /study-sessions` | CONNECTED |
+| `createStudySession` | quizApi.ts | QuizTaker | `POST /study-sessions` | CONNECTED |
+| `closeStudySession` | studySessionApi.ts | FlashcardReviewer, ReviewSessionView, useFlashcardEngine | `PUT /study-sessions/:id` | RUNTIME BUG (RT-001) |
+| `closeStudySession` | quizApi.ts | QuizTaker | `PUT /study-sessions/:id` | RUNTIME BUG (RT-001) |
 
-| Function | Called By | Expected Endpoint | Status |
-|---|---|---|---|
-| `createStudySession` | Study components | `POST /study-sessions` | ❌ Missing |
-| `updateStudySession` | Study components | `PUT /study-sessions/:id` | ❌ Missing |
-| `submitReview` | Review components | `POST /reviews` | ❌ Missing |
+## Reviews
 
-## Action Required
+| Function | Defined In | Called By | Endpoint | Status |
+|---|---|---|---|---|
+| `submitReview` | studySessionApi.ts | FlashcardReviewer, ReviewSessionView, useFlashcardEngine | `POST /reviews` | RUNTIME BUG (RT-003) |
+| `submitReview` | platformApi.ts | (self-contained, used by platformApi consumers) | `POST /reviews` | RUNTIME BUG (RT-004) |
+| Direct `apiCall('/reviews')` | — | QuizTaker | `POST /reviews` | CONNECTED (correct payload) |
 
-To complete this map, run in the `axon-backend` repo:
+Note: QuizTaker uses `apiCall` directly instead of `submitReview`, and its payload is actually correct: `{ session_id, item_id, instrument_type: 'quiz', grade }`. No phantom fields.
 
-```bash
-# List all registered endpoints
-grep -rn "\.(get\|post\|put\|delete\|patch)(" src/ --include="*.ts" | grep -v node_modules
-```
+## FSRS States
 
-And in the `numero1` frontend repo:
-
-```bash
-# List all API calls
-grep -rn "platformApi\.\|fetch\|/api/" src/ --include="*.ts" --include="*.tsx" | grep -v node_modules
-```
-
-Cross-reference both outputs to complete this document.
+| Function | Defined In | Called By | Endpoint | Status |
+|---|---|---|---|---|
+| `getFsrsStates` | studySessionApi.ts | ReviewSessionView | `GET /fsrs-states` | CONNECTED |
+| `upsertFsrsState` | studySessionApi.ts | useFlashcardEngine | `POST /fsrs-states` | CONNECTED |
+| Direct `apiCall('/fsrs-states')` | — | FlashcardReviewer, ReviewSessionView | `POST /fsrs-states` | CONNECTED |
 
 ## CRUD Factory Endpoints (Auto-Generated)
 
-Every entity that goes through `crud-factory.ts` gets these 5 endpoints:
+Every entity through `crud-factory.ts` gets:
 
 ```
-GET    /{entity}           → list (paginated)
-GET    /{entity}/:id       → get one
-POST   /{entity}           → create
-PUT    /{entity}/:id       → update
-DELETE /{entity}/:id       → delete
+GET    /{entity}           -> list (paginated)
+GET    /{entity}/:id       -> get one
+POST   /{entity}           -> create
+PUT    /{entity}/:id       -> update
+DELETE /{entity}/:id       -> delete
 ```
 
 Response format for list: `{ data: { items: [...], total, limit, offset } }`
 Response format for single: `{ data: { ... } }`
+
+## Duplicate Function Definitions
+
+Some functions are defined in multiple files:
+
+| Function | Files | Notes |
+|---|---|---|
+| `createStudySession` | studySessionApi.ts, quizApi.ts | Same endpoint, slightly different types |
+| `closeStudySession` | studySessionApi.ts, quizApi.ts | Same endpoint, same bug |
+| `submitReview` | studySessionApi.ts, platformApi.ts | Different type definitions, both have issues |
+| `getFsrsStates` | studySessionApi.ts, platformApi.ts | Different signatures |
+
+These duplicates should eventually be consolidated into a single source of truth.
