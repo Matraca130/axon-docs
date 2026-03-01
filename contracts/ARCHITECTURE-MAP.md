@@ -9,6 +9,12 @@
 
 This means files from DIFFERENT agents live in the SAME directory.
 
+## Critical Boundary Rule
+
+> **Route-owner != Component-owner.** An agent that owns a route file (e.g. `study-student-routes.ts`)
+> does NOT automatically own the components that route points to. The component owner is defined
+> in the ownership table below. If in doubt, check this document before modifying any component.
+
 ## Mixed-Ownership Directories (Critical)
 
 ### components/student/ — Agent 2 + Agent 3
@@ -29,10 +35,15 @@ Agent 3 (Flashcard):   KeywordsManager, KeywordConnectionsPanel, SubtopicsPanel,
 
 ### components/content/ — Agent 2 + Agent 5
 ```
-Agent 2 (Summary):     StudentSummariesView, StudentSummaryReader, SummaryView, StudentPlaceholder
-Agent 5 (Dashboard):   DashboardView, StudyHubView, StudyView
+Agent 2 (Summary):     StudentSummariesView, StudentSummaryReader, SummaryView,
+                       StudentPlaceholder, StudyHubView
+Agent 5 (Dashboard):   DashboardView, StudyView
 Dead code:             WelcomeView, LessonGridView, SummarySessionNew
 ```
+
+> **NOTE (2026-03-01):** `StudyHubView.tsx` was reassigned from Agent 5 to Agent 2.
+> Agent 5 owns the route `/student/study-hub` in `study-student-routes.ts`,
+> but Agent 2 owns the component file. See incident log below.
 
 ### components/shared/ — Agent 1 + 2 + 3 + 5
 ```
@@ -97,6 +108,7 @@ Agent 5 (Dashboard):   useStudentNav, useStudySession (stub→real)
 | hooks/useTextAnnotations.ts | A2 | exists | |
 | content/StudentSummaries*.tsx | A2 | exists | |
 | content/SummaryView.tsx | A2 | exists | |
+| content/StudyHubView.tsx | **A2** | exists | **Reassigned from A5 (2026-03-01)** |
 | student/SummaryViewer.tsx | A2 | exists | |
 | student/ViewerBlock.tsx | A2 | exists | |
 | student/TextHighlighter.tsx | A2 | exists | |
@@ -148,8 +160,8 @@ Agent 5 (Dashboard):   useStudentNav, useStudySession (stub→real)
 | types/student.ts | A5 | refactor | |
 | hooks/useStudentNav.ts | A5 | exists | |
 | content/DashboardView.tsx | A5 | exists | |
-| content/StudyHubView.tsx | A5 | exists | |
 | content/StudyView.tsx | A5 | exists | |
+| routes/study-student-routes.ts | A5 | exists | Route definitions only |
 | shared/CourseCard.tsx | A5 | exists | |
 | shared/KPICard.tsx | A5 | exists | |
 | shared/ActivityItem.tsx | A5 | exists | |
@@ -160,3 +172,11 @@ Agent 5 (Dashboard):   useStudentNav, useStudySession (stub→real)
 | routes/student-3d-routes.ts | A6 | create | |
 
 See interactive app for tree view with expand/collapse and copy-to-clipboard per agent.
+
+---
+
+## Incident Log
+
+| Date | Agent | File | Issue | Resolution |
+|---|---|---|---|---|
+| 2026-03-01 | A5 | `StudyHubView.tsx` | Agent 5 overwrote Agent 2's component with a Portuguese version (ContentTree sidebar + thumbnails), believing it was within their scope because they own `study-student-routes.ts` | File restored by Agent 2. Ownership reassigned A5→A2 in this document. Added boundary rule: route-owner != component-owner. |
