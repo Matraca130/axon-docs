@@ -36,14 +36,14 @@ Agent 3 (Flashcard):   KeywordsManager, KeywordConnectionsPanel, SubtopicsPanel,
 ### components/content/ — Agent 2 + Agent 5
 ```
 Agent 2 (Summary):     StudentSummariesView, StudentSummaryReader, SummaryView,
-                       StudentPlaceholder, StudyHubView
-Agent 5 (Dashboard):   DashboardView, StudyView
+                       StudentPlaceholder, StudyHubView, StudyView
+Agent 5 (Dashboard):   DashboardView
 Dead code:             WelcomeView, LessonGridView, SummarySessionNew
 ```
 
-> **NOTE (2026-03-01):** `StudyHubView.tsx` was reassigned from Agent 5 to Agent 2.
-> Agent 5 owns the route `/student/study-hub` in `study-student-routes.ts`,
-> but Agent 2 owns the component file. See incident log below.
+> **NOTE (2026-03-01):** `StudyHubView.tsx` and `StudyView.tsx` were reassigned from Agent 5 to Agent 2.
+> Agent 5 owns the route definitions in `study-student-routes.ts`,
+> but Agent 2 owns both component files. See incident log below.
 
 ### components/shared/ — Agent 1 + 2 + 3 + 5
 ```
@@ -76,7 +76,7 @@ Agent 5 (Dashboard):   useStudentNav, useStudySession (stub→real)
 | components/ui/*.tsx | ∞ | exists | 47 shadcn files |
 | design-system/*.ts | ∞ | exists | 13 token files |
 | components/design-kit.tsx | ∞ | exists | Layout components |
-| **DEAD CODE (Phase 0 deletes)** | | | |
+| **DEAD CODE (Phase 0 deletes — DO NOT IMPORT)** | | | |
 | lib/supabase-client.ts | 🗑️ | delete | 0 importers |
 | lib/config.ts | 🗑️ | delete | wrong URL |
 | types/legacy-stubs.ts | 🗑️ | delete | 9 files depend on empty stubs |
@@ -109,6 +109,7 @@ Agent 5 (Dashboard):   useStudentNav, useStudySession (stub→real)
 | content/StudentSummaries*.tsx | A2 | exists | |
 | content/SummaryView.tsx | A2 | exists | |
 | content/StudyHubView.tsx | **A2** | exists | **Reassigned from A5 (2026-03-01)** |
+| content/StudyView.tsx | **A2** | exists | **Reassigned from A5 (2026-03-01)** — thin delegator to StudentSummariesView |
 | student/SummaryViewer.tsx | A2 | exists | |
 | student/ViewerBlock.tsx | A2 | exists | |
 | student/TextHighlighter.tsx | A2 | exists | |
@@ -160,7 +161,6 @@ Agent 5 (Dashboard):   useStudentNav, useStudySession (stub→real)
 | types/student.ts | A5 | refactor | |
 | hooks/useStudentNav.ts | A5 | exists | |
 | content/DashboardView.tsx | A5 | exists | |
-| content/StudyView.tsx | A5 | exists | |
 | routes/study-student-routes.ts | A5 | exists | Route definitions only |
 | shared/CourseCard.tsx | A5 | exists | |
 | shared/KPICard.tsx | A5 | exists | |
@@ -180,3 +180,4 @@ See interactive app for tree view with expand/collapse and copy-to-clipboard per
 | Date | Agent | File | Issue | Resolution |
 |---|---|---|---|---|
 | 2026-03-01 | A5 | `StudyHubView.tsx` | Agent 5 overwrote Agent 2's component with a Portuguese version (ContentTree sidebar + thumbnails), believing it was within their scope because they own `study-student-routes.ts` | File restored by Agent 2. Ownership reassigned A5→A2 in this document. Added boundary rule: route-owner != component-owner. |
+| 2026-03-01 | A5 | `StudyView.tsx` | Agent 5 replaced the clean delegator (13 lines → StudentSummariesView) with a 500+ line Portuguese version importing dead code (SummarySessionNew, LessonGridView, legacy-stubs). UI showed "Sessão de Estudo", "Videoaula", "Resumo Didático" instead of real API-backed summaries. | File restored by Agent 2. Ownership reassigned A5→A2. Added GR-12 rule. |

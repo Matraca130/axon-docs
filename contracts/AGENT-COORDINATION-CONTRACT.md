@@ -1,7 +1,7 @@
 # AXON v4.4 — Agent Coordination Contract
 
 > **Date:** 2026-02-28  
-> **Updated:** 2026-03-01 (ownership clarifications)  
+> **Updated:** 2026-03-01 (ownership clarifications + second incident)  
 > **Based on:** FRONTEND-DIAGNOSTIC.md, BACKEND-DIAGNOSTIC.md, ARCHITECTURE-PRACTICES.md  
 > **Purpose:** Define boundaries for 6 parallel agents working on the Axon frontend.
 
@@ -22,6 +22,7 @@
 | GR-09 | Response format: CRUD factory `{ data: { items, total, limit, offset } }` vs custom `{ data: [...] }` | CRITICAL |
 | GR-10 | Navigation state in URL params, not Context | MEDIUM |
 | **GR-11** | **Route-owner != Component-owner.** Owning a route file does NOT grant ownership of the components it imports. Check ARCHITECTURE-MAP.md before modifying any component. | **CRITICAL** |
+| **GR-12** | **NEVER import dead code files** (WelcomeView, LessonGridView, SummarySessionNew, legacy-stubs). These are scheduled for deletion. Any component importing them will break after Phase 0 cleanup. | **CRITICAL** |
 
 ---
 
@@ -90,7 +91,7 @@ Phase 3: Integration testing (all agents)
 
 ## Agent 2: Content Viewer
 
-**Scope:** Summary viewing/editing, video player, content tree, chunks, text highlighting, **study hub browsing**.
+**Scope:** Summary viewing/editing, video player, content tree, chunks, text highlighting, **study hub browsing**, **study session view**.
 
 ### Files Owned
 - `pages/student/SummaryPage.tsx`
@@ -98,6 +99,7 @@ Phase 3: Integration testing (all agents)
 - `components/content/TextHighlighter.tsx` (→ split)
 - `components/content/VideoPlayer.tsx` (→ split)
 - **`components/content/StudyHubView.tsx`** — student study hub (browse content tree, select topic)
+- **`components/content/StudyView.tsx`** — thin delegator to StudentSummariesView
 - `context/ContentTreeContext.tsx`
 - `services/content.ts`, `services/summariesApi.ts`
 - `hooks/useContentTree.ts`, `hooks/useSummaryViewer.ts`
@@ -114,7 +116,7 @@ Phase 3: Integration testing (all agents)
 ### Coordination
 - **PROVIDES** useContentTree() that Agents 1, 3, 5 depend on — MUST complete first
 - **PROVIDES** content.ts service used by Agents 1, 3
-- **PROVIDES** StudyHubView.tsx — Agent 5 references it in `study-student-routes.ts` but MUST NOT modify the component
+- **PROVIDES** StudyHubView.tsx + StudyView.tsx — Agent 5 references them in `study-student-routes.ts` but MUST NOT modify the components
 
 ---
 
@@ -182,12 +184,15 @@ Phase 3: Integration testing (all agents)
 - `services/studyApi.ts`, `services/studySessionApi.ts`, `services/studyQueueApi.ts`
 - `context/StudentDataContext.tsx` (refactor)
 - `routes/study-student-routes.ts` — **route definitions only, NOT the components they import**
-- `content/DashboardView.tsx`, `content/StudyView.tsx`
+- `content/DashboardView.tsx`
 
 ### Files Agent 5 MUST NOT modify
 - `content/StudyHubView.tsx` — owned by Agent 2 (see GR-11)
-- `content/SummarySessionNew.tsx` — owned by Agent 2
+- `content/StudyView.tsx` — owned by Agent 2, delegator to StudentSummariesView (see GR-11)
+- `content/SummarySessionNew.tsx` — dead code, scheduled for deletion (see GR-12)
 - `content/StudentSummariesView.tsx` — owned by Agent 2
+- `content/LessonGridView.tsx` — dead code, scheduled for deletion (see GR-12)
+- `types/legacy-stubs.ts` — dead code, scheduled for deletion (see GR-12)
 
 ### Steps
 1. **A5-S1** Create study service modules (medium, 1 hr) — INCLUDES missing createStudySession/submitReview
@@ -201,7 +206,7 @@ Phase 3: Integration testing (all agents)
 - DEPENDS ON Agent 3 for mastery display types
 - Study session hook is shared with Agent 1 (quiz) and Agent 3 (flashcards)
 - StudentDataContext refactor affects ALL student pages
-- **Route `study-hub` points to Agent 2's StudyHubView — do NOT overwrite**
+- **Routes `study-hub` and `study` point to Agent 2's components — do NOT overwrite**
 
 ---
 
@@ -240,6 +245,7 @@ Phase 3: Integration testing (all agents)
 | `context/ContentTreeContext.tsx` | Agent 2 | 1, 3, 5 | Agent 2 creates, others consume |
 | `services/content.ts` | Agent 2 | 1, 3, 5 | Content hierarchy API calls |
 | `content/StudyHubView.tsx` | **Agent 2** | Agent 5 (route) | Agent 5 references in route but MUST NOT modify |
+| `content/StudyView.tsx` | **Agent 2** | Agent 5 (route) | Thin delegator to StudentSummariesView. Agent 5 MUST NOT modify |
 | `components/shared/ErrorBoundary.tsx` | Phase 0 | All | Wrap features, don't modify |
 | `lib/supabase.ts` | Phase 0 | 1, 4 | Single instance. Auth-only agents |
 
@@ -250,6 +256,7 @@ Phase 3: Integration testing (all agents)
 | Date | Agent | File | Issue | Resolution |
 |---|---|---|---|---|
 | 2026-03-01 | A5 | `StudyHubView.tsx` | Overwrote Agent 2's component with Portuguese version, believing it was A5's scope since A5 owns `study-student-routes.ts` | Restored by A2. Added GR-11 rule. Updated ownership in ARCHITECTURE-MAP.md. |
+| 2026-03-01 | A5 | `StudyView.tsx` | Replaced clean 13-line delegator with 500+ line Portuguese version importing dead code (SummarySessionNew, LessonGridView, legacy-stubs). Deployed UI showed "Sessão de Estudo", "Videoaula", "Resumo Didático" instead of real API data. | Restored by A2. Ownership reassigned A5→A2. Added GR-12 (no dead code imports). |
 
 ---
 
