@@ -2,7 +2,7 @@
 
 > **Proposito:** Pega este archivo al inicio de cada sesion de Figma Make para dar contexto completo.
 >
-> **Ultima actualizacion:** 2026-02-27
+> **Ultima actualizacion:** 2026-03-06
 
 ---
 
@@ -16,14 +16,14 @@ Frontend (React 18 + Vite + Tailwind v4)
         |
         v
 Backend (Hono Edge Function en Deno)
-  ├── Deploy: Deno Deploy via GitHub Actions
+  ├── Deploy: Supabase Edge Functions
   ├── Repo: Matraca130/axon-backend
-  └── Conecta a Supabase via service_role key
+  └── Conecta a Supabase via service_role key (admin) o anon key + JWT (user)
         |
         v
 Supabase PostgreSQL
   ├── Project ID: xdnciktarvxyhkrokbng
-  └── ~60+ tablas (incluye ~25 kv_store_* basura de Figma Make)
+  └── ~39 tablas reales + ~25 kv_store_* basura de Figma Make
 ```
 
 ## 2. Autenticacion (Doble Token)
@@ -35,20 +35,34 @@ Authorization: Bearer <SUPABASE_ANON_KEY>   <- Identifica el proyecto
 X-Access-Token: <USER_JWT>                  <- Identifica al usuario
 ```
 
-**Bug conocido:** El JWT NO tiene verificacion criptografica en el backend (ver KNOWN-BUGS.md #BUG-002).
+`authenticate()` en `db.ts` decodifica el JWT localmente (~0.1ms).
+La verificacion criptografica real la hace PostgREST en la primera query DB.
+
+> **Riesgo residual:** Rutas que llaman APIs externas (Gemini, Mux) SIN
+> hacer query a la DB primero NO validan el JWT criptograficamente.
+> Para esas rutas, siempre hacer una query canary primero. Ver PF-05.
 
 ## 3. Roles y Acceso
 
+4 roles con jerarquia estricta (definidos en `auth-helpers.ts`):
+
 | Rol | Nivel | Acceso |
 |---|---|---|
-| Student | Section | Ve contenido de sus secciones |
-| Professor | Course | Gestiona cursos y secciones asignadas |
-| Owner/Admin | Institution | Acceso total a la institucion |
+| `owner` | 4 | Acceso total a la institucion. Puede asignar cualquier rol. |
+| `admin` | 3 | Gestiona institucion, miembros, contenido. NO puede asignar owners. |
+| `professor` | 2 | Gestiona cursos y contenido asignado. Puede asignar professors y students. |
+| `student` | 1 | Ve contenido de sus cursos. Solo puede asignar students. |
 
 Controlado por:
-- `memberships` tabla (user_id + institution_id + role)
-- `plan_access_rules` tabla (que features tiene cada plan)
-- Multi-tenancy filtrado por `institution_id` en todas las queries
+- `memberships` tabla (user_id + institution_id + role + is_active)
+- `requireInstitutionRole()` en auth-helpers.ts (fail-closed)
+- `canAssignRole()` previene escalacion de privilegios
+- Multi-tenancy: todo filtrado por `institution_id`
+
+**Sets de roles pre-definidos:**
+- `ALL_ROLES` — cualquier miembro activo
+- `MANAGEMENT_ROLES` — owner, admin
+- `CONTENT_WRITE_ROLES` — owner, admin, professor
 
 ## 4. Jerarquia de Datos
 
@@ -58,13 +72,15 @@ Institution
         └── Semester
               └── Section
                     └── Topic
-                          └── Summary
-                                ├── Chunks (fragmentos de texto)
+                          └── Summary (tiene institution_id denormalizado)
+                                ├── Chunks (fragmentos + embeddings 768d)
                                 ├── Keywords (conceptos clave)
                                 │     ├── Flashcards
-                                │     ├── Quiz Questions
-                                │     └── Videos
-                                └── (content derivado)
+                                │     ├── Quiz Questions → Quizzes
+                                │     ├── Keyword Connections
+                                │     └── Prof Notes (kw_prof_notes)
+                                ├── Videos
+                                └── Student Notes (kw_student_notes, text_annotations, video_notes)
 ```
 
 ## 5. Backend - Patrones Clave
@@ -72,8 +88,8 @@ Institution
 ### Rutas
 - **Planas con query params**, nunca REST anidadas
 - Ejemplo: `GET /topics?section_id=xxx` (no `/sections/xxx/topics`)
-- Usa `crud-factory.ts` que genera CRUD automatico (5 endpoints por entidad)
-- 12 modulos de rutas, ~176 endpoints totales
+- `crud-factory.ts` genera 6 endpoints por entidad (LIST, GET, POST, PUT, DELETE, RESTORE)
+- 14 modulos de rutas, ~176 endpoints totales
 
 ### Formatos de Respuesta
 
@@ -92,7 +108,7 @@ Institution
 **Rutas custom:**
 ```json
 {
-  "data": [...]
+  "data": { ... }
 }
 ```
 
@@ -115,23 +131,20 @@ Institution
 
 ### Campos nullable vs required
 - `flashcards.keyword_id`: NULLABLE en DB pero REQUIRED en backend
-- Ambos modulos Quiz y Flashcards usan `ensureGeneralKeyword`
 
 ## 7. Estado Actual del Proyecto
 
-### Build Status: ROTO
-Faltan estas funciones en `platformApi.ts`:
-- `createStudySession`
-- `updateStudySession`
-- `submitReview`
+### Bugs conocidos
+Ver `KNOWN-BUGS.md` para la lista completa.
+- BUG-002 (JWT): Mitigado por PostgREST, riesgo residual en rutas sin DB query
+- BUG-003 (RLS): Pendiente — se aplicara cuando la app este lista
+- BUG-004 (CORS): **FIXED** (2026-03-06)
 
-### Hotfixes Pendientes
-- HF-D: (pendiente)
-- HF-B: (pendiente)
-
-### Queries Pendientes en Supabase SQL Editor
-- Query 2: Constraints (CHECK, UNIQUE, FK, PK)
-- Query 3: Estado de RLS, policies e indices
+### RAG Pipeline
+- Gemini 2.5 Flash para generacion
+- gemini-embedding-001 (768d) para embeddings
+- rag_hybrid_search() v3: 1 JOIN + stored tsvector (Fase 1+2 completadas)
+- Ver `RAG_ROADMAP.md` en axon-backend para estado completo
 
 ## 8. Tablas Basura (seguro eliminar)
 

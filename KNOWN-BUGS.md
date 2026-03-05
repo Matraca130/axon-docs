@@ -2,7 +2,7 @@
 
 > Bugs confirmados contra el schema real de la DB y el codigo del backend.
 >
-> **Ultima actualizacion:** 2026-02-27
+> **Ultima actualizacion:** 2026-03-06
 
 ---
 
@@ -28,14 +28,22 @@
 
 ---
 
-## BUG-002: JWT sin verificacion criptografica (Backend)
+## BUG-002: JWT sin verificacion criptografica local (Backend)
 
-**Severidad:** CRITICAL
-**Ubicacion:** Middleware de auth
-**Descripcion:** El `X-Access-Token` JWT se decodifica pero NO se verifica la firma criptografica. Cualquier JWT fabricado seria aceptado.
-**Impacto:** Un atacante puede fabricar un JWT con cualquier `user_id` y `role` y el backend lo acepta.
-**Fix:** Verificar JWT con `jsonwebtoken.verify()` usando el JWT secret de Supabase.
-**Estado:** Pendiente
+**Severidad:** MEDIUM (rebajado de CRITICAL)
+**Ubicacion:** `db.ts` — funcion `authenticate()`
+**Descripcion:** `authenticate()` decodifica el JWT localmente pero NO verifica la firma criptografica.
+
+**Mitigacion existente (verificada en codigo):**
+- PostgREST valida el JWT criptograficamente en la **primera query DB** de cada request.
+- `getUserClient(jwt)` pasa el token en el header Authorization, y PostgREST lo verifica antes de ejecutar SQL.
+- `authenticate()` SI valida expiracion (`exp`) localmente para fast-fail.
+- Las rutas admin usan `getAdminClient().auth.getUser(token)` que verifica via red.
+
+**Riesgo residual:** Rutas que llaman APIs externas (Gemini, Mux, Stripe) SIN hacer query DB primero. Un JWT forjado consumiria creditos de API pagados. La regla PF-05 en el codigo documenta este riesgo.
+
+**Fix recomendado:** Agregar verificacion con `jose` y `SUPABASE_JWT_SECRET` en `authenticate()`. Prioridad baja porque PostgREST ya cubre el 95% de los casos.
+**Estado:** Mitigado — fix completo para Fase futura
 
 ---
 
@@ -47,65 +55,61 @@
 - `flashcards` - Sin RLS
 - `quiz_questions` - Sin RLS
 - `quizzes` - Sin RLS
-**Descripcion:** Estas tablas no tienen Row Level Security habilitado. Cualquier request con el anon key puede leer/escribir datos de cualquier usuario.
-**Impacto:** Datos de todos los usuarios expuestos.
-**Fix:** Habilitar RLS + crear policies basadas en `institution_id` via JOINs.
-**Estado:** Pendiente (requiere Query 3 para ver estado completo)
+
+**Mitigacion existente:** El backend aplica institution scoping via `checkContentScope()` en `crud-factory.ts` (fix H-5). Todos los endpoints CRUD verifican membership antes de operar.
+
+**Riesgo residual:** Acceso directo a Supabase con el anon key (expuesto en frontend) bypass el backend completamente.
+
+**Fix:** Habilitar RLS + crear policies basadas en `institution_id` via JOINs a memberships.
+**Estado:** Pendiente — se aplicara cuando la app este lista para produccion
 
 ---
 
-## BUG-004: CORS origin wildcard (Backend)
+## ~~BUG-004: CORS origin wildcard (Backend)~~ FIXED
 
-**Severidad:** HIGH
-**Ubicacion:** Configuracion de CORS en Hono
-**Descripcion:** `origin: "*"` permite requests desde cualquier dominio.
-**Impacto:** Facilita ataques CSRF y abuso de la API.
-**Fix:** Restringir a dominios especificos: `["https://axon.vercel.app", "http://localhost:5173"]`
-**Estado:** Pendiente
+**Severidad:** ~~HIGH~~ FIXED
+**Ubicacion:** `index.ts`
+**Fix aplicado:** Commit `33eb56e` (2026-03-06) — CORS restringido a dominios especificos.
+**Estado:** **FIXED**
 
 ---
 
-## BUG-005: Study Queue con ~5 queries secuenciales (Backend)
+## BUG-005: Study Queue con queries secuenciales (Backend)
 
-**Severidad:** MEDIUM
-**Ubicacion:** Ruta de Study Queue
-**Descripcion:** Ejecuta ~5 queries a Supabase de forma secuencial en vez de paralela o en una sola query.
-**Impacto:** Latencia multiplicada por 5 en cada request de study queue.
-**Fix:** Combinar en una sola query SQL o usar `Promise.all()` para paralelizar.
-**Estado:** Pendiente
+**Severidad:** LOW (rebajado de MEDIUM)
+**Ubicacion:** `routes-study-queue.tsx`
+
+**Estado parcial:** El path primario ahora usa `get_study_queue()` RPC (fix S-3) que hace todo en una sola query SQL. El fallback JS todavia hace ~5 queries pero usa `Promise.all()` para 4 de ellas.
 
 ---
 
 ## BUG-006: Content Tree filtra inactivos en JS (Backend)
 
 **Severidad:** MEDIUM
-**Ubicacion:** Ruta de Content Tree
-**Descripcion:** Trae TODOS los registros de la DB y luego filtra los inactivos en JavaScript.
-**Impacto:** Transfiere datos innecesarios, consume memoria, mas lento.
-**Fix:** Agregar `WHERE is_active = true` a la query SQL.
+**Ubicacion:** `routes/content/content-tree.ts`
+**Descripcion:** Trae registros de la DB y luego filtra los inactivos en JavaScript.
+**Fix:** Agregar filtros `is_active` y `deleted_at` a la query SQL.
 **Estado:** Pendiente
 
 ---
 
-## BUG-007: Search hace ~100 queries (Backend)
+## BUG-007: Search hace queries excesivas (Backend)
 
-**Severidad:** HIGH
-**Ubicacion:** Ruta de busqueda
-**Descripcion:** La busqueda ejecuta ~100 queries individuales a Supabase.
-**Impacto:** Extremadamente lento, puede causar rate limiting.
-**Fix:** Usar full-text search de PostgreSQL (`to_tsvector`, `to_tsquery`) en una sola query.
-**Estado:** Pendiente
+**Severidad:** MEDIUM (rebajado de HIGH)
+**Ubicacion:** `routes/search/`
+**Descripcion:** La busqueda global ejecuta multiples queries individuales.
+**Mitigacion parcial:** Se agregaron indices trigram (migration `20260227_05`) y RPC `search_keywords_by_institution` (migration `20260305_06`).
+**Fix completo:** Consolidar en menos queries o usar una sola funcion RPC.
+**Estado:** Parcialmente mitigado
 
 ---
 
 ## BUG-008: Reorder hace N updates individuales (Backend)
 
-**Severidad:** MEDIUM
-**Ubicacion:** Ruta de reordenamiento
-**Descripcion:** Para reordenar N items, hace N queries UPDATE individuales.
-**Impacto:** Lento y no atomico (puede quedar en estado inconsistente).
-**Fix:** Usar una sola query con `CASE WHEN` o una funcion RPC en Supabase.
-**Estado:** Pendiente
+**Severidad:** LOW (rebajado de MEDIUM)
+**Ubicacion:** `routes/content/reorder.ts`
+**Mitigacion:** Ya usa `bulk_reorder()` RPC (migration `20260227_01`) para reorder atomico.
+**Estado:** **Posiblemente FIXED** — verificar si todas las rutas usan el RPC.
 
 ---
 
@@ -114,9 +118,8 @@
 **Severidad:** LOW
 **Ubicacion:** Schema de DB vs crud-factory config
 **Descripcion:** En la DB, `flashcards.keyword_id` es NULLABLE. En el backend, el crud-factory lo tiene como REQUIRED en `requiredFields`.
-**Impacto:** No puedes crear un flashcard sin keyword_id via API, aunque la DB lo permite.
-**Fix:** Decidir cual es correcto y alinear ambos. Probablemente deberia ser required en ambos.
-**Estado:** Pendiente
+**Decision:** El backend es correcto — keyword_id DEBE ser required para la integridad del contenido.
+**Estado:** By design (no es bug)
 
 ---
 
@@ -128,8 +131,8 @@
 - `createStudySession`
 - `updateStudySession`
 - `submitReview`
-**Impacto:** El build de Vercel falla. La app no se puede deployar.
-**Fix:** Implementar estas funciones en `platformApi.ts` apuntando a las rutas correctas del backend.
+
+**Nota:** Ahora que los schemas correctos de reviews y study_sessions estan documentados en `api/routes-study.md`, estas funciones pueden implementarse correctamente.
 **Estado:** Pendiente
 
 ---
@@ -138,8 +141,7 @@
 
 **Severidad:** LOW
 **Ubicacion:** Supabase PostgreSQL
-**Descripcion:** ~25 tablas `kv_store_*` creadas automaticamente por Figma Make. No tienen relacion con Axon.
-**Impacto:** Ruido visual en el schema, posible confusion.
+**Descripcion:** ~25 tablas `kv_store_*` creadas automaticamente por Figma Make.
 **Fix:** `DROP TABLE kv_store_* CASCADE;`
 **Estado:** Pendiente (seguro eliminar)
 
@@ -149,7 +151,9 @@
 
 | Severidad | Cantidad | IDs |
 |---|---|---|
-| CRITICAL | 3 | BUG-002, BUG-003, BUG-010 |
-| HIGH | 3 | BUG-001, BUG-004, BUG-007 |
-| MEDIUM | 3 | BUG-005, BUG-006, BUG-008 |
-| LOW | 2 | BUG-009, BUG-011 |
+| CRITICAL | 2 | BUG-003, BUG-010 |
+| HIGH | 1 | BUG-001 |
+| MEDIUM | 2 | BUG-002, BUG-006 |
+| LOW | 3 | BUG-005, BUG-009, BUG-011 |
+| FIXED | 2 | BUG-004, BUG-008 |
+| By Design | 1 | BUG-009 |
