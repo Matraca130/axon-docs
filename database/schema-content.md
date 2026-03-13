@@ -2,6 +2,7 @@
 
 > Tables that hold educational content.
 > **VERIFIED** against Query 2 constraint output.
+> **UPDATED 2026-03-13:** Synced keywords.definition, keyword_connections V2 columns, added /keyword-connections-batch endpoint.
 
 ## topics
 
@@ -53,13 +54,14 @@ Usually 1:1 with topics.
 | id | UUID | NO | gen_random_uuid() | PK |
 | summary_id | UUID | NO | | FK -> summaries.id |
 | name | TEXT | NO | | The keyword/term |
+| definition | TEXT | YES | | Optional definition/description. Used in tooltip previews and KeywordPopup. |
 | priority | INTEGER | NO | | **NOT NULL!** Integer value |
 | created_by | UUID | NO | | FK -> profiles.id |
 | is_active | BOOLEAN | NO | true | |
 | created_at | TIMESTAMPTZ | NO | now() | |
 | updated_at | TIMESTAMPTZ | NO | now() | |
 
-> Note: NO `definition` column. NO `is_general` column. These were phantom fields.
+> Note: `definition` column EXISTS (verified via backend joins in keyword-connections.ts F2-A fix). NO `is_general` column.
 
 ## subtopics
 
@@ -76,16 +78,29 @@ Usually 1:1 with topics.
 
 ## keyword_connections
 
-**NEW TABLE** - links related keywords.
+Links related keywords across summaries.
 
 | Column | Type | Nullable | Default | Notes |
 |---|---|---|---|---|
 | id | UUID | NO | gen_random_uuid() | PK |
 | keyword_a_id | UUID | NO | | FK -> keywords.id |
 | keyword_b_id | UUID | NO | | FK -> keywords.id |
+| relationship | TEXT | YES | | Free-text relationship description |
+| connection_type | TEXT | YES | | V2: One of 10 predefined medical types (see below) |
+| source_keyword_id | UUID | YES | | V2: Direction indicator for directional types |
 | created_at | TIMESTAMPTZ | NO | now() | |
 
-**CHECK:** `keyword_a_id < keyword_b_id` (prevents duplicates)
+**CHECK:** `keyword_a_id < keyword_b_id` (canonical order, prevents duplicates)
+
+**V2 connection_type values:**
+`prerequisito`, `causa-efecto`, `mecanismo`, `dx-diferencial`, `tratamiento`,
+`manifestacion`, `regulacion`, `contraste`, `componente`, `asociacion`
+
+**Batch endpoint:** `GET /keyword-connections-batch?keyword_ids=uuid1,uuid2,...`
+- EC-02 fix: reduces N+1 pattern from ~25 HTTP requests to 1
+- Includes F1/F2-A joins (keyword names, summary_id, definition)
+- F3 student filter (only connections where both sides are published)
+- Max 50 keyword_ids per request
 
 ## videos
 
@@ -101,10 +116,9 @@ Usually 1:1 with topics.
 | is_active | BOOLEAN | NO | true | |
 | is_mux | BOOLEAN | NO | false | Mux-managed video? |
 | status | TEXT | NO | | Video processing status |
+| max_resolution | TEXT | YES | | Mux resolution tier (set by webhook). BUG-001: webhook code is correct (reads `resolution_tier` from Mux, writes to `max_resolution` column). |
 | created_at | TIMESTAMPTZ | NO | now() | |
 | updated_at | TIMESTAMPTZ | NO | now() | |
-
-> Note: `max_resolution` column exists but is NULLABLE (no NOT NULL constraint). BUG-001 still applies.
 
 ## models_3d
 

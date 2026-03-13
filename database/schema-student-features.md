@@ -2,6 +2,7 @@
 
 > Tables for student-specific features: notes, annotations, reading progress.
 > **NEW** - not in initial docs.
+> **UPDATED 2026-03-13:** Synced reading_states.last_read_at, text_annotations.note column names.
 
 ## kw_student_notes
 
@@ -44,7 +45,7 @@ Highlights and annotations on summary text.
 | start_offset | INTEGER | NO | | Character offset start |
 | end_offset | INTEGER | NO | | Character offset end |
 | color | TEXT | NO | | Highlight color |
-| annotation_text | TEXT | YES | | Optional note |
+| note | TEXT | YES | | Optional note text. **Column is `note` not `annotation_text`** (verified in backend CRUD factory createFields). |
 | created_at | TIMESTAMPTZ | NO | now() | |
 | updated_at | TIMESTAMPTZ | NO | now() | |
 
@@ -61,6 +62,7 @@ Tracks reading progress per student per summary.
 | time_spent_seconds | INTEGER | NO | 0 | |
 | completed | BOOLEAN | NO | false | |
 | completed_at | TIMESTAMPTZ | YES | | |
+| last_read_at | TIMESTAMPTZ | YES | | Timestamp of last reading session. Validated as ISO timestamp in POST /reading-states. |
 | created_at | TIMESTAMPTZ | NO | now() | |
 | updated_at | TIMESTAMPTZ | NO | now() | |
 
