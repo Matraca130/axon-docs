@@ -25,40 +25,16 @@ axon-docs/
 │   └── RAG_PHASES.md
 │
 ├── database/             ← Schema split by domain
-│   ├── schema-core.md
-│   ├── schema-content.md
-│   ├── schema-study.md
-│   ├── schema-auth.md
-│   ├── constraints.md
-│   └── rls-and-indexes.md
-│
 ├── api/                  ← Routes split by module
-│   ├── routes-institutions.md
-│   ├── routes-courses.md
-│   ├── routes-content.md
-│   ├── routes-study.md
-│   ├── routes-auth.md
-│   ├── routes-models.md
-│   └── routes-misc.md
-│
-├── bugs/
-│   ├── known-bugs.md
-│   └── security-audit.md
-│
-├── frontend/
-│   ├── platform-api-map.md
-│   ├── build-errors.md
-│   └── bundle-optimization.md
-│
+├── bugs/                 ← Bug tracking + security audit
+├── frontend/             ← Frontend-specific docs
 ├── practices/            ← Multi-agent coordination
-│
 ├── contracts/            ← Interface contracts
-│
 ├── diagnostics/          ← Debug & audit tools
 │
-├── PLATFORM-CONTEXT.md   ← ⭐ Single-file context (paste into every session)
-├── API-MAP.md            ← ⭐ Complete endpoint reference
-└── KNOWN-BUGS.md         ← ⭐ Bug tracker with severity levels
+├── PLATFORM-CONTEXT.md   ← Single-file context (paste into every session)
+├── API-MAP.md            ← Complete endpoint reference
+└── KNOWN-BUGS.md         ← Bug tracker with severity levels
 ```
 
 ## Repos
@@ -72,17 +48,21 @@ axon-docs/
 ## Supabase
 
 - Project ID: `xdnciktarvxyhkrokbng`
-- Region: (check Supabase dashboard)
 - ~50+ tables (including ~25 `kv_store_*` junk tables from Figma Make)
-- 41+ SQL migrations
+- **52+ SQL migrations**
+- Embeddings: **1536d** (OpenAI text-embedding-3-small, migrated from Gemini 768d)
 
-## What Changed (2026-03-13/14)
+## What Changed (2026-03-10–14)
 
 ### Backend
-- **Gamification system** complete: XP engine, 11 hooks, 39 badges, streaks, goals, leaderboard
+- **Gamification system** complete: XP engine, 8 hooks (11 actions), 39 badges, streaks, goals, leaderboard
+- **Embedding migration**: Gemini 768d → OpenAI text-embedding-3-small 1536d
+- **WhatsApp integration**: Tables + cron job processor (backend routes in development)
+- **PDF source tracking**: `pdf_source_url`, `pdf_page_start/end` on summaries (Fase 7 started)
+- **RAG security hardening**: Revoked RPC access from authenticated role
 - **Batch endpoints**: `keyword-connections-batch`, `flashcards-by-topic`, `review-batch`, `topic-progress`, `topics-overview`
 - Route files renamed `.tsx` → `.ts`
-- Gamification audit: G-001 to G-015 + A/B/D/S3 series (all resolved)
+- Gamification audit: G/A/B/D/S3 series (all resolved)
 
 ### Frontend
 - **Layout v2**: All roles migrated to responsive `RoleShell` with MobileDrawer
