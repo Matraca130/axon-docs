@@ -1,44 +1,58 @@
 # Frontend -> Backend API Map
 
 > Maps frontend function calls to backend endpoints.
-> **UPDATED 2025-02-27** with actual code audit results.
+> **Updated:** 2026-03-14
 
 ## Status Legend
 
-- CONNECTED — function exists and is imported by components
-- RUNTIME BUG — function exists but sends wrong payload
-- UNUSED — function exists but nothing imports it
+- CONNECTED — function exists, imported by components, correct payload
+- RESOLVED — previously broken, now fixed
 
 ## Study Sessions
 
-| Function | Defined In | Called By | Endpoint | Status |
-|---|---|---|---|---|
-| `createStudySession` | studySessionApi.ts | FlashcardReviewer, ReviewSessionView, useFlashcardEngine | `POST /study-sessions` | CONNECTED |
-| `createStudySession` | quizApi.ts | QuizTaker | `POST /study-sessions` | CONNECTED |
-| `closeStudySession` | studySessionApi.ts | FlashcardReviewer, ReviewSessionView, useFlashcardEngine | `PUT /study-sessions/:id` | RUNTIME BUG (RT-001) |
-| `closeStudySession` | quizApi.ts | QuizTaker | `PUT /study-sessions/:id` | RUNTIME BUG (RT-001) |
+| Function | Defined In | Endpoint | Status |
+|---|---|---|---|
+| `createStudySession` | studySessionApi.ts | `POST /study-sessions` | CONNECTED |
+| `createStudySession` | quizApi.ts | `POST /study-sessions` | CONNECTED |
+| `closeStudySession` | studySessionApi.ts | `PUT /study-sessions/:id` | RESOLVED (was RT-001) |
+| `closeStudySession` | quizApi.ts | `PUT /study-sessions/:id` | RESOLVED (was RT-001) |
 
 ## Reviews
 
-| Function | Defined In | Called By | Endpoint | Status |
-|---|---|---|---|---|
-| `submitReview` | studySessionApi.ts | FlashcardReviewer, ReviewSessionView, useFlashcardEngine | `POST /reviews` | RUNTIME BUG (RT-003) |
-| `submitReview` | platformApi.ts | (self-contained, used by platformApi consumers) | `POST /reviews` | RUNTIME BUG (RT-004) |
-| Direct `apiCall('/reviews')` | — | QuizTaker | `POST /reviews` | CONNECTED (correct payload) |
-
-Note: QuizTaker uses `apiCall` directly instead of `submitReview`, and its payload is actually correct: `{ session_id, item_id, instrument_type: 'quiz', grade }`. No phantom fields.
+| Function | Defined In | Endpoint | Status |
+|---|---|---|---|
+| `submitReview` | studySessionApi.ts | `POST /reviews` | RESOLVED (was RT-003) |
+| Direct `apiCall('/reviews')` | QuizTaker | `POST /reviews` | CONNECTED (always correct) |
+| `POST /review-batch` | FlashcardReviewer | `POST /review-batch` | CONNECTED (PERF M1: 90→1) |
 
 ## FSRS States
 
-| Function | Defined In | Called By | Endpoint | Status |
-|---|---|---|---|---|
-| `getFsrsStates` | studySessionApi.ts | ReviewSessionView | `GET /fsrs-states` | CONNECTED |
-| `upsertFsrsState` | studySessionApi.ts | useFlashcardEngine | `POST /fsrs-states` | CONNECTED |
-| Direct `apiCall('/fsrs-states')` | — | FlashcardReviewer, ReviewSessionView | `POST /fsrs-states` | CONNECTED |
+| Function | Defined In | Endpoint | Status |
+|---|---|---|---|
+| `getFsrsStates` | studySessionApi.ts | `GET /fsrs-states` | CONNECTED |
+| `upsertFsrsState` | studySessionApi.ts | `POST /fsrs-states` | CONNECTED |
 
-## CRUD Factory Endpoints (Auto-Generated)
+## AI / RAG
 
-Every entity through `crud-factory.ts` gets:
+| Function | Defined In | Endpoint | Status |
+|---|---|---|---|
+| `generateContent` | aiService.ts | `POST /ai/generate` | CONNECTED |
+| `generateSmart` | aiService.ts | `POST /ai/generate-smart` | CONNECTED |
+| `ragChat` | aiService.ts | `POST /ai/rag-chat` | CONNECTED |
+| `ragFeedback` | aiService.ts | `PATCH /ai/rag-feedback` | CONNECTED |
+
+## Gamification
+
+| Function | Defined In | Endpoint | Status |
+|---|---|---|---|
+| `getProfile` | gamificationApi.ts | `GET /gamification/profile` | CONNECTED |
+| `dailyCheckIn` | gamificationApi.ts | `POST /gamification/daily-check-in` | CONNECTED |
+| `checkBadges` | gamificationApi.ts | `POST /gamification/check-badges` | CONNECTED |
+| Other endpoints | gamificationApi.ts | Various | In progress (Sprint 3) |
+
+## Content CRUD
+
+All entities use the CRUD factory pattern and are connected via `platformApi.ts`, `summariesApi.ts`, or `studentApi.ts`.
 
 ```
 GET    /{entity}           -> list (paginated)
@@ -51,15 +65,19 @@ DELETE /{entity}/:id       -> delete
 Response format for list: `{ data: { items: [...], total, limit, offset } }`
 Response format for single: `{ data: { ... } }`
 
-## Duplicate Function Definitions
+## API Service Files
 
-Some functions are defined in multiple files:
-
-| Function | Files | Notes |
-|---|---|---|
-| `createStudySession` | studySessionApi.ts, quizApi.ts | Same endpoint, slightly different types |
-| `closeStudySession` | studySessionApi.ts, quizApi.ts | Same endpoint, same bug |
-| `submitReview` | studySessionApi.ts, platformApi.ts | Different type definitions, both have issues |
-| `getFsrsStates` | studySessionApi.ts, platformApi.ts | Different signatures |
-
-These duplicates should eventually be consolidated into a single source of truth.
+| File | Scope |
+|---|---|
+| `lib/api.ts` | Central `apiCall()` wrapper with dual-token headers |
+| `services/platformApi.ts` | Owner/Admin/Professor API calls |
+| `services/studentApi.ts` | Student API calls |
+| `services/summariesApi.ts` | Summary CRUD + chunks + keywords |
+| `services/studentSummariesApi.ts` | Reading states, annotations, video notes |
+| `services/quizApi.ts` | Quiz taking + study sessions |
+| `services/flashcardApi.ts` | Flashcard CRUD |
+| `services/contentTreeApi.ts` | Content tree |
+| `services/authApi.ts` | Auth flows |
+| `services/aiService.ts` | AI/RAG endpoints |
+| `services/studySessionApi.ts` | Study sessions + reviews + FSRS |
+| `services/gamificationApi.ts` | Gamification endpoints |
