@@ -1,7 +1,7 @@
 # API Routes: Misc
 
 > Webhooks, reorder, health, and utility endpoints.
-> **Updated:** 2026-03-14
+> **Updated:** 2026-03-14 (audit pass 10)
 
 ---
 
@@ -18,7 +18,7 @@ Single unified endpoint using `bulk_reorder()` RPC (atomic):
 
 | Method | Endpoint | Body |
 |---|---|---|
-| PUT | `/reorder` | `{ table: "chunks"|"summaries"|"subtopics"|"videos"|..., items: [{ id, order_index }] }` |
+| PUT | `/reorder` | `{ table: "chunks"\|"summaries"\|"subtopics"\|"videos"\|..., items: [{ id, order_index }] }` |
 
 > **BUG-008: FIXED** — Uses `bulk_reorder()` RPC (migration `20260227_01`).
 > Falls back to sequential updates if RPC unavailable.
@@ -32,11 +32,11 @@ Single unified endpoint using `bulk_reorder()` RPC (atomic):
 
 ## Route Count Summary
 
-The backend has 8 split modules + 6 flat route files:
+The backend has **10 split modules** + 6 flat route files:
 
 | Source | Count | Subtotal |
 |---|---|---|
-| CRUD factory entities | ~25 entities × 5 endpoints | ~125 |
+| CRUD factory entities | ~25 entities × 5-6 endpoints | ~130 |
 | Content manual (connections, search, reorder, tree, batch) | ~12 | ~12 |
 | Study manual (reviews, attempts, batch, progress, spaced-rep) | ~18 | ~18 |
 | AI/RAG endpoints | ~14 | ~14 |
@@ -44,3 +44,5 @@ The backend has 8 split modules + 6 flat route files:
 | Auth, billing, storage, search, mux | ~15 | ~15 |
 | Study queue | ~1 | ~1 |
 | **Total** | | **~200+** |
+
+**Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, whatsapp
