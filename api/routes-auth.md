@@ -1,6 +1,8 @@
 # API Routes: Auth
 
 > Authentication and user management endpoints.
+> **Verified against:** `routes-auth.ts`, `routes/members/`
+> **Updated:** 2026-03-14
 
 ## Auth Flow
 
@@ -10,20 +12,34 @@
 3. Frontend sends BOTH tokens to backend:
    - Authorization: Bearer <SUPABASE_ANON_KEY>
    - X-Access-Token: <USER_JWT>
-4. Backend extracts user_id from JWT (⚠️ without crypto verification)
+4. Backend extracts user_id from JWT (mitigated: PostgREST validates on DB query)
 ```
 
-## Profiles
+## Auth Endpoints (`routes-auth.ts`)
+
+| Method | Endpoint | Description | Response |
+|---|---|---|---|
+| POST | `/signup` | Create account | `{ data: { user, session } }` |
+| GET | `/me` | Get profile (auto-creates if missing via upsert) | `{ data: { ... } }` |
+| PUT | `/me` | Update profile | `{ data: { ... } }` |
+
+> Password max length capped at 128 chars (P-5).
+> Auto-profile uses upsert to handle race conditions (P-6).
+
+## Institutions (`routes/members/institutions.ts`)
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
-| GET | `/profiles` | | Paginated |
-| GET | `/profiles/:id` | | Single |
-| PUT | `/profiles/:id` | | Single |
+| GET | `/institutions` | `search`, `is_active` | Paginated |
+| GET | `/institutions/:id` | | Single |
+| POST | `/institutions` | | Single |
+| PUT | `/institutions/:id` | | Single |
+| DELETE | `/institutions/:id` | | Single |
+| POST | `/institutions/join` | `{ code }` | Single (join by code) |
 
-Profiles are auto-created via Supabase trigger. No POST needed.
+**Required fields:** `name`, `slug`
 
-## Memberships
+## Memberships (`routes/members/memberships.ts`)
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
@@ -35,20 +51,9 @@ Profiles are auto-created via Supabase trigger. No POST needed.
 
 **Required fields:** `user_id`, `institution_id`, `role`
 
-## Plan Access Rules
-
-| Method | Endpoint | Query Params | Response |
-|---|---|---|---|
-| GET | `/plan-access-rules` | `plan` | Paginated |
-| GET | `/plan-access-rules/:id` | | Single |
-| POST | `/plan-access-rules` | | Single |
-| PUT | `/plan-access-rules/:id` | | Single |
-| DELETE | `/plan-access-rules/:id` | | Single |
-
-**Required fields:** `plan`, `feature`
-
 ## Notes
 
 - Login/signup happens through Supabase Auth SDK on the frontend, NOT through the backend
-- The backend only manages profiles, memberships, and access rules
-- ⚠️ JWT is decoded but NOT cryptographically verified (BUG-003)
+- The backend manages profiles, memberships, and access rules
+- Role is NOT in JWT — comes from `GET /institutions` response (includes `membership_id` + `role`)
+- JWT mitigated by PostgREST (BUG-002), not cryptographically verified locally
