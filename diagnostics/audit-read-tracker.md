@@ -1,11 +1,11 @@
 # Audit Read Tracker
 
-> **Updated:** 2026-03-14 (pass 14 — DEFINITIVE)
-> **Total files READ end-to-end:** ~194 (188 logic + 14 design-system, some overlap)
-> **Total files LISTED (dir scan):** ~320 (components/) — ALL subdirs including nested
-> **Grand total frontend files mapped:** ~508
+> **Updated:** 2026-03-14 (pass 15)
+> **Frontend:** 188 logic READ + ~350 components LISTED (including roles/pages/)
+> **Backend:** ~93 files LISTED + 3 READ (index.ts, db.ts, auth-helpers.ts)
+> **Grand total files mapped:** ~630+
 
-## Logic Layers (ALL READ)
+## Frontend Logic Layers (ALL READ)
 
 | Layer | Files | % |
 |---|---|---|
@@ -20,40 +20,66 @@
 | design-system/ | 14 | 100% |
 | **TOTAL** | **188** | **100%** |
 
-## Component Layer (ALL LISTED, not deep-read)
+## Frontend Components (ALL LISTED)
 
-| Subdir | Files |
+| Subdir | Files | Notes |
+|---|---|---|
+| professor/ | 38 | CMS components (NOT wired to routes — BUG-030) |
+| roles/pages/professor/ | 16 | Ready pages + sub-components (NOT wired — BUG-030) |
+| roles/pages/owner/ | 8 | Ready pages incl. 50KB OwnerMembersPage (NOT wired — BUG-030) |
+| roles/pages/admin/ | 6 | Small wrappers |
+| student/ (+ gamification + renderers) | 57 | Fully wired |
+| content/ (+ flashcard/) | 48 | Fully wired |
+| ui/ | 44 | shadcn/radix |
+| shared/ | 25 | |
+| layout/ (+ topic-sidebar/) | 18 | |
+| viewer3d/ | 14 | |
+| gamification/ (+ pages/) | 14 | |
+| dashboard/ | 11 | |
+| design-kit/ | 9 | |
+| auth/ | 6 | |
+| schedule/ | 6 | |
+| tiptap/ (+ extensions/) | 5 | |
+| roles/ (flat) | 4 | Layouts + PlaceholderPage |
+| student-panel/ | 4 | |
+| welcome/ | 3 | |
+| ai/ | 2 | |
+| video/ | 2 | |
+| summary/ | 2 | |
+| flat | 2 | |
+| **TOTAL** | **~350** | |
+
+## Backend (LISTED + 3 READ)
+
+| Area | Files | Notes |
+|---|---|---|
+| **Flat files** | 24 | index.ts READ, db.ts READ, auth-helpers.ts READ |
+| lib/ | 3 | fsrs-v4, bkt-v4, types |
+| routes/ai/ | 14 | generate-smart 30KB largest |
+| routes/content/ | 10 | CMS + keyword mgmt |
+| routes/whatsapp/ | 10 | Full module confirmed |
+| routes/gamification/ | 6 | |
+| routes/study/ | 6 | batch-review 22KB |
+| routes/plans/ | 5 | |
+| routes/mux/ | 5 | |
+| routes/members/ | 4 | institutions, memberships, admin-scopes |
+| routes/search/ | 4 | |
+| routes/settings/ | 2 | algorithm-config |
+| **TOTAL BACKEND** | **~93** | |
+
+## Bugs Found This Session
+
+| Pass | Bugs |
 |---|---|
-| professor/ | 38 |
-| student/ (+ gamification + renderers) | 57 |
-| content/ (+ flashcard/) | 48 |
-| ui/ | 44 |
-| shared/ | 25 |
-| layout/ (+ topic-sidebar/) | 18 |
-| viewer3d/ | 14 |
-| gamification/ (+ pages/) | 14 |
-| dashboard/ | 11 |
-| design-kit/ | 9 |
-| auth/ | 6 |
-| schedule/ | 6 |
-| tiptap/ (+ extensions/) | 5 |
-| roles/ (+ pages/) | 4+ |
-| student-panel/ | 4 |
-| welcome/ | 3 |
-| ai/ | 2 |
-| video/ | 2 |
-| summary/ | 2 |
-| flat | 2 |
-| **TOTAL** | **~320** |
+| 12 | BUG-020..027 (logic layer) |
+| 13 | BUG-028..029 (design-system) |
+| 14 | Professor is NOT placeholder (components exist) |
+| **15** | **BUG-030: Professor + Owner routes disconnected from real pages. 16+8 ready pages + 38 sub-components exist but router uses PlaceholderPage** |
 
-## Backend (NOT read this session)
+## Security Observations (from backend READ)
 
-Structure: `supabase/`, `tests/`, `docs/`. Need to read `supabase/functions/` for route verification.
-
-## Bugs Found
-
-- BUG-020..027 (pass 12): logic layer bugs
-- BUG-028..029 (pass 13): design-system staleness + color mismatch
-- Pass 14: CRITICAL doc correction — professor is NOT "ALL PlaceholderPage" (38 real components)
-
-Canonical lists: `bugs/known-bugs.md`, `context/05-current-status.md`
+- db.ts confirms BUG-002: JWT decoded locally, no crypto verification (PostgREST defers)
+- db.ts WARNING: non-DB routes (AI, Stripe) may not validate JWT at all
+- auth-helpers.ts: SOLID fail-closed implementation, role hierarchy enforced
+- CORS `"*"` confirmed in index.ts (BUG-004)
+- Rate limiting: 120 req/min/user (middleware active)
