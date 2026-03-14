@@ -1,6 +1,6 @@
 # 03 -- Auth & Roles
 
-> **Updated:** 2026-03-14
+> **Updated:** 2026-03-14 (audit pass 3 — verified against source)
 
 ## Double Token System
 
@@ -45,8 +45,6 @@ institution_plan_id -> institution_plans.id (nullable)
 
 ### Table: `admin_scopes`
 
-Limits admin access to specific parts of the content tree:
-
 ```sql
 membership_id -> memberships.id
 scope_type    -> 'full' | 'course' | 'semester' | 'section'
@@ -55,23 +53,25 @@ scope_id      -> UUID of the scoped entity (nullable for 'full')
 
 ### Table: `plan_access_rules`
 
-Controls content access based on subscription plan:
-
 ```sql
 plan_id    -> institution_plans.id
 scope_type -> 'course' | 'semester' | 'section' | 'topic' | 'summary'
 scope_id   -> UUID of the accessible entity
 ```
 
-## Security Status
+## Security Status (verified against index.ts)
 
 | Issue | Status | Details |
 |---|---|---|
-| JWT verification | Mitigated (BUG-002) | PostgREST validates on DB query. Residual risk on non-DB routes |
-| RLS disabled | Pending (BUG-003) | Backend enforces scoping via `checkContentScope()` |
-| CORS wildcard | **FIXED** (2026-03-06) | Restricted to specific domains |
-| Rate limiting | **DONE** (O-8) | 120 req/min sliding window + 20 AI POST/hr distributed |
+| JWT verification | Mitigated (BUG-002) | PostgREST validates on DB query |
+| RLS disabled | Pending (BUG-003) | Backend enforces scoping + RPCs revoked from authenticated |
+| CORS wildcard | **NOT FIXED — reverted to `"*"`** | Was restricted (commit `33eb56e`) but reverted for MVP development |
+| Rate limiting | **DONE** (O-8) | 120 req/min sliding window + 20 AI POST/hr |
 | Webhook idempotency | **DONE** (O-7) | Event tracking for Stripe and Mux |
 | Stripe timing-safe | **DONE** (N-10) | Constant-time signature comparison |
+
+> **⚠️ CORS WARNING:** `index.ts` has `origin: "*"` with comment:
+> "MVP: Temporarily reverted to '*' for development flexibility."
+> Must be restricted before production launch.
 
 See `KNOWN-BUGS.md` for full details.
