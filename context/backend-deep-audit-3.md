@@ -1,132 +1,86 @@
 # Backend Deep Audit #3 — Ultra-Deep: Subtle Bugs, Data Isolation & Edge Cases
 
-**Date:** 2026-02-27  
-**Auditor:** AI assistant  
-**Scope:** All 15 files in `supabase/functions/server/` (third pass)  
+**Date:** 2026-02-27
+**Auditor:** AI assistant
+**Scope:** All 15 files in `supabase/functions/server/` (third pass)
 **Previous audits:**
 - Audit #1: `backend-architecture-audit.md` (M-1..M-5, all done)
-- Audit #2: `backend-deep-audit-2.md` (N-1..N-10, 8/10 done)
+- Audit #2: `backend-deep-audit-2.md` (N-1..N-10, all done)
 
 **Overall grade: A** (up from A- after O-1..O-6 fixes)
 
-> **STATUS:** 4 of 8 items completed. O-3/O-7 deferred to RLS/billing phase.
-> O-4 deferred until data grows. O-8 deferred to pre-launch.
+> **STATUS:** 8 of 8 items completed. All previously deferred items are now DONE.
+>
+> **v4.5 UPDATE (2026-03-14):** O-3, O-4, O-7, O-8 all resolved in subsequent commits.
 
 ---
 
 ## Completion Status
 
-| ID | Category | Severity | Status | Commit |
-|----|----------|----------|--------|--------|
-| O-1 | Correctness | **HIGH** | ✅ DONE | `3954c10` |
-| O-2 | Error Handling | **HIGH** | ✅ DONE | `3954c10` |
-| O-3 | Data Isolation | **HIGH** | ⏳ DEFERRED | RLS phase |
-| O-4 | Performance | MEDIUM | ⏳ DEFERRED | When data grows |
-| O-5 | Data Isolation | MEDIUM | ✅ DONE | `3954c10` |
-| O-6 | Error Handling | LOW | ✅ DONE | `3954c10` |
-| O-7 | Correctness | MEDIUM | ⏳ DEFERRED | When billing ships |
-| O-8 | Security | MEDIUM | ⏳ DEFERRED | Pre-launch |
+| ID | Category | Severity | Status | Notes |
+|----|----------|----------|--------|-------|
+| O-1 | Correctness | **HIGH** | DONE | `3954c10` — or() quoting |
+| O-2 | Error Handling | **HIGH** | DONE | `3954c10` — safeJson storage |
+| O-3 | Data Isolation | **HIGH** | **DONE** | Session ownership verification in reviews |
+| O-4 | Performance | MEDIUM | **DONE** | Trigram indexes applied (migration `20260227_05`) |
+| O-5 | Data Isolation | MEDIUM | DONE | `3954c10` — GET/:id scopeToUser |
+| O-6 | Error Handling | LOW | DONE | `3954c10` — atob try/catch |
+| O-7 | Correctness | MEDIUM | **DONE** | Webhook idempotency for Stripe + Mux |
+| O-8 | Security | MEDIUM | **DONE** | Rate limiting: 120 req/min + 20 AI POST/hr |
 
 ---
 
-## O-1: PostgREST `or()` Filter Injection ✅ FIXED
+## O-1: PostgREST `or()` Filter Injection FIXED
 
-**Commit:** `3954c10`  
-**Fix:** Values in `or()` filter now wrapped in double-quotes per PostgREST spec:
-```ts
-.or(`title.ilike."${pattern}",content_markdown.ilike."${pattern}"`)
-```
-Commas and parentheses in search queries no longer break the filter.
+**Commit:** `3954c10`
+Values in `or()` filter now wrapped in double-quotes per PostgREST spec.
+Double-quote escaping added in P-3.
 
-## O-2: Storage Routes Missing `safeJson()` ✅ FIXED
+## O-2: Storage Routes Missing `safeJson()` FIXED
 
-**Commit:** `3954c10`  
-**Fix:** `POST /storage/signed-url` and `DELETE /storage/delete` now use `safeJson(c)` + null check instead of raw `c.req.json()`. Also added `safeJson` to the import from `db.ts`.
+**Commit:** `3954c10`
+All storage routes now use `safeJson(c)` + null check.
 
-## O-3: Reviews Not Scoped to Student ⏳ DEFERRED
+## O-3: Reviews Not Scoped to Student — DONE
 
-**File:** `routes-study.tsx`, reviews GET + POST  
-**Impact:** Any authenticated user can list or create reviews for any study session.
+**Fix:** Session ownership verification added in `routes/study/reviews.ts`.
+Before proceeding with review operations, the backend verifies that the study session belongs to the requesting user.
 
-Reviews are linked via `session_id` but there's no check that the session belongs to the requesting user. Student A can read student B's review grades.
+## O-4: Missing Trigram Indexes — DONE
 
-**Fix options:**
-- Application-level: verify session ownership before proceeding
-- RLS: policy on `reviews` JOINing `study_sessions.student_id = auth.uid()`
+**Fix:** `CREATE EXTENSION pg_trgm` + GIN indexes on key text columns.
+Migration `20260227_05` applied.
 
-**Status:** Deferred to RLS phase. Known data isolation gap.
+## O-5: Factory `GET /:id` Ignores `scopeToUser` FIXED
 
-## O-4: Missing Trigram Indexes for Search ⏳ DEFERRED
+**Commit:** `3954c10`
+GET by ID now applies `scopeToUser` filter.
 
-**Impact:** `ilike` on text columns does sequential scans. Affected columns:
-- `summaries.title`, `summaries.content_markdown`
-- `keywords.name`, `keywords.definition`  
-- `videos.title`
+## O-6: Storage Base64 `atob()` No Try/Catch FIXED
 
-**Fix:** `CREATE EXTENSION pg_trgm` + GIN indexes.  
-**Status:** Not urgent at current data volume. Apply when >1000 summaries.
+**Commit:** `3954c10`
+`atob()` wrapped in try/catch. Invalid base64 returns 400.
 
-## O-5: Factory `GET /:id` Ignores `scopeToUser` ✅ FIXED
+## O-7: Webhook Handlers Lack Idempotency — DONE
 
-**Commit:** `3954c10`  
-**Fix:** GET by ID now applies `scopeToUser` filter, matching LIST/UPDATE/DELETE behavior:
-```ts
-let query = db.from(cfg.table).select("*").eq("id", id);
-if (cfg.scopeToUser) query = query.eq(cfg.scopeToUser, user.id);
-```
-Students can no longer fetch another student's record by UUID.
+**Fix:** `processed_webhook_events` table + event tracking for both Stripe and Mux.
+Migration `20260227_06` applied.
 
-## O-6: Storage Base64 `atob()` No Try/Catch ✅ FIXED
+## O-8: No Rate Limiting — DONE
 
-**Commit:** `3954c10`  
-**Fix:** `atob()` wrapped in try/catch. Invalid base64 returns `400 "Invalid base64 data"` instead of unhandled exception.
-
-## O-7: Webhook Handlers Lack Idempotency ⏳ DEFERRED
-
-**File:** `routes-billing.tsx` (Stripe `checkout.session.completed`)  
-**Impact:** Retried webhook events could create duplicate subscription rows.
-
-**Fix:** Check for existing subscription before INSERT, or use UPSERT with `stripe_subscription_id` as conflict key.
-
-**Status:** Billing not implemented yet. Fix when Stripe integration goes live.
-
-## O-8: No Rate Limiting ⏳ DEFERRED
-
-**Impact:** No request rate limiting. Risky for `/signup`, `/search`, `/mux/create-upload`.
-
-**Fix:** Hono rate-limit middleware or infrastructure-level limiting.
-
-**Status:** Deferred to pre-launch security hardening.
+**Fix:** Multi-layer rate limiting:
+- General: 120 req/min sliding window (in-memory, `rate-limit.ts`)
+- AI POST: 20/hr per user (distributed via `check_rate_limit()` RPC, migration `20260303_02`)
+- Pre-generate: 10/hr per user (separate bucket)
 
 ---
 
 ## Cross-Audit Summary: All 3 Audits
 
-| Audit | Findings | Completed | Deferred | 
-|-------|----------|-----------|----------|
-| #1 (M-1..M-5) | 5 | 5/5 ✅ | 0 |
-| #2 (N-1..N-10) | 10 | 8/10 | 2 (billing + security) |
-| #3 (O-1..O-8) | 8 | 4/8 | 4 (RLS + billing + data + launch) |
+| Audit | Findings | Completed |
+|-------|----------|-----------|
+| #1 (M-1..M-5) | 5 | 5/5 |
+| #2 (N-1..N-10) | 10 | 10/10 |
+| #3 (O-1..O-8) | 8 | 8/8 |
 
-**Total: 23 findings across 3 audits. 17 completed. 6 deferred to appropriate phases.**
-
-### All Backend Commits (chronological)
-
-| Commit | Changes |
-|--------|---------|
-| `54ff57d` | M-5: remove phantom duration_seconds, ended_at → completed_at |
-| `e92fa06` | M-4: delete admin-routes.tsx (frontend) |
-| `c4c1a5d` | M-4: delete owner-routes.tsx (frontend) |
-| `899a26f` | M-3: bulk_reorder() DB function + fallback |
-| `49ae13d` | M-1: study-queue Promise.all + get_course_summary_ids() |
-| `f40d349` | N-6, N-1, N-2, N-8, N-9: /me bug, search parallel, trash parallel, escapeLike, pagination cap |
-| `b1bd2c0` | N-7: upsert_video_view() atomic view_count |
-| `3954c10` | O-1, O-2, O-5, O-6: or() quoting, safeJson storage, GET/:id scope, atob catch |
-
-### Pending Migrations
-
-| Migration | Status |
-|-----------|--------|
-| `20260227_01_bulk_reorder.sql` | ✅ Applied |
-| `20260227_02_get_course_summary_ids.sql` | ✅ Applied |
-| `20260227_03_upsert_video_view.sql` | 🟡 Pending (fallback active) |
+**Total: 23 findings across 3 audits. ALL 23 COMPLETED.**
