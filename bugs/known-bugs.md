@@ -1,6 +1,6 @@
 # Known Bugs (Summary)
 
-> **Updated:** 2026-03-14 (audit pass 12 — 180 frontend files read)
+> **Updated:** 2026-03-14 (audit pass 13 — 194 READ + ~130 LISTED)
 > **Canonical source:** See root `KNOWN-BUGS.md` for full details with descriptions.
 
 ## Pending
@@ -14,14 +14,16 @@
 | BUG-006 | MEDIUM | Content tree filters inactives in JS | Pending |
 | BUG-007 | MEDIUM | Search still uses multiple queries | Partially mitigated (trigram + RPC) |
 | BUG-011 | LOW | ~25 `kv_store_*` junk tables | Pending (safe to drop) |
-| **BUG-020** | LOW | quizzesEntityApi sends `time_limit_seconds`, backend lacks column | Pending |
-| **BUG-021** | MEDIUM | GamificationContext is STUB — all methods are no-ops | Pending (TODO Sprint G5) |
-| **BUG-022** | LOW | apiConfig.ts duplicate fetch logic (redundant with lib/api.ts) | Tech debt |
-| **BUG-023** | LOW | aiFlashcardGenerator.ts is dead code (wraps fn returning []) | Tech debt |
-| **BUG-024** | LOW | Overlapping types for kw-student-notes in 2 service files | Tech debt |
-| **BUG-025** | MEDIUM | supabase.ts + config.ts + lib/api.ts = 3 copies of hardcoded ANON_KEY | Pending |
-| **BUG-026** | MEDIUM | useSummaryPersistence uses 'demo-student-001' fallback studentId | Risk: data leakage |
-| **BUG-027** | LOW | hooks/useContentTree.ts vs context/ContentTreeContext.tsx — dual impl | Tech debt |
+| BUG-020 | LOW | quizzesEntityApi sends `time_limit_seconds`, backend lacks column | Pending |
+| BUG-021 | MEDIUM | GamificationContext is STUB — all methods are no-ops | Pending (TODO Sprint G5) |
+| BUG-022 | LOW | apiConfig.ts duplicate fetch logic (redundant with lib/api.ts) | Tech debt |
+| BUG-023 | LOW | aiFlashcardGenerator.ts is dead code (wraps fn returning []) | Tech debt |
+| BUG-024 | LOW | Overlapping types for kw-student-notes in 2 service files | Tech debt |
+| BUG-025 | MEDIUM | supabase.ts + config.ts + lib/api.ts = 3 copies of hardcoded ANON_KEY | Pending |
+| BUG-026 | MEDIUM | useSummaryPersistence uses 'demo-student-001' fallback studentId | Risk: data leakage |
+| BUG-027 | LOW | hooks/useContentTree.ts vs context/ContentTreeContext.tsx — dual impl | Tech debt |
+| **BUG-028** | MEDIUM | architecture.ts (30KB) STALE docs-as-code in bundle. Lists 5 services (real: 53), old endpoints, old nav. Not re-exported but Vite processes it. | Tech debt / bundle |
+| **BUG-029** | LOW | Sidebar color mismatch: components.ts `bgOuter: '#1c1c1e'` vs colors.ts `dark.navBar: '#1B3B36'` | Inconsistency |
 
 ## Fixed
 
