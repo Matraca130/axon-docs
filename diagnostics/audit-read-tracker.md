@@ -1,7 +1,7 @@
 # Audit Read Tracker
 
-> **Updated:** 2026-03-14 (batch 4 complete)
-> **Total files READ this session:** 125
+> **Updated:** 2026-03-14 (batch 5 complete)
+> **Total files READ this session:** 155
 
 ## Completion Status
 
@@ -10,56 +10,40 @@
 | **services/** | **53** | **53** | **100%** |
 | **context/** | **9** | **9** | **100%** |
 | **types/** | **11** | **11** | **100%** |
-| hooks/ (flat) | **35** | **35** | **100%** |
-| hooks/queries/ | 3 | 21 | 14% |
-| lib/ | 7 | 25 | 28% |
-| utils/ | 3 | 10 | 30% |
-| routes/ | 0 | 10 | 0% |
+| **hooks/ (flat)** | **35** | **35** | **100%** |
+| **hooks/queries/** | **21** | **21** | **100%** |
+| lib/ | 14 | 25 | 56% |
+| utils/ | 7 | 10 | 70% |
+| routes/ | 1 | 10 | 10% |
 | design-system/ | 0 | 14 | 0% |
 | components/ | 0 | ~100+ | 0% |
-| **SESSION TOTAL** | **125** | | |
+| **SESSION TOTAL** | **155** | | |
 
-## Layers 100% Complete
+## Layers 100% Complete (5 of 10)
 
-- services/ (53/53)
-- context/ (9/9)
-- types/ (11/11)
-- hooks/ flat (35/35)
+1. services/ (53/53)
+2. context/ (9/9)
+3. types/ (11/11)
+4. hooks/ flat (35/35)
+5. hooks/queries/ (21/21)
 
-## Batch 4 New Findings
+## Total Bugs Found This Session: 19
 
-### BUG-018: useSummaryPersistence hardcoded fallback studentId
-- File: `hooks/useSummaryPersistence.ts`
-- Uses `studentId || 'demo-student-001'` as fallback
-- If auth fails, all data writes go to shared demo account
-- Risk: data leakage between unauthenticated sessions
+| ID | Sev | Summary |
+|---|---|---|
+| BUG-012 | LOW | quizzesEntityApi sends time_limit_seconds, backend lacks column |
+| BUG-013 | MED | GamificationContext is STUB (TODO Sprint G5) |
+| BUG-014 | LOW | apiConfig.ts duplicate fetch logic |
+| BUG-015 | LOW | aiFlashcardGenerator.ts dead code |
+| BUG-016 | LOW | Overlapping types for kw-student-notes/text-annotations |
+| BUG-017 | MED | supabase.ts hardcoded ANON_KEY |
+| BUG-018 | MED | useSummaryPersistence 'demo-student-001' fallback |
+| BUG-019 | LOW | Dual content tree implementations |
 
-### BUG-019: Dual content tree implementations
-- `hooks/useContentTree.ts` fetches /content-tree + /memberships, filters by professor
-- `context/ContentTreeContext.tsx` fetches /content-tree only, no professor filter
-- Two different code paths for the same data, confusing for new devs
-- useContentTree hook is used by professor cascade selectors (quiz, flashcard managers)
-- ContentTreeContext is used by student views + platform data
+## Remaining (small files only)
 
-### Architecture insights (no bugs, but undocumented)
-- `useStudyQueueData` is the central data hub — 3 consumers share 1 fetch
-- `queryKeys.ts` has 25+ query key patterns (central factory)
-- `useKeywordPopupQueries` does 3-phase external KW resolution (0 extra requests for F1-joined data)
-- `useReadingTimeTracker` has 4-layer persistence (periodic, visibility, beforeunload+keepalive, unmount)
-- `useSummaryReaderMutations` has 7 mutations with optimistic deletes
-- `flashcard-types.ts` has BOTH SM-2 RATINGS (1-5) and FSRS GRADES (1-4) scales
-
-## Remaining Priority Queue
-
-### P0 — queries/ (18 remaining)
-All React Query hooks for professor/student views
-
-### P1 — lib/ (18 remaining)
-api-helpers, concurrency, config, content-tree-helpers, date-utils, error-utils,
-flashcard-export, flashcard-utils, keyword-scroll-helpers, logger, mastery-helpers,
-model3d-api, muxApi, palette, queryClient, quiz-utils, session-stats,
-summary-content-helpers, withBoundary
-
-### P2 — utils/ (7 remaining), routes/ (10)
-### P3 — design-system/ (14), components/ (~100+)
-### P4 — Backend re-verification
+- lib/ (11 remaining): config, content-tree-helpers, date-utils, error-utils, flashcard-export, flashcard-utils, keyword-scroll-helpers, mastery-helpers, palette, quiz-utils, summary-content-helpers, withBoundary
+- utils/ (3 remaining): categoryStyles, devLog, getErrorMessage, studyMethodStyles
+- routes/ (9 remaining): admin, owner, professor, quiz, flashcard, study, summary, threed, professor-placeholders
+- design-system/ (14): untouched
+- components/ (~100+): untouched
