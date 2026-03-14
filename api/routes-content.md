@@ -7,7 +7,7 @@
 > `routes/content/prof-notes.ts`, `routes/content/reorder.ts`,
 > `routes/content/flashcards-by-topic.ts`
 >
-> **Last verified:** 2026-03-14 (audit pass 10 — cross-checked createFields/updateFields)
+> **Last verified:** 2026-03-14 (audit pass 11 — added V2 keyword connection fields)
 
 ---
 
@@ -144,11 +144,31 @@ Atomic bulk reorder using `bulk_reorder()` RPC.
 
 | Method | Endpoint | Query Params/Body | Response |
 |---|---|---|---|
-| GET | `/keyword-connections` | `keyword_id` (required) | Array |
-| GET | `/keyword-connections/:id` | | Single |
-| POST | `/keyword-connections` | `{ keyword_a_id, keyword_b_id, relationship }` | Single (201) |
+| GET | `/keyword-connections` | `keyword_id` (required) | Array (with keyword name joins) |
+| GET | `/keyword-connections/:id` | | Single (with keyword name joins) |
+| POST | `/keyword-connections` | See body below | Single (201) |
 | DELETE | `/keyword-connections/:id` | | `{ deleted: id }` |
 | GET | `/keyword-connections-batch` | `keyword_ids=uuid1,uuid2,...` (max 50) | Array with keyword names + summary info |
+
+**POST body:**
+```json
+{
+  "keyword_a_id": "uuid",
+  "keyword_b_id": "uuid",
+  "relationship": "free text (optional)",
+  "connection_type": "one of 10 types (optional, V2)",
+  "source_keyword_id": "uuid (optional, V2 — direction indicator)"
+}
+```
+
+**V2 `connection_type` values (medical education):**
+`prerequisito`, `causa-efecto`, `mecanismo`, `dx-diferencial`, `tratamiento`,
+`manifestacion`, `regulacion`, `contraste`, `componente`, `asociacion`
+
+> `source_keyword_id` must be either `keyword_a_id` or `keyword_b_id` (direction for directional types).
+> Server enforces canonical order: `keyword_a_id < keyword_b_id`.
+> F1+F2-A FIX: LIST/GET include keyword names, summary_id, definition via PostgREST joins.
+> F3 FIX: Students only see connections where BOTH keywords belong to published summaries.
 
 ## Keyword Search (custom, FLAT route)
 
