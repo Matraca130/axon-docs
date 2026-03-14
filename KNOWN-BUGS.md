@@ -1,8 +1,8 @@
-# Axon v4.4 - Known Bugs
+# Axon v4.5 - Known Bugs
 
-> Bugs confirmados contra el schema real de la DB y el codigo del backend.
+> Bugs confirmados contra el schema real de la DB y el codigo del backend/frontend.
 >
-> **Ultima actualizacion:** 2026-03-06
+> **Ultima actualizacion:** 2026-03-14
 
 ---
 
@@ -20,7 +20,7 @@
 ## BUG-001: `resolution_tier` vs `max_resolution` (Backend)
 
 **Severidad:** HIGH
-**Ubicacion:** `routes-mux.ts` (webhook handler)
+**Ubicacion:** `routes/mux/webhook.ts`
 **Descripcion:** El webhook escribe en el campo `resolution_tier` pero la columna real en la DB se llama `max_resolution`. El valor **nunca se guarda**.
 **Impacto:** La resolucion de video nunca se persiste correctamente.
 **Fix:** Cambiar `resolution_tier` a `max_resolution` en el webhook handler.
@@ -56,9 +56,9 @@
 - `quiz_questions` - Sin RLS
 - `quizzes` - Sin RLS
 
-**Mitigacion existente:** El backend aplica institution scoping via `checkContentScope()` en `crud-factory.ts` (fix H-5). Todos los endpoints CRUD verifican membership antes de operar.
+**Mitigacion existente:** El backend aplica institution scoping via `checkContentScope()` en `crud-factory.ts`. Todos los endpoints CRUD verifican membership antes de operar.
 
-**Riesgo residual:** Acceso directo a Supabase con el anon key (expuesto en frontend) bypass el backend completamente.
+**Riesgo residual:** Acceso directo a Supabase con el anon key (expuesto en frontend) bypasea el backend completamente.
 
 **Fix:** Habilitar RLS + crear policies basadas en `institution_id` via JOINs a memberships.
 **Estado:** Pendiente — se aplicara cuando la app este lista para produccion
@@ -68,18 +68,17 @@
 ## ~~BUG-004: CORS origin wildcard (Backend)~~ FIXED
 
 **Severidad:** ~~HIGH~~ FIXED
-**Ubicacion:** `index.ts`
 **Fix aplicado:** Commit `33eb56e` (2026-03-06) — CORS restringido a dominios especificos.
 **Estado:** **FIXED**
 
 ---
 
-## BUG-005: Study Queue con queries secuenciales (Backend)
+## ~~BUG-005: Study Queue con queries secuenciales (Backend)~~ FIXED
 
-**Severidad:** LOW (rebajado de MEDIUM)
-**Ubicacion:** `routes-study-queue.tsx`
-
-**Estado parcial:** El path primario ahora usa `get_study_queue()` RPC (fix S-3) que hace todo en una sola query SQL. El fallback JS todavia hace ~5 queries pero usa `Promise.all()` para 4 de ellas.
+**Severidad:** ~~LOW~~ FIXED
+**Ubicacion:** `routes-study-queue.ts`
+**Fix:** Path primario usa `get_study_queue()` RPC (1 SQL query). Fallback JS usa `Promise.all()`.
+**Estado:** **FIXED**
 
 ---
 
@@ -97,19 +96,17 @@
 
 **Severidad:** MEDIUM (rebajado de HIGH)
 **Ubicacion:** `routes/search/`
-**Descripcion:** La busqueda global ejecuta multiples queries individuales.
-**Mitigacion parcial:** Se agregaron indices trigram (migration `20260227_05`) y RPC `search_keywords_by_institution` (migration `20260305_06`).
-**Fix completo:** Consolidar en menos queries o usar una sola funcion RPC.
+**Mitigacion parcial:** Indices trigram + RPC `search_keywords_by_institution`. Queries en paralelo.
+**Fix completo:** Consolidar en una sola funcion RPC.
 **Estado:** Parcialmente mitigado
 
 ---
 
-## BUG-008: Reorder hace N updates individuales (Backend)
+## ~~BUG-008: Reorder hace N updates individuales (Backend)~~ FIXED
 
-**Severidad:** LOW (rebajado de MEDIUM)
-**Ubicacion:** `routes/content/reorder.ts`
-**Mitigacion:** Ya usa `bulk_reorder()` RPC (migration `20260227_01`) para reorder atomico.
-**Estado:** **Posiblemente FIXED** — verificar si todas las rutas usan el RPC.
+**Severidad:** ~~LOW~~ FIXED
+**Fix:** Usa `bulk_reorder()` RPC (migration `20260227_01`) para reorder atomico.
+**Estado:** **FIXED**
 
 ---
 
@@ -123,17 +120,13 @@
 
 ---
 
-## BUG-010: Build del frontend roto (Frontend)
+## ~~BUG-010: Build del frontend roto (Frontend)~~ FIXED
 
-**Severidad:** CRITICAL
-**Ubicacion:** `platformApi.ts` en numero1
-**Descripcion:** El frontend llama a funciones que no existen:
-- `createStudySession`
-- `updateStudySession`
-- `submitReview`
-
-**Nota:** Ahora que los schemas correctos de reviews y study_sessions estan documentados en `api/routes-study.md`, estas funciones pueden implementarse correctamente.
-**Estado:** Pendiente
+**Severidad:** ~~CRITICAL~~ FIXED
+**Ubicacion:** `platformApi.ts` / `studentApi.ts` en numero1
+**Descripcion original:** El frontend llamaba a funciones que no existian (`createStudySession`, `updateStudySession`, `submitReview`).
+**Fix:** APIs de study session implementadas y conectadas. Confirmado en commit EC-03/04/05 (2026-03-13).
+**Estado:** **FIXED**
 
 ---
 
@@ -147,13 +140,62 @@
 
 ---
 
+## Gamificacion — Bugs encontrados y resueltos (2026-03-13)
+
+Todos los bugs de gamificacion fueron encontrados en auditoria y resueltos en el mismo dia.
+
+### CRITICAL (resueltos)
+
+| ID | Descripcion | Fix |
+|---|---|---|
+| G-001 | `streak_freezes` INSERT faltaba `freeze_type` + `xp_cost` | Agregados campos requeridos |
+| G-008 | Quiz XP 100% roto — no resolvia via `quiz_question_id` | Corregido path de resolucion |
+| G-002 | `student_badges` INSERT faltaba `institution_id` | Agregado campo |
+| A-001 | `badges.ts` usaba `icon_url` en vez de `icon` (columna real) | Corregido |
+| A-004 | `streak_repairs` INSERT faltaba `institution_id` + `repair_date` | Agregados |
+| A-009 | XP engine fallback `.single()` crasheaba para nuevos students | Cambiado a `.maybeSingle()` |
+| B-001 | `daily_goal` renombrado a `daily_goal_minutes` (4 archivos) | Schema-code mismatch resuelto |
+| B-002 | `source_id` tipo UUID vs TEXT (code pasa strings) | Migration TEXT aplicada |
+| B-003 | `badge_definitions` faltaba columna `criteria` | Agregada + populated |
+
+### HIGH (resueltos)
+
+| ID | Descripcion | Fix |
+|---|---|---|
+| G-005 | `awardXP` no validaba `xpBase > 0` | Early return agregado |
+| D-4 | `student_stats.total_reviews` y `total_sessions` no incrementaban | XP hooks ahora los incrementan |
+
+### MEDIUM (resueltos)
+
+| ID | Descripcion | Fix |
+|---|---|---|
+| G-003 | `POST /goals/complete` sin proteccion anti-duplicado | 409 on same day |
+| G-006 | JS fallback no aplicaba daily cap 500 | Cap implementado |
+| A-003 | Badge notifications sin filtro `institution_id` | Filtrado agregado |
+| S3-002 | 4 badges Recolector apuntaban a `flashcards` (sin `student_id`) | Redirigidos a `fsrs_states` |
+| S3-004 | `ai_conversations` y `leaderboard_weekly` no existen en DB | Removidos de whitelist, badges desactivados |
+
+---
+
+## Frontend — Bugs encontrados y resueltos (2026-03-13/14)
+
+| ID | Descripcion | Fix |
+|---|---|---|
+| AUTH-DUAL | Dos `createContext()` para AuthContext (contexts/ vs context/) | Bridge convertido a re-export, luego eliminado. Canonical: `context/AuthContext.tsx` |
+| LAYOUT-V1 | `roles/StudentLayout` faltaba 3 providers (TopicMastery, StudyPlans, StudyTimeEstimates) | Migrado a `layout/StudentLayout` v2 |
+| LAYOUT-MOBILE | `roles/RoleShell` v1 sin soporte mobile | Migrado a `layout/RoleShell` v2 (MobileDrawer + auto-close) |
+| STALE-CHUNK | Stale chunk errors post-deploy ("Failed to fetch dynamically imported module") | `lazyRetry()` utility en 22 lazy imports |
+
+---
+
 ## Resumen por Severidad
 
-| Severidad | Cantidad | IDs |
+| Severidad | Pendientes | IDs |
 |---|---|---|
-| CRITICAL | 2 | BUG-003, BUG-010 |
+| CRITICAL | 1 | BUG-003 |
 | HIGH | 1 | BUG-001 |
 | MEDIUM | 2 | BUG-002, BUG-006 |
-| LOW | 3 | BUG-005, BUG-009, BUG-011 |
-| FIXED | 2 | BUG-004, BUG-008 |
+| LOW | 1 | BUG-011 |
+| FIXED | 6 | BUG-004, BUG-005, BUG-008, BUG-010, AUTH-DUAL, STALE-CHUNK |
 | By Design | 1 | BUG-009 |
+| Gamificacion | 0 pendientes | G-series, A-series, B-series, S3-series (todos resueltos) |
