@@ -7,7 +7,7 @@
 > `routes/content/prof-notes.ts`, `routes/content/reorder.ts`,
 > `routes/content/flashcards-by-topic.ts`
 >
-> **Last verified:** 2026-03-14
+> **Last verified:** 2026-03-14 (audit pass 8)
 
 ---
 
@@ -38,7 +38,8 @@
 **Required fields:** `topic_id`
 
 > Has denormalized `institution_id` (migration `20260304_06`), stored `fts` tsvector,
-> `embedding vector(768)` for coarse-to-fine RAG, `chunk_strategy`, `last_chunked_at`.
+> `embedding vector(1536)` for coarse-to-fine RAG (OpenAI text-embedding-3-large),
+> `chunk_strategy`, `last_chunked_at`, `pdf_source_url`, `pdf_page_start`, `pdf_page_end`.
 
 ## Chunks
 
@@ -53,7 +54,7 @@
 
 **Required fields:** `content`, `summary_id`
 
-> Has `embedding vector(768)` for RAG and stored `fts` tsvector.
+> Has `embedding vector(1536)` for RAG (OpenAI text-embedding-3-large) and stored `fts` tsvector.
 
 ## Summary Blocks
 
@@ -122,17 +123,11 @@ Atomic bulk reorder using `bulk_reorder()` RPC.
 | DELETE | `/keyword-connections/:id` | | `{ deleted: id }` |
 | GET | `/keyword-connections-batch` | `keyword_ids=uuid1,uuid2,...` (max 50) | Array with keyword names + summary info |
 
-> `keyword-connections-batch` is a **PERF endpoint** (EC-02) that eliminates N+1 pattern.
-> Returns connections for multiple keywords in 1 request with F1/F2-A joins.
-
 ## Keyword Search (custom, FLAT route)
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
 | GET | `/keyword-search` | `q`, `exclude_summary_id`, `course_id`, `limit` (default 15) | Array of `{ id, name, summary_id, definition, summary_title }` |
-
-> Cross-summary keyword search (institution-scoped via RPC `search_keywords_by_institution`).
-> Route is `/keyword-search` NOT `/keywords/search` (avoids CRUD factory collision).
 
 ## Professor Notes (custom)
 
@@ -148,5 +143,3 @@ Atomic bulk reorder using `bulk_reorder()` RPC.
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
 | GET | `/flashcards-by-topic` | `topic_id` (required) | Array |
-
-> Batch loads all flashcards for all summaries in a topic (PERF C1).
