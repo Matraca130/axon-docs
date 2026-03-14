@@ -4,9 +4,10 @@
 >
 > **Verified against:** `routes-student.ts`, `routes/study/reviews.ts`,
 > `routes/study/sessions.ts`, `routes/study/spaced-rep.ts`,
-> `routes/study/progress.ts`, `routes-study-queue.ts`
+> `routes/study/progress.ts`, `routes/study/batch-review.ts`,
+> `routes-study-queue.ts`
 >
-> **Last verified:** 2026-03-14 (audit pass 10 — cross-checked all createFields/updateFields)
+> **Last verified:** 2026-03-14 (audit pass 11 — added POST /review-batch, cross-checked frontend)
 
 ---
 
@@ -137,7 +138,7 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 ## Study Sessions
 
 **Source:** `routes/study/sessions.ts` via `crud-factory.ts`
-**Scope:** `scopeToUser: "student_id"` (auto-set on CREATE, auto-filtered on LIST/GET/UPDATE/DELETE)
+**Scope:** `scopeToUser: "student_id"`
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
@@ -154,7 +155,6 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 
 > `student_id` is auto-set from JWT, never sent by client.
 > `session_type` valid values: `"flashcard"`, `"quiz"`, `"reading"`, `"mixed"`
-> There is NO `user_id`, `topic_id`, or `score` field.
 
 ## Study Plans
 
@@ -174,9 +174,6 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 **Update fields:** `name`, `status`, `completion_date`, `weekly_hours`, `metadata`
 
 > `status` valid values: `"active"`, `"completed"`, `"archived"`
-> `completion_date` — DATE, DT-02 FIX
-> `weekly_hours` — NUMERIC, DT-02 FIX
-> `metadata` — JSONB, DT-02 FIX
 
 ## Study Plan Tasks
 
@@ -198,7 +195,6 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 
 > `item_type` valid values: `"flashcard"`, `"quiz"`, `"reading"`, `"keyword"`
 > `status` valid values: `"pending"`, `"completed"`, `"skipped"`
-> `task_kind` — PR1a scheduling engine field
 
 ## Reviews
 
@@ -213,10 +209,51 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 **Required fields (POST):** `session_id` (UUID), `item_id` (UUID), `instrument_type` (string), `grade` (number 0-5)
 **Optional fields:** `response_time_ms` (non-negative integer)
 
-> `instrument_type` valid values: `"flashcard"`, `"quiz"`
 > O-3 FIX: Verifies session ownership before any operation.
-> Gamification: `xpHookForReview` fires on POST (Sprint 1).
-> There is NO `user_id`, `rating`, `flashcard_id`, or `quiz_question_id` field.
+> Gamification: `xpHookForReview` fires on POST.
+
+## Batch Review (PERF M1)
+
+**Source:** `routes/study/batch-review.ts` (custom)
+**PERF M1:** Replaces the 3-POST-per-card pattern with 1 HTTP request per session.
+
+| Method | Endpoint | Body | Response |
+|---|---|---|---|
+| POST | `/review-batch` | `{ session_id, reviews: [...] }` | `{ processed, reviews_created, fsrs_updated, bkt_updated, errors?, results? }` |
+
+**Required fields:**
+- `session_id` (UUID) — must belong to the authenticated user
+- `reviews` (array, 1–100 items)
+
+**Each review item:**
+- `item_id` (UUID, required) — flashcard ID
+- `instrument_type` (string, required) — `"flashcard"` or `"quiz"`
+- `grade` (number 0–5, required)
+- `response_time_ms` (non-negative integer, optional)
+- `subtopic_id` (UUID, optional) — enables PATH B BKT computation
+
+**Dual-Path Architecture:**
+- **PATH A (legacy):** Item includes `fsrs_update` and/or `bkt_update` objects with pre-computed values → server stores as-is
+- **PATH B (server-side):** Item has NO `fsrs_update`/`bkt_update` → server computes FSRS v4 Petrick + BKT v4 Recovery → returns computed values in `results` array
+- Both paths can coexist in the same batch
+
+**PATH A `fsrs_update` object:**
+`stability`, `difficulty` (0-10), `due_at`, `last_review_at`, `reps`, `lapses`, `state`
+
+**PATH A `bkt_update` object:**
+`subtopic_id`, `p_know`, `p_transit`, `p_slip`, `p_guess`, `delta`, `total_attempts`, `correct_attempts`, `last_attempt_at`
+
+**PATH B computed `results` array (returned in response):**
+Each item: `{ item_id, fsrs?: { stability, difficulty, due_at, state, reps, lapses, consecutive_lapses, is_leech }, bkt?: { subtopic_id, p_know, max_p_know, delta } }`
+
+**v4.2 Leech Detection:**
+- Tracks `consecutive_lapses` on fsrs_states
+- Sets `is_leech = true` when `consecutive_lapses >= leech_threshold` (default 8, configurable via `algorithm_config` table)
+
+> Max batch size: 100 items.
+> M-1 FIX: BKT `total_attempts`/`correct_attempts` INCREMENT (not replace).
+> Gamification: `xpHookForBatchReviews` fires after successful processing.
+> Frontend files: `useReviewBatch.ts`, `studySessionApi.ts`, `keywordMasteryApi.ts`, `ReviewSessionView.tsx`.
 
 ## Quiz Attempts
 
@@ -231,8 +268,7 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 **Required fields (POST):** `quiz_question_id` (UUID), `answer` (string), `is_correct` (boolean)
 **Optional fields:** `session_id` (UUID), `time_taken_ms` (non-negative integer)
 
-> `student_id` is auto-set from JWT.
-> Gamification: `xpHookForQuizAttempt` fires on POST (Sprint 1).
+> Gamification: `xpHookForQuizAttempt` fires on POST.
 
 ## Study Queue
 
@@ -246,7 +282,6 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 > Falls back to JS-based logic if RPC unavailable.
 > Algorithm: NeedScore = 0.40*overdue + 0.30*(1-p_know) + 0.20*fragility + 0.10*novelty
 > v4.2: clinical_priority exponential scaling, 5-color mastery scale, leech detection
-> There is NO `user_id` or `topic_id` parameter.
 
 ## Spaced Repetition
 
@@ -275,23 +310,19 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 **Upsert key:** `student_id,subtopic_id`
 
 > M-1 FIX: `total_attempts`/`correct_attempts` INCREMENT instead of replace.
-> M-5 FIX: `subtopic_ids` (plural) batch filter — comma-separated UUIDs, max 200.
->   Mutually exclusive with `subtopic_id` (singular). Reduces "fetch all BKT states"
->   to "only BKT states for this summary's subtopics".
+> M-5 FIX: `subtopic_ids` (plural) batch filter — comma-separated, max 200, mutually exclusive with singular.
 
 ## Progress Tracking
 
 **Source:** `routes/study/progress.ts` (custom)
 
-### Topic Progress (unified endpoint)
+### Topic Progress
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
 | GET | `/topic-progress` | `topic_id` (required UUID) | `{ summaries, reading_states, flashcard_counts }` |
 
-> Replaces N+1 pattern: 1 request instead of 1 + 2N.
-
-### Topics Overview (batch endpoint)
+### Topics Overview
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
@@ -306,7 +337,7 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 
 **Optional (POST):** `scroll_position`, `time_spent_seconds`, `completed`, `last_read_at`
 **Upsert key:** `student_id,summary_id`
-> Gamification: `xpHookForReadingComplete` fires when `completed=true` (Sprint 1).
+> Gamification: `xpHookForReadingComplete` fires when `completed=true`.
 
 ### Daily Activities
 
@@ -316,7 +347,6 @@ All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all 
 | POST | `/daily-activities` | | Single (upsert) |
 
 **Required (POST):** `activity_date` (YYYY-MM-DD)
-**Optional:** `reviews_count`, `correct_count`, `time_spent_seconds`, `sessions_count`
 **Upsert key:** `student_id,activity_date`
 
 ### Student Stats
