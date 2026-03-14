@@ -1,6 +1,6 @@
 # 05 -- Current Status
 
-> **Updated: 2026-03-14 (audit pass 13 — 194 READ + ~130 LISTED).**
+> **Updated: 2026-03-14 (audit pass 14 — 194 READ + ~320 LISTED).**
 
 ## Build Status
 
@@ -30,91 +30,118 @@
 
 53 migrations, pgvector **1536d** (OpenAI text-embedding-3-large), pg_trgm, pg_cron.
 
-## AI/RAG: Phases 1-6 DONE, Phase 7 DONE (ingest-pdf route exists), Phase 8A-8D ALL DONE
+## AI/RAG: Phases 1-8D ALL DONE
 
 Models: Gemini 2.5 Flash (text) + OpenAI text-embedding-3-large (1536d)
-**14 AI route files on disk, 11 mounted** (PHASE-A2 removed list-models + re-embed-all from router)
+**14 AI route files on disk, 11 mounted**
 
 ## Gamification: Backend 100%, Frontend ~80%
 
-8 React Query hooks, 10 components + barrel, Axon palette, `useSessionXP.ts` for XP tracking.
-> GamificationContext.tsx is a STUB (BUG-021). useGamification.ts (React Query) is the real implementation.
+8 React Query hooks, 14 components (10 flat + 3 pages + barrel), `useSessionXP.ts`.
+> GamificationContext.tsx is a STUB (BUG-021). useGamification.ts is the real impl.
 
 ## WhatsApp: COMPLETE MODULE (**10 files**)
 
-Full implementation: webhook.ts, handler.ts, tools.ts, review-flow.ts, link.ts, wa-client.ts, wa-rate-limit.ts, formatter.ts, async-queue.ts, index.ts.
+## Frontend DEFINITIVE File Counts (2026-03-14)
 
-## Frontend File Counts (VERIFIED 2026-03-14)
+### Logic layers (ALL READ end-to-end)
 
-| Layer | Files | Audit Status |
+| Layer | Files | Status |
 |---|---|---|
-| services/ | **53** | 100% READ |
-| hooks/ (flat) | **35** | 100% READ |
-| hooks/queries/ | **21** | 100% READ |
-| lib/ | **25** | 100% READ |
-| types/ | **11** | 100% READ |
-| context/ | **9** | 100% READ |
-| utils/ | **10** | 100% READ |
-| routes/ | **10** | 100% READ |
-| **design-system/** | **14** | **100% READ** |
-| components/ui/ | 44 | LISTED (shadcn standard) |
-| components/student/ | 49 | LISTED |
-| components/content/ | 32 | LISTED |
-| components/gamification/ | 12 | LISTED |
-| components/layout/ | 9 | LISTED |
-| components/auth/ | 6 | LISTED |
-| components/ai/ | 2 | LISTED |
-| components/other/ | ~15 | LISTED |
+| services/ | **53** | 100% |
+| hooks/ (flat + queries) | **56** | 100% |
+| lib/ | **25** | 100% |
+| types/ | **11** | 100% |
+| context/ | **9** | 100% |
+| utils/ | **10** | 100% |
+| routes/ | **10** | 100% |
+| design-system/ | **14** | 100% |
+| **TOTAL LOGIC** | **188** | **100%** |
 
-### Design System (14 files, ALL READ)
+### Component layers (~320 files, ALL LISTED)
 
-Barrel re-export in `index.ts`. Modular: brand, colors, typography, shapes, shadows, components, section-colors, navigation, layout, animation, rules.
-
-**architecture.ts (30KB) = STALE documentation-as-code (BUG-028):** Lists 5 services (real: 53), old endpoints, old data/ paths, old nav. Not re-exported from barrel but Vite processes it as a module. Should be moved to axon-docs or deleted.
-
-**Sidebar color mismatch (BUG-029):** `components.ts` says `sidebar.bgOuter: '#1c1c1e'` (dark charcoal), `colors.ts` says `dark.navBar: '#1B3B36'` (dark teal). Needs reconciliation.
-
-### Components: Mega-files (F-020 update)
-
-| File | Size | Note |
+| Subdir | Files | Notes |
 |---|---|---|
-| FlashcardsManager.tsx | **61KB** | Largest by far — needs split |
-| StudyOrganizerWizard.tsx | **51KB** | Second largest |
-| AxonAIAssistant.tsx | **39KB** | AI chat panel |
-| ModelViewer3D.tsx | **38KB** | Three.js viewer |
-| QuizSelection.tsx | **35KB** | Quiz flow |
-| QuizSessionView.tsx | **27KB** | Quiz session |
-| StudyDashboardsView.tsx | **27KB** | Multiple dashboards |
+| **professor/** | **38** | **REAL CMS: flashcards, quiz, keywords, 3D models, AI reports, video + 7 hooks** |
+| student/ (flat + gamification + renderers) | **57** | Quiz, flashcard, keyword, reader, video + 7 hooks |
+| content/ (flat + flashcard/) | **48** | Views + flashcard sub-module (16 files) |
+| ui/ | **44** | shadcn/radix standard primitives |
+| shared/ | **25** | AxonLogo, ErrorBoundary, KPICard, ContentTree, etc. |
+| layout/ (flat + topic-sidebar/) | **18** | RoleShell, Sidebar, StudentLayout + 10 topic-sidebar |
+| viewer3d/ | **14** | PinSystem, LayerPanel, ModelPartMesh, explode/clip/capture |
+| gamification/ (flat + pages/) | **14** | XPPopup, BadgeShowcase, DailyGoal + 3 pages |
+| dashboard/ | **11** | Charts, StatsCards, MasteryOverview + 1 hook + types |
+| design-kit/ | **9** | dk-primitives, dk-feedback, dk-layouts, etc. |
+| auth/ | **6** | Login, PostLoginRouter, RequireAuth, RequireRole, SelectRole |
+| schedule/ | **6** | StudyPlanDashboard, DefaultScheduleView, nav links |
+| tiptap/ (flat + extensions/) | **5** | TipTap editor + toolbar + 2 extensions |
+| roles/ (flat + pages/) | **4+** | Layouts (Admin, Owner, Prof) + PlaceholderPage + page subdirs |
+| student-panel/ | **4** | ConnectionBanner, DailyPerformance, PanelSidebar |
+| welcome/ | **3** | QuickShortcuts, WelcomePerformanceSidebar |
+| ai/ | **2** | AxonAIAssistant (39KB), SmartFlashcardGenerator |
+| video/ | **2** | MuxUploadPanel, MuxVideoPlayer |
+| summary/ | **2** | ChunkRenderer, SummaryHeader |
+| flat files | **2** | DiagnosticsPage, design-kit.tsx |
+| **TOTAL COMPONENTS** | **~320** | |
 
-7 colocated hooks in `components/student/` (useQuizSession, useQuizNavigation, useQuizBackup, useQuizBkt, useQuizGamificationFeedback, useAdaptiveQuiz, useBktStates) — not counted in hooks/ layer but properly extracted from components.
+### CORRECTED: Professor is NOT placeholder
 
-### React Query Layer
-- `queryKeys.ts` — 25+ centralized key factories
-- `staleTimes.ts` — 6 constants (professor 10min, student 2min, connections 5min, search 30s)
-- 21 query hooks with shared cache, optimistic updates, cache seeding
+Previous docs said "Professor: 8 routes — ALL PlaceholderPage." **THIS IS WRONG.**
 
-### Routes Architecture
-- **Student:** 22+ real routes, per-agent ownership (6 agents), all lazy + withBoundary
-- **Professor:** 8 routes — ALL PlaceholderPage (no real functionality yet)
-- **Owner:** 8 routes — ALL PlaceholderPage
-- **Admin:** 6 routes — ALL PlaceholderPage
+Professor has **38 real component files** implementing a full CMS:
+- **Flashcard management**: BulkImport (30KB), FormModal (21KB), Preview, TypeSelector, ManagerCard, ImageUpload
+- **Quiz management**: QuestionsEditor, QuestionCard, FormModal (14KB), Analytics, ExportImport (14KB), Filters, Stats
+- **Keyword management**: Manager, FormDialog, ClickPopover, ConnectionsPanel, ListItem, QuickCreator (15KB)
+- **3D Model management**: ModelManager (24KB), ModelPartsManager (26KB), UploadZone
+- **AI**: GeneratePanel, ReportRow, ReportStatCard, ReportsDashboard (20KB)
+- **Other**: EditorSidebar (17KB), VideosManager (15KB), SubtopicsPanel, BulkEditToolbar, etc.
+- **7 colocated hooks**: useAiGenerate, useQuestionCrud, useQuestionForm, useQuizAnalytics, useQuizBulkOps, useQuizFilters, useQuizQuestionsLoader
 
-## FRONTEND-DIAGNOSTIC.md F-xxx Resolution Status (verified 2026-03-14)
+**Corrected route summary:**
+- **Student:** 22+ real routes — fully functional
+- **Professor:** 8 routes — **REAL components** (CMS for content)
+- **Owner:** 8 routes — PlaceholderPage
+- **Admin:** 6 routes — PlaceholderPage
 
-| ID | Original Issue | Current Status |
-|---|---|---|
-| F-001 | Dual context/ vs contexts/ | **FIXED** — consolidated to context/ |
-| F-002 | Triple API layer | **PARTIALLY FIXED** — apiConfig.ts still exists (BUG-022) |
-| F-003 | ANON_KEY hardcoded | **NOT FIXED** — now 3 copies (BUG-025) |
-| F-004 | 95KB mock data | **PARTIALLY FIXED** — courses.ts still exists, used by AppContext |
-| F-005 | .tsx doc files (62KB) | **PARTIALLY FIXED** — 3 .tsx docs removed BUT architecture.ts (30KB) still in bundle (BUG-028) |
-| F-006 | No ErrorBoundary | **FIXED** — withBoundary.tsx wraps all lazy routes |
-| F-007 | `any` in API layer | **PARTIALLY FIXED** — services typed, some contexts still use any |
-| F-008 | console.log in prod | **FIXED** — logger.ts with levels + devLog.ts |
-| F-009 | platformApi.ts monolith | **FIXED** — split into 53 service files |
-| F-010 | owner-routes no lazy() | **FIXED** — all routes use lazy() + lazyRetry() |
-| F-012 | Double supabase client | **NOT VERIFIED** — supabase.ts exists, supabase-client.ts not found |
-| F-014 | No data cache | **FIXED** — React Query v5 with 21 query hooks |
-| F-015 | Types in 4 places | **PARTIALLY FIXED** — 11 type files, some overlap remains (BUG-024) |
-| F-020 | Giant components | **WORSE** — FlashcardsManager.tsx grew to 61KB (was 36KB for KeywordPopup). 7 files >25KB |
-| F-024 | Hooks no barrel | By design — 56 hooks + 7 colocated in student/ |
+### Mega-files (F-020)
+
+| File | Size |
+|---|---|
+| FlashcardsManager.tsx | **61KB** |
+| StudyOrganizerWizard.tsx | **51KB** |
+| AxonAIAssistant.tsx | **39KB** |
+| ModelViewer3D.tsx | **38KB** |
+| QuizSelection.tsx | **35KB** |
+| FlashcardBulkImport.tsx | **30KB** |
+| TipTapEditor.tsx | **29KB** |
+| EditableKeyword.tsx | **27KB** |
+| QuizSessionView.tsx | **27KB** |
+| StudyDashboardsView.tsx | **27KB** |
+| ModelPartsManager.tsx | **26KB** |
+
+11 files > 25KB. Top priority for splitting.
+
+### Colocated Hooks (not in hooks/ layer)
+
+- **student/**: 7 (useQuizSession, useQuizNavigation, useQuizBackup, useQuizBkt, useQuizGamificationFeedback, useAdaptiveQuiz, useBktStates)
+- **professor/**: 7 (useAiGenerate, useQuestionCrud, useQuestionForm, useQuizAnalytics, useQuizBulkOps, useQuizFilters, useQuizQuestionsLoader)
+- **dashboard/**: 1 (useMasteryOverviewData)
+- **Total**: 15 hooks colocated in components (vs 56 in hooks/)
+
+## FRONTEND-DIAGNOSTIC F-xxx (updated)
+
+| ID | Status |
+|---|---|
+| F-001 | **FIXED** |
+| F-002 | PARTIALLY FIXED (BUG-022) |
+| F-003 | **NOT FIXED** (BUG-025) |
+| F-004 | PARTIALLY FIXED |
+| F-005 | PARTIALLY FIXED (BUG-028: architecture.ts 30KB still in bundle) |
+| F-006 | **FIXED** |
+| F-007 | PARTIALLY FIXED |
+| F-008 | **FIXED** |
+| F-009 | **FIXED** |
+| F-010 | **FIXED** |
+| F-014 | **FIXED** |
+| F-015 | PARTIALLY FIXED (BUG-024) |
+| F-020 | **WORSE** — 11 files >25KB (was 1) |
