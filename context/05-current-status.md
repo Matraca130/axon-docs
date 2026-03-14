@@ -1,6 +1,6 @@
 # 05 -- Current Status
 
-> What works, what's broken, and what's next. **Updated: 2026-03-14.**
+> What works, what's broken, and what's next. **Updated: 2026-03-14 (audit pass 2).**
 
 ## Build Status
 
@@ -8,56 +8,44 @@
 |---|---|---|
 | Frontend (Vercel) | Running | v4.5 — responsive layouts, gamification UI, lazyRetry |
 | Backend (Supabase EF) | Running | v4.5 — ~200+ endpoints, gamification, AI/RAG Fase 8 |
-| Supabase | Running | 50+ tables, 41+ migrations, RLS deferred (backend enforces scoping) |
-
-## Backend Audit History
-
-Six successive audit rounds performed (Feb-Mar 2026):
-
-| Audit | Findings | Completed | Deferred |
-|---|---|---|---|
-| #1 (M-1..M-5) | 5 | 5/5 | 0 |
-| #2 (N-1..N-10) | 10 | 10/10 | 0 (N-5, N-10 completed later) |
-| #3 (O-1..O-8) | 8 | 8/8 | 0 (O-3, O-7, O-8 completed later) |
-| #4 Self-audit (P-1..P-8) | 8 | 8/8 | 0 |
-| RAG audits (LA, PF, D, T) | 20+ | 20+ | 0 |
-| Gamification (G, A, B, D, S3) | 25+ | 25+ | 0 |
-
-**Total: 75+ findings across 6 audit rounds. All resolved.**
-
-## Previously Deferred Items — NOW DONE
-
-| Item | Status | When |
-|---|---|---|
-| CORS whitelist | **FIXED** | 2026-03-06 |
-| Stripe timing-safe (N-10) | **FIXED** | 2026-03-06 |
-| Rate limiting (O-8) | **FIXED** | 120 req/min + 20 AI POST/hr |
-| Webhook idempotency (O-7) | **FIXED** | Event tracking for Stripe + Mux |
-| Reviews scope (O-3) | **FIXED** | Session ownership verification |
-| Content-tree DB func (N-5) | **FIXED** | RPC with graceful fallback |
-| Trigram indexes (O-4) | **APPLIED** | Migration 20260227_05 |
-| Billing integration | **DONE** | Stripe checkout, portal, webhooks |
+| Supabase | Running | 50+ tables, 52+ migrations, RLS partial |
 
 ## Still Pending
 
 | Item | Phase | Priority |
 |---|---|---|
-| RLS policies (BUG-003) | Security hardening | HIGH (pre-production) |
+| RLS policies (BUG-003) | Security hardening | HIGH — partially mitigated (revoke RPC) |
 | JWT crypto verification (BUG-002) | Security hardening | LOW (PostgREST mitigates 95%) |
 | `resolution_tier` vs `max_resolution` (BUG-001) | Bug fix | HIGH |
 | Content tree JS filtering (BUG-006) | Performance | MEDIUM |
 | Search consolidation (BUG-007) | Performance | MEDIUM |
 | kv_store_* cleanup (BUG-011) | Housekeeping | LOW |
+| WhatsApp backend routes | New feature | In development |
 
 ## Database
 
 - 50+ legitimate tables (+ ~25 kv_store_* junk)
-- 41+ SQL migrations applied
-- 20+ DB functions/RPCs (bulk_reorder, get_study_queue, rag_hybrid_search, search_keywords_by_institution, etc.)
-- pgvector extension (768-dim embeddings)
+- **52+ SQL migration files** in `supabase/migrations/`
+- 20+ DB functions/RPCs
+- pgvector extension (**1536-dim embeddings** — migrated from 768d)
 - pg_trgm extension (trigram search)
-- pg_cron job (refresh mv_knowledge_profile every 15 min)
-- RLS: Applied on `rag_query_log` only. Rest deferred.
+- pg_cron jobs (refresh MV every 15 min, WhatsApp job processor, reset daily/weekly XP)
+- RLS: Applied on `rag_query_log` + RPCs revoked from authenticated role
+
+### Recent Migration Highlights
+
+| Date | Migration | Purpose |
+|---|---|---|
+| 2026-03-10 | `20260310_01` | PDF source columns on summaries |
+| 2026-03-11 | `20260311_01` | **Embedding migration 768d → 1536d (OpenAI)** |
+| 2026-03-11 | `20260311_02` | RAG security hardening + HNSW index recreation |
+| 2026-03-12 | `20260312_001` | Gamification core tables |
+| 2026-03-12 | `20260312_01` | Revoke RPC from authenticated role |
+| 2026-03-12 | `20260312_02-04` | Task kind, flashcard status, study queue v3, spec v4.2 |
+| 2026-03-13 | `20260313_01-02` | Badge fixes, smart target scoping |
+| 2026-03-14 | `20260314_01` | **WhatsApp tables** |
+| 2026-03-15 | `20260315_01` | WhatsApp job processor cron |
+| 2026-03-16 | `20260316_01` | Gamification schema fixes |
 
 ## AI/RAG Pipeline Status
 
@@ -68,35 +56,41 @@ Six successive audit rounds performed (Feb-Mar 2026):
 | 3 | pgvector + HNSW + coarse-to-fine search | **DONE** |
 | 4 | Query logging + feedback + analytics | **DONE** |
 | 5 | Auto-chunking + summary hook + re-chunk | **DONE** |
-| 6 | Multi-Query + HyDE + Re-ranking (Gemini-as-Judge) | **DONE** |
-| 7 | Multi-source ingestion (PDF) | Planned |
+| 6 | Multi-Query + HyDE + Re-ranking | **DONE** |
+| 7 | Multi-source ingestion (PDF) | **STARTED** — DB columns added (pdf_source_url, pdf_page_start/end) |
 | 8A | Adaptive generation (NeedScore) | **DONE** |
 | 8B | AI content quality reports | **DONE** |
-| 8C | Quality dashboard (stats + listing) | **DONE** |
+| 8C | Quality dashboard | **DONE** |
 | 8D | Bulk pre-generation | **DONE** |
 
-## Gamification Status (NEW — 2026-03-13)
+**Embedding Model Change:** Migrated from Gemini gemini-embedding-001 (768d) to OpenAI text-embedding-3-small (1536d). File: `openai-embeddings.ts`. HNSW indexes recreated.
 
-| Component | Status | Details |
-|---|---|---|
-| XP Engine | **DONE** | Multipliers, daily cap 500, fire-and-forget hooks |
-| XP Hooks | **DONE** | 11/11 actions wired (reviews, sessions, videos, RAG, plans) |
-| Badges | **DONE** | 39 badges (19 criteria + 20 COUNT-based), 2-phase evaluation |
-| Streaks | **DONE** | Daily check-in, freeze (max 3), repair |
-| Goals | **DONE** | Configurable 5-120 min, completion tracking |
-| Leaderboard | **DONE** | Weekly, institution-scoped |
-| Frontend | In progress | DailyGoalWidget, GamificationCard connected. Full UI pending |
-| Audit fixes | **ALL DONE** | G-001..G-015, A-001..A-014, B-001..B-004, D-1..D-6, S3-001..S3-004 |
+## Gamification Status (2026-03-13)
+
+| Component | Status |
+|---|---|
+| XP Engine | **DONE** — 11 actions, 4 bonus types, daily cap 500 |
+| Badges | **DONE** — 39 badges, 2-phase evaluation |
+| Streaks | **DONE** — Check-in, freeze (3 max), repair |
+| Goals | **DONE** — 5-120 min configurable |
+| Leaderboard | **DONE** — Weekly, institution-scoped (MV + fallback) |
+| Frontend | In progress — Sprint 3 |
+| Audit fixes | **ALL DONE** |
+
+## WhatsApp Integration (NEW — 2026-03-14)
+
+- Migration `20260314_01`: WhatsApp tables created
+- Migration `20260315_01`: Job processor cron
+- Status: DB ready, backend routes in development
 
 ## Frontend Status (2026-03-14)
 
 | Feature | Status |
 |---|---|
-| Layout v2 (responsive) | **DONE** — All roles on RoleShell v2 + MobileDrawer |
-| Auth consolidation | **DONE** — Single canonical AuthContext |
-| Code splitting | **DONE** — 22 lazy routes + vendor chunks |
-| lazyRetry | **DONE** — Stale chunk error recovery post-deploy |
-| Summary reader | **DONE** — Popover migration to @floating-ui/react |
-| Cross-summary navigation | **DONE** — 3 cases (same summary, same topic, cross-topic) |
-| Keyword suggestions | **DONE** — Proactive from sibling summaries |
-| Dead code cleanup | **DONE** — Old layouts, auth bridge, RoleShell v1 deleted |
+| Layout v2 (responsive) | **DONE** |
+| Auth consolidation | **DONE** |
+| Code splitting (22 lazy routes) | **DONE** |
+| lazyRetry | **DONE** |
+| Summary reader (@floating-ui) | **DONE** |
+| Cross-summary navigation | **DONE** |
+| Dead code cleanup | **DONE** |
