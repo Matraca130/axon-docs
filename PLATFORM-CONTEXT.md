@@ -2,7 +2,7 @@
 
 > **Proposito:** Pega este archivo al inicio de cada sesion de Figma Make para dar contexto completo.
 >
-> **Ultima actualizacion:** 2026-03-14
+> **Ultima actualizacion:** 2026-03-14 (audit pass 2)
 
 ---
 
@@ -38,7 +38,7 @@ X-Access-Token: <USER_JWT>                  <- Identifica al usuario
 `authenticate()` en `db.ts` decodifica el JWT localmente (~0.1ms).
 La verificacion criptografica real la hace PostgREST en la primera query DB.
 
-> **Riesgo residual:** Rutas que llaman APIs externas (Gemini, Mux) SIN
+> **Riesgo residual:** Rutas que llaman APIs externas (Gemini/OpenAI, Mux) SIN
 > hacer query a la DB primero NO validan el JWT criptograficamente.
 > Para esas rutas, siempre hacer una query canary primero. Ver PF-05.
 
@@ -75,8 +75,8 @@ Institution
         └── Semester
               └── Section
                     └── Topic
-                          └── Summary (tiene institution_id denormalizado)
-                                ├── Chunks (fragmentos + embeddings 768d)
+                          └── Summary (institution_id denormalized, pdf_source_url, pdf_page_start/end)
+                                ├── Chunks (fragmentos + embeddings 1536d)
                                 ├── Keywords (conceptos clave)
                                 │     ├── Flashcards
                                 │     ├── Quiz Questions → Quizzes
@@ -106,7 +106,7 @@ Institution
 | 5 | `routes/mux/` | 5 | Video (upload, playback, tracking, webhook) |
 | 6 | `routes/plans/` | 5 | Planes, AI generations, diagnostics, access |
 | 7 | `routes/search/` | 4 | Busqueda global, trash, restore |
-| 8 | `routes/gamification/` | 5 | **NUEVO** XP, badges, streaks, goals, leaderboard |
+| 8 | `routes/gamification/` | 5 | XP, badges, streaks, goals, leaderboard |
 
 | # | Archivo flat | Proposito |
 |---|---|---|
@@ -117,57 +117,78 @@ Institution
 | 5 | `routes-student.ts` | Student instruments & notes |
 | 6 | `routes-study-queue.ts` | Study queue algorithm |
 
-> **Nota:** Archivos flat renombrados de `.tsx` a `.ts` (no usan JSX).
+### Archivos de Infraestructura Clave
+
+| Archivo | Proposito |
+|---|---|
+| `db.ts` | Supabase clients, JWT auth, response helpers |
+| `crud-factory.ts` | Generic CRUD route generator |
+| `validate.ts` | Runtime validation guards |
+| `auth-helpers.ts` | Role-based access control |
+| `gemini.ts` | Gemini API helpers + GENERATE_MODEL constant |
+| `openai-embeddings.ts` | OpenAI embeddings (1536d) — post-migration |
+| `retrieval-strategies.ts` | Multi-Query, HyDE, Re-ranking |
+| `chunker.ts` | Recursive character chunking engine |
+| `semantic-chunker.ts` | Semantic chunking engine |
+| `auto-ingest.ts` | Auto-chunking + embedding pipeline |
+| `summary-hook.ts` | afterWrite hook for summaries |
+| `xp-engine.ts` | XP calculation + level thresholds |
+| `xp-hooks.ts` | 8 fire-and-forget XP hooks |
+| `streak-engine.ts` | Streak computation |
+| `ai-normalizers.ts` | AI response normalization |
+| `rate-limit.ts` | 120 req/min sliding window |
+| `timing-safe.ts` | Constant-time comparison |
 
 ### Formatos de Respuesta
 
 **Rutas CRUD (factory):**
 ```json
-{
-  "data": {
-    "items": [...],
-    "total": 100,
-    "limit": 20,
-    "offset": 0
-  }
-}
+{ "data": { "items": [...], "total": 100, "limit": 20, "offset": 0 } }
 ```
 
 **Rutas custom:**
 ```json
-{
-  "data": { ... }
-}
+{ "data": { ... } }
 ```
 
-## 6. Sistema de Gamificacion (NUEVO — 2026-03-13)
+## 6. Sistema de Gamificacion (2026-03-13)
 
-Sistema completo de XP, badges, streaks, y goals:
+Sistema completo de XP, badges, streaks, y goals.
+Ver `GAMIFICATION_MAP.md` en `axon-backend/docs/` para referencia completa.
 
 ### Componentes
-- **XP Engine** (`xp-engine.ts`): Calcula XP con multiplicadores (streak, daily goal bonus)
-- **XP Hooks** (`xp-hooks.ts`): 11 hooks fire-and-forget en acciones del estudiante
+- **XP Engine** (`xp-engine.ts`): Calcula XP con multiplicadores (streak, on-time, flow zone, variable reward)
+- **XP Hooks** (`xp-hooks.ts`): 8 hooks fire-and-forget + `streak_daily` inline
 - **Badges** (`badges.ts`): 39 badges (19 criteria + 20 COUNT-based), evaluacion en 2 fases
 - **Streaks** (`streak.ts`): Check-in diario, freeze (3 max), repair
 - **Goals** (`goals.ts`): Daily goal configurable (5-120 min), completion tracking
 - **Profile** (`profile.ts`): XP history, leaderboard, student stats
 
-### Tablas de Gamificacion
-`student_stats`, `xp_history`, `badge_definitions`, `student_badges`, `badge_notifications`, `streak_repairs`, `streak_freezes`, `algorithm_config`
-
 ### XP Actions (11 total)
 | Accion | XP Base |
 |---|---|
-| Completar review | 10 |
-| Completar sesion de estudio | 25 |
-| Completar resumen (lectura) | 15 |
-| Completar video | 20 |
-| Pregunta RAG | 5 |
-| Completar task de plan | 15 |
-| Completar plan completo | 100 |
-| Batch reviews | 10 × N |
+| `review_flashcard` | 5 |
+| `review_correct` (grade ≥3) | 10 |
+| `quiz_answer` | 5 |
+| `quiz_correct` | 15 |
+| `complete_session` | 25 |
+| `complete_reading` | 30 |
+| `complete_video` | 20 |
+| `streak_daily` | 15 |
+| `complete_plan_task` | 15 |
+| `complete_plan` | 100 |
+| `rag_question` | 5 |
+
+Daily cap: 500 XP. Post-cap rate: 10%.
 
 ## 7. Base de Datos - Datos Criticos
+
+### Embeddings (¡CAMBIO RECIENTE!)
+
+> **Migracion 20260311_01:** Embeddings migrados de `vector(768)` (Gemini) a `vector(1536)` (OpenAI text-embedding-3-small).
+> Archivo: `openai-embeddings.ts` reemplaza `generateEmbedding()` de `gemini.ts` para embeddings.
+> Generacion de texto sigue usando Gemini 2.5 Flash.
+> HNSW indexes recreados (migration `20260311_02_recreate_hnsw_indexes.sql`).
 
 ### Tipos que causan confusion
 | Campo | Tipo REAL en DB | NO es |
@@ -182,8 +203,7 @@ Sistema completo de XP, badges, streaks, y goals:
 
 ### `quiz_questions` - Campos reales
 `["keyword_id", "question_type", "question", "correct_answer"]`
-
-**NO tiene columna `name`** (esto causo bugs anteriormente).
+**NO tiene columna `name`**.
 
 ### Campos nullable vs required
 - `flashcards.keyword_id`: NULLABLE en DB pero REQUIRED en backend
@@ -193,29 +213,38 @@ Sistema completo de XP, badges, streaks, y goals:
 ### Bugs conocidos
 Ver `KNOWN-BUGS.md` para la lista completa.
 - BUG-002 (JWT): Mitigado por PostgREST, riesgo residual en rutas sin DB query
-- BUG-003 (RLS): Pendiente — se aplicara cuando la app este lista
+- BUG-003 (RLS): Pendiente — parcialmente mitigado (revoke RPC from authenticated, migration `20260312_01`)
 - BUG-004 (CORS): **FIXED** (2026-03-06)
-- BUG-008 (Reorder): **FIXED** — usa `bulk_reorder()` RPC
-- BUG-010 (Frontend build roto): **FIXED** — study session APIs conectadas
+- BUG-008 (Reorder): **FIXED**
+- BUG-010 (Frontend build roto): **FIXED**
 
-### Gamificacion
-- Sprint 0-2: Backend completo (13 endpoints, 11 XP hooks, 39 badges)
-- Sprint 3: Frontend parcialmente conectado (DailyGoalWidget, GamificationCard)
-- Auditorias: G-001 a G-015 resueltos, A-001 a A-014 resueltos, B-001 a B-004 resueltos
+### Nuevas Funcionalidades (post-docs anteriores)
+
+**WhatsApp Integration (2026-03-14):**
+- Migracion `20260314_01_whatsapp_tables.sql` — tablas para mensajeria WhatsApp
+- Migracion `20260315_01_whatsapp_job_processor_cron.sql` — procesador de jobs con pg_cron
+- Estado: Tablas creadas, backend en desarrollo
+
+**PDF Source Tracking (2026-03-10):**
+- Migracion `20260310_01_pdf_source_columns.sql` — columnas en summaries para tracking de fuente PDF
+- Campos: `pdf_source_url`, `pdf_page_start`, `pdf_page_end`
+- Preparacion para Fase 7 (multi-source ingestion)
+
+**RAG Security Hardening (2026-03-11/12):**
+- Migracion `20260311_02_rag_security_hardening.sql`
+- Migracion `20260312_01_revoke_rpc_from_authenticated.sql` — revoca acceso directo a RPCs sensibles
 
 ### RAG Pipeline
-- Gemini 2.5 Flash para generacion
-- gemini-embedding-001 (768d) para embeddings
-- rag_hybrid_search() v3: 1 JOIN + stored tsvector
+- Gemini 2.5 Flash para generacion de texto
+- **OpenAI text-embedding-3-small (1536d)** para embeddings (migrado de Gemini 768d)
+- rag_hybrid_search() actualizado para vector(1536)
 - Fase 6: Multi-Query, HyDE, Re-ranking con Gemini-as-Judge
+- Fase 7: PDF source columns preparados
 - Fase 8: Generacion adaptativa (NeedScore), quality reports, pre-generacion bulk
 
-### Performance Batch Endpoints (NUEVO)
-- `GET /keyword-connections-batch?keyword_ids=...` — elimina N+1 (25→1 requests)
-- `GET /flashcards-by-topic?topic_id=...` — batch flashcards por topico
-- `POST /review-batch` — batch atomico reviews + FSRS + BKT
-- `GET /topic-progress?topic_id=...` — summaries + reading states + flashcard counts en 1 request
-- `GET /topics-overview?topic_ids=a,b,c` — batch de hasta 50 topics
+### Migraciones
+- **52+ archivos SQL** en `supabase/migrations/`
+- Incluye: gamificacion, WhatsApp, PDF, RAG security, embedding migration, badge seeds
 
 ## 9. Frontend - Cambios Recientes (2026-03-13/14)
 
@@ -227,7 +256,6 @@ Ver `KNOWN-BUGS.md` para la lista completa.
 ### Auth Consolidation
 - `contexts/AuthContext.tsx` bridge eliminado
 - Canonical: `context/AuthContext.tsx` (unico `createContext()`)
-- 6 consumidores migrados a import singular
 
 ### lazyRetry
 - Nuevo `lazyRetry()` utility en 22 lazy route imports
@@ -241,22 +269,14 @@ Ver `KNOWN-BUGS.md` para la lista completa.
 
 ### Frontend
 - React 18 + TypeScript + Vite 6
-- Tailwind CSS v4 (`@tailwindcss/vite`)
-- React Router v7 (data mode, `createBrowserRouter`)
-- React Query v5 (TanStack Query) para data fetching
-- shadcn/ui (Radix UI) + Lucide icons
-- Motion (animaciones)
-- TipTap (rich text editor)
-- Three.js (3D models)
-- Mux Player (video)
-- `@floating-ui/react` (popovers)
-- Sonner (toasts)
+- Tailwind CSS v4 + shadcn/ui (Radix UI) + Lucide icons
+- React Router v7 (data mode) + React Query v5
+- Motion, TipTap, Three.js, Mux Player, @floating-ui/react, Sonner
 - Deploy: Vercel
 
 ### Backend
 - Hono + Deno (Supabase Edge Functions)
 - Supabase PostgreSQL + pgvector
-- Gemini 2.5 Flash + gemini-embedding-001 (768d)
-- Stripe (billing)
-- Mux (video)
+- **Gemini 2.5 Flash** (text generation) + **OpenAI text-embedding-3-small** (1536d embeddings)
+- Stripe (billing), Mux (video)
 - GitHub Actions CI/CD
