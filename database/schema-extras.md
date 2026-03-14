@@ -2,6 +2,7 @@
 
 > Student activity, notes, annotations, 3D models, AI, diagnostics.
 > **VERIFIED against Query 2 constraints data.**
+> **Updated 2026-03-14:** Fixed `student_stats.last_study_date` (was `last_review_date`)
 
 ## Student Activity & Stats
 
@@ -10,8 +11,8 @@
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| course_id | UUID | YES | FK → courses.id |
+| student_id | UUID | NO | FK -> profiles.id |
+| course_id | UUID | YES | FK -> courses.id |
 | name | TEXT | NO | |
 | status | TEXT | NO | CHECK: `active`, `completed`, `archived` |
 | created_at | TIMESTAMPTZ | NO | |
@@ -22,7 +23,7 @@
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| study_plan_id | UUID | NO | FK → study_plans.id |
+| study_plan_id | UUID | NO | FK -> study_plans.id |
 | item_type | TEXT | NO | CHECK: `flashcard`, `quiz`, `reading`, `keyword` |
 | item_id | UUID | NO | Polymorphic ref |
 | status | TEXT | NO | CHECK: `pending`, `completed`, `skipped` |
@@ -35,7 +36,7 @@
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
+| student_id | UUID | NO | FK -> profiles.id |
 | activity_date | DATE | NO | |
 | reviews_count | INTEGER | NO | |
 | correct_count | INTEGER | NO | |
@@ -51,13 +52,13 @@ UNIQUE: `(student_id, activity_date)`
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
+| student_id | UUID | NO | FK -> profiles.id |
 | current_streak | INTEGER | NO | |
 | longest_streak | INTEGER | NO | |
 | total_reviews | INTEGER | NO | |
 | total_time_seconds | INTEGER | NO | |
 | total_sessions | INTEGER | NO | |
-| last_review_date | DATE | YES | |
+| last_study_date | DATE | YES | **Column is `last_study_date` NOT `last_review_date`** (verified in streak-engine.ts) |
 | created_at | TIMESTAMPTZ | NO | |
 | updated_at | TIMESTAMPTZ | NO | |
 
@@ -68,8 +69,8 @@ UNIQUE: `(student_id)`
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| summary_id | UUID | NO | FK → summaries.id |
+| student_id | UUID | NO | FK -> profiles.id |
+| summary_id | UUID | NO | FK -> summaries.id |
 | scroll_position | NUMERIC | NO | |
 | time_spent_seconds | INTEGER | NO | |
 | completed | BOOLEAN | NO | |
@@ -88,8 +89,8 @@ Professor notes on keywords.
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| professor_id | UUID | NO | FK → profiles.id |
-| keyword_id | UUID | NO | FK → keywords.id |
+| professor_id | UUID | NO | FK -> profiles.id |
+| keyword_id | UUID | NO | FK -> keywords.id |
 | note | TEXT | NO | |
 | created_at | TIMESTAMPTZ | NO | |
 | updated_at | TIMESTAMPTZ | NO | |
@@ -103,8 +104,8 @@ Student notes on keywords.
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| keyword_id | UUID | NO | FK → keywords.id |
+| student_id | UUID | NO | FK -> profiles.id |
+| keyword_id | UUID | NO | FK -> keywords.id |
 | note | TEXT | NO | |
 | is_public | BOOLEAN | YES | |
 | created_at | TIMESTAMPTZ | NO | |
@@ -117,8 +118,8 @@ Highlights/annotations on summary text.
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| summary_id | UUID | NO | FK → summaries.id |
+| student_id | UUID | NO | FK -> profiles.id |
+| summary_id | UUID | NO | FK -> summaries.id |
 | start_offset | INTEGER | NO | |
 | end_offset | INTEGER | NO | |
 | color | TEXT | NO | |
@@ -131,8 +132,8 @@ Highlights/annotations on summary text.
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| student_id | UUID | NO | FK → profiles.id |
-| video_id | UUID | NO | FK → videos.id |
+| student_id | UUID | NO | FK -> profiles.id |
+| video_id | UUID | NO | FK -> videos.id |
 | timestamp_seconds | INTEGER | YES | |
 | note | TEXT | NO | |
 | created_at | TIMESTAMPTZ | NO | |
@@ -143,12 +144,12 @@ Highlights/annotations on summary text.
 | Column | Type | Nullable | Notes |
 |---|---|---|---|
 | id | UUID | NO | PK |
-| video_id | UUID | NO | FK → videos.id |
-| user_id | UUID | NO | FK → profiles.id |
-| institution_id | UUID | NO | FK → institutions.id |
+| video_id | UUID | NO | FK -> videos.id |
+| user_id | UUID | NO | FK -> profiles.id |
+| institution_id | UUID | NO | FK -> institutions.id |
 | watch_time_seconds | INTEGER | NO | |
 | total_watch_time_seconds | INTEGER | NO | |
-| completion_percentage | NUMERIC | NO | CHECK: 0–100 |
+| completion_percentage | NUMERIC | NO | CHECK: 0-100 |
 | completed | BOOLEAN | NO | |
 | last_position_seconds | INTEGER | NO | |
 | view_count | INTEGER | NO | |
