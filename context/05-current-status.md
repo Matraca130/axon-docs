@@ -1,55 +1,45 @@
 # 05 -- Current Status
 
-> What works, what's broken, and what's next.
-> **Updated: 2026-03-14 (audit pass 3 — verified against source).**
+> **Updated: 2026-03-14 (audit pass 4 — verified file-by-file).**
 
 ## Build Status
 
 | Repo | Status | Notes |
 |---|---|---|
-| Frontend (Vercel) | Running | v4.5 — responsive layouts, gamification UI, lazyRetry |
-| Backend (Supabase EF) | Running | v4.5 — ~200+ endpoints, 10 route modules + 6 flat |
-| Supabase | Running | 50+ tables, 52+ migrations, RLS partial |
+| Frontend (Vercel) | Running | v4.5 — responsive, gamification, AI reports, PDF ingest |
+| Backend (Supabase EF) | Running | v4.5 — ~200+ endpoints, 10 modules + 6 flat |
+| Supabase | Running | 50+ tables, 52+ migrations |
 
 ## Still Pending
 
-| Item | Priority | Details |
-|---|---|---|
-| **CORS wildcard (BUG-004)** | **HIGH** | Reverted to `"*"` for MVP. Must restrict before launch |
-| RLS policies (BUG-003) | HIGH | Partially mitigated (RPCs revoked from authenticated) |
-| JWT crypto (BUG-002) | LOW | PostgREST mitigates 95% |
-| `resolution_tier` (BUG-001) | HIGH | Mux webhook field mismatch |
-| Content tree JS filter (BUG-006) | MEDIUM | |
-| kv_store_* cleanup (BUG-011) | LOW | ~25 junk tables |
-| WhatsApp backend routes | In dev | Tables + cron created |
+| Item | Priority |
+|---|---|
+| **CORS wildcard (BUG-004)** | **HIGH** — Reverted to `"*"` |
+| RLS policies (BUG-003) | HIGH — Partially mitigated |
+| `resolution_tier` (BUG-001) | HIGH |
+| JWT crypto (BUG-002) | MEDIUM — PostgREST mitigates |
+| Content tree JS filter (BUG-006) | MEDIUM |
+| kv_store_* cleanup (BUG-011) | LOW |
 
 ## Database
 
-- 50+ tables (+ ~25 kv_store_* junk)
-- **52+ SQL migrations**
-- 20+ RPCs
-- pgvector: **1536d** (OpenAI text-embedding-3-**large**, Matryoshka)
-- pg_trgm, pg_cron (MV refresh, daily/weekly XP reset, WhatsApp jobs)
-- RLS on `rag_query_log` + RPCs revoked from authenticated
+52+ migrations, pgvector 1536d (OpenAI text-embedding-3-**large**), pg_trgm, pg_cron.
 
-## AI/RAG Pipeline
+## AI/RAG: Phases 1-6 DONE, Phase 7 IN PROGRESS, Phase 8A-8D ALL DONE
 
-| Phase | Status |
-|---|---|
-| 1-6 | **ALL DONE** (tsvector, pgvector, hybrid search, Multi-Query, HyDE, Re-ranking) |
-| 7 (PDF) | **IN PROGRESS** — DB columns + `extractTextFromPdf()` code exists |
-| 8A-8D | **ALL DONE** (adaptive gen, reports, dashboard, bulk pre-gen) |
+Models: Gemini 2.5 Flash (text) + OpenAI text-embedding-3-large (1536d)
+**14 AI route files** including `ingest-pdf.ts` (Fase 7) and `re-embed-all.ts`
 
-**Models:** Gemini 2.5 Flash (text) + OpenAI text-embedding-3-large (1536d embeddings)
+## Gamification: Backend 100%, Frontend ~80%
 
-## Gamification
+8 React Query hooks, 7+ components, Axon palette, `useSessionXP.ts` for XP tracking.
 
-Backend 100% complete. Frontend ~70% connected (8 hooks, 7+ components, palette migrated).
+## WhatsApp: COMPLETE MODULE (9 files)
 
-## Backend Tests
+Full implementation: webhook, handler, Gemini tool-calling, flashcard review flow, account linking, rate limiting, async queue, message formatting.
 
-**16 test files**, ~183+ test cases. Includes unit (auth, validation, algorithms) and integration (CRUD, sessions, security).
+## Frontend: 30+ services, 35+ hooks, 4 role layouts
 
-## Frontend Status
+Connected: gamification, AI reports (`useAiReports.ts`), PDF ingest (`usePdfIngest.ts`), smart generation (`useSmartGeneration.ts`), admin AI tools, session XP.
 
-All DONE: Layout v2, auth consolidation, code splitting (22 lazy), lazyRetry, summary reader, cross-summary nav, dead code cleanup, Axon Medical Academy palette.
+All DONE: Layout v2, auth consolidation, code splitting (22 lazy), lazyRetry, Axon palette.
