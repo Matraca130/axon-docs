@@ -1,66 +1,102 @@
 # 05 -- Current Status
 
-> What works, what's broken, and what's next. Updated: 2026-02-27.
+> What works, what's broken, and what's next. **Updated: 2026-03-14.**
 
 ## Build Status
 
 | Repo | Status | Notes |
 |---|---|---|
-| Frontend (Vercel) | In development | Separate session |
-| Backend (Deno Deploy) | Running | 4 audits completed, 25/31 fixes deployed |
-| Supabase | Running | RLS deferred, 1 pending migration |
+| Frontend (Vercel) | Running | v4.5 — responsive layouts, gamification UI, lazyRetry |
+| Backend (Supabase EF) | Running | v4.5 — ~200+ endpoints, gamification, AI/RAG Fase 8 |
+| Supabase | Running | 50+ tables, 41+ migrations, RLS deferred (backend enforces scoping) |
 
-## Backend Optimization History
+## Backend Audit History
 
-Four successive audits performed on 2026-02-27 (12 commits, 25 fixes):
+Six successive audit rounds performed (Feb-Mar 2026):
 
-### Audit #1 (M-1..M-5) — ALL DONE
-Architecture fixes: study-queue parallel, bulk_reorder, phantom fields.
+| Audit | Findings | Completed | Deferred |
+|---|---|---|---|
+| #1 (M-1..M-5) | 5 | 5/5 | 0 |
+| #2 (N-1..N-10) | 10 | 10/10 | 0 (N-5, N-10 completed later) |
+| #3 (O-1..O-8) | 8 | 8/8 | 0 (O-3, O-7, O-8 completed later) |
+| #4 Self-audit (P-1..P-8) | 8 | 8/8 | 0 |
+| RAG audits (LA, PF, D, T) | 20+ | 20+ | 0 |
+| Gamification (G, A, B, D, S3) | 25+ | 25+ | 0 |
 
-### Audit #2 (N-1..N-10) — 8/10 DONE
-Search N+1, trash parallel, GET /me bug, view_count race, escapeLike, pagination cap.
-Skipped: N-3/N-4 (billing). Deferred: N-5 (content-tree), N-10 (Stripe timing).
+**Total: 75+ findings across 6 audit rounds. All resolved.**
 
-### Audit #3 (O-1..O-8) — 4/8 DONE
-or() quoting, safeJson storage, GET/:id scope, atob catch.
-Deferred: O-3 (reviews scope/RLS), O-4 (trigram indexes), O-7 (webhook idempotency), O-8 (rate limiting).
+## Previously Deferred Items — NOW DONE
 
-### Audit #4 / Self-Audit (P-1..P-8) — ALL DONE
-See `backend-self-audit-and-audit-4.md` for full details.
-- P-1: REGRESSION — search path truncation fixed (full hierarchy restored)
-- P-2: Pagination caps added to 4 manual routes
-- P-3: Double quote escaping in or() filter
-- P-4: Upload route safeJson
-- P-5: Password max length cap
-- P-6: Auto-profile race condition (upsert)
-- P-7: Signed-url batch size cap
-- P-8: usage-today date boundary fix
+| Item | Status | When |
+|---|---|---|
+| CORS whitelist | **FIXED** | 2026-03-06 |
+| Stripe timing-safe (N-10) | **FIXED** | 2026-03-06 |
+| Rate limiting (O-8) | **FIXED** | 120 req/min + 20 AI POST/hr |
+| Webhook idempotency (O-7) | **FIXED** | Event tracking for Stripe + Mux |
+| Reviews scope (O-3) | **FIXED** | Session ownership verification |
+| Content-tree DB func (N-5) | **FIXED** | RPC with graceful fallback |
+| Trigram indexes (O-4) | **APPLIED** | Migration 20260227_05 |
+| Billing integration | **DONE** | Stripe checkout, portal, webhooks |
 
-## Pending Migrations
+## Still Pending
 
-| Migration | Status |
-|-----------|--------|
-| `20260227_01_bulk_reorder.sql` | ✅ Applied |
-| `20260227_02_get_course_summary_ids.sql` | ✅ Applied |
-| `20260227_03_upsert_video_view.sql` | 🟡 Pending (fallback works) |
+| Item | Phase | Priority |
+|---|---|---|
+| RLS policies (BUG-003) | Security hardening | HIGH (pre-production) |
+| JWT crypto verification (BUG-002) | Security hardening | LOW (PostgREST mitigates 95%) |
+| `resolution_tier` vs `max_resolution` (BUG-001) | Bug fix | HIGH |
+| Content tree JS filtering (BUG-006) | Performance | MEDIUM |
+| Search consolidation (BUG-007) | Performance | MEDIUM |
+| kv_store_* cleanup (BUG-011) | Housekeeping | LOW |
 
 ## Database
 
-- ~43 legitimate tables
-- 0 RLS policies (DEFERRED)
-- 3 DB functions: `bulk_reorder()`, `get_course_summary_ids()`, `upsert_video_view()` (pending)
+- 50+ legitimate tables (+ ~25 kv_store_* junk)
+- 41+ SQL migrations applied
+- 20+ DB functions/RPCs (bulk_reorder, get_study_queue, rag_hybrid_search, search_keywords_by_institution, etc.)
+- pgvector extension (768-dim embeddings)
+- pg_trgm extension (trigram search)
+- pg_cron job (refresh mv_knowledge_profile every 15 min)
+- RLS: Applied on `rag_query_log` only. Rest deferred.
 
-## Deferred Items
+## AI/RAG Pipeline Status
 
-| Item | Phase |
-|------|-------|
-| RLS policies | Security hardening |
-| JWT verification | Security hardening |
-| CORS whitelist | Security hardening |
-| Stripe timing-safe (N-10) | Security hardening |
-| Reviews scope (O-3) | RLS phase |
-| Content-tree DB func (N-5) | Phase 3 |
-| Trigram indexes (O-4) | When data grows |
-| Rate limiting (O-8) | Pre-launch |
-| Webhook idempotency (O-7) | When billing ships |
-| Billing integration | Not started |
+| Phase | Name | Status |
+|---|---|---|
+| 1 | Denorm institution_id on summaries | **DONE** |
+| 2 | Stored tsvector + GIN + RPC v3 | **DONE** |
+| 3 | pgvector + HNSW + coarse-to-fine search | **DONE** |
+| 4 | Query logging + feedback + analytics | **DONE** |
+| 5 | Auto-chunking + summary hook + re-chunk | **DONE** |
+| 6 | Multi-Query + HyDE + Re-ranking (Gemini-as-Judge) | **DONE** |
+| 7 | Multi-source ingestion (PDF) | Planned |
+| 8A | Adaptive generation (NeedScore) | **DONE** |
+| 8B | AI content quality reports | **DONE** |
+| 8C | Quality dashboard (stats + listing) | **DONE** |
+| 8D | Bulk pre-generation | **DONE** |
+
+## Gamification Status (NEW — 2026-03-13)
+
+| Component | Status | Details |
+|---|---|---|
+| XP Engine | **DONE** | Multipliers, daily cap 500, fire-and-forget hooks |
+| XP Hooks | **DONE** | 11/11 actions wired (reviews, sessions, videos, RAG, plans) |
+| Badges | **DONE** | 39 badges (19 criteria + 20 COUNT-based), 2-phase evaluation |
+| Streaks | **DONE** | Daily check-in, freeze (max 3), repair |
+| Goals | **DONE** | Configurable 5-120 min, completion tracking |
+| Leaderboard | **DONE** | Weekly, institution-scoped |
+| Frontend | In progress | DailyGoalWidget, GamificationCard connected. Full UI pending |
+| Audit fixes | **ALL DONE** | G-001..G-015, A-001..A-014, B-001..B-004, D-1..D-6, S3-001..S3-004 |
+
+## Frontend Status (2026-03-14)
+
+| Feature | Status |
+|---|---|
+| Layout v2 (responsive) | **DONE** — All roles on RoleShell v2 + MobileDrawer |
+| Auth consolidation | **DONE** — Single canonical AuthContext |
+| Code splitting | **DONE** — 22 lazy routes + vendor chunks |
+| lazyRetry | **DONE** — Stale chunk error recovery post-deploy |
+| Summary reader | **DONE** — Popover migration to @floating-ui/react |
+| Cross-summary navigation | **DONE** — 3 cases (same summary, same topic, cross-topic) |
+| Keyword suggestions | **DONE** — Proactive from sibling summaries |
+| Dead code cleanup | **DONE** — Old layouts, auth bridge, RoleShell v1 deleted |
