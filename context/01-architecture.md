@@ -1,7 +1,7 @@
 # 01 — Architecture
 
 > Paste this in every Figma Make session for base context.
-> **Updated:** 2026-03-14 (audit pass 3 — verified against source)
+> **Updated:** 2026-03-14 (audit pass 9 — final cleanup)
 
 ## Stack
 
@@ -39,7 +39,7 @@ Auth (login/signup) uses Supabase Auth SDK directly from frontend.
 - **Route modules:** **10 split modules** + 6 flat files, ~200+ total endpoints
 - **Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, whatsapp
 - **Tests:** **16 Deno-native test files** (~183+ test cases)
-- **Migrations:** 52+ SQL files
+- **Migrations:** **53** SQL files
 
 ## Security Note
 
