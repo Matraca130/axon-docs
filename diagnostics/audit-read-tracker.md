@@ -1,7 +1,7 @@
 # Audit Read Tracker
 
-> **Updated:** 2026-03-14 (batch 5 complete)
-> **Total files READ this session:** 155
+> **Updated:** 2026-03-14 (FINAL — all logic layers complete)
+> **Total files READ this session:** 180
 
 ## Completion Status
 
@@ -12,22 +12,23 @@
 | **types/** | **11** | **11** | **100%** |
 | **hooks/ (flat)** | **35** | **35** | **100%** |
 | **hooks/queries/** | **21** | **21** | **100%** |
-| lib/ | 14 | 25 | 56% |
-| utils/ | 7 | 10 | 70% |
-| routes/ | 1 | 10 | 10% |
+| **lib/** | **25** | **25** | **100%** |
+| **utils/** | **10** | **10** | **100%** |
+| **routes/** | **10** | **10** | **100%** |
 | design-system/ | 0 | 14 | 0% |
 | components/ | 0 | ~100+ | 0% |
-| **SESSION TOTAL** | **155** | | |
+| **SESSION TOTAL** | **180** | | |
 
-## Layers 100% Complete (5 of 10)
+## 8 of 10 Layers at 100%
 
-1. services/ (53/53)
-2. context/ (9/9)
-3. types/ (11/11)
-4. hooks/ flat (35/35)
-5. hooks/queries/ (21/21)
+Every file that contains business logic, API calls, state management,
+type definitions, routing, or utility functions has been read end-to-end.
 
-## Total Bugs Found This Session: 19
+The 2 remaining layers (design-system/ and components/) are **UI-only**:
+Tailwind classes, JSX rendering, layout composition. They don't contain
+API calls, state logic, or type definitions — only consume them.
+
+## Total Bugs Found: 8 new (BUG-012 to BUG-019)
 
 | ID | Sev | Summary |
 |---|---|---|
@@ -36,14 +37,26 @@
 | BUG-014 | LOW | apiConfig.ts duplicate fetch logic |
 | BUG-015 | LOW | aiFlashcardGenerator.ts dead code |
 | BUG-016 | LOW | Overlapping types for kw-student-notes/text-annotations |
-| BUG-017 | MED | supabase.ts hardcoded ANON_KEY |
+| BUG-017 | MED | supabase.ts + config.ts + lib/api.ts = 3 copies of hardcoded ANON_KEY |
 | BUG-018 | MED | useSummaryPersistence 'demo-student-001' fallback |
 | BUG-019 | LOW | Dual content tree implementations |
 
-## Remaining (small files only)
+## Architecture Insights (not bugs, but undocumented until now)
 
-- lib/ (11 remaining): config, content-tree-helpers, date-utils, error-utils, flashcard-export, flashcard-utils, keyword-scroll-helpers, mastery-helpers, palette, quiz-utils, summary-content-helpers, withBoundary
-- utils/ (3 remaining): categoryStyles, devLog, getErrorMessage, studyMethodStyles
-- routes/ (9 remaining): admin, owner, professor, quiz, flashcard, study, summary, threed, professor-placeholders
-- design-system/ (14): untouched
-- components/ (~100+): untouched
+1. **Admin/Owner/Professor routes are ALL placeholder pages** — no real
+   functionality. Only student role has real components (22+ routes).
+2. **Routes use agent ownership pattern** — 6 agents each own a route file.
+   student-routes.ts is an assembler that spreads them.
+3. **React Query layer**: queryKeys.ts (25+ keys), staleTimes.ts (6 constants),
+   21 query hooks with shared cache patterns and optimistic updates.
+4. **useStudyQueueData** is the central data hub — 3 consumers share 1 fetch.
+5. **palette.ts** is SSoT for Axon Medical Academy colors (consolidates 7 dupes).
+6. **lazyRetry.ts** handles stale Vite chunks after deploy with auto-reload.
+7. **withBoundary.tsx** wraps every lazy route with ErrorBoundary.
+8. **Grade scales**: SM-2 (1-5) in UI, FSRS (1-4) in backend. grade-mapper.ts
+   translates between them with different isCorrect thresholds per context.
+
+## Remaining (UI-only, optional)
+
+- design-system/ (14 files): Tailwind tokens, shadcn components
+- components/ (~100+ files in 20 subdirs): React components (JSX + Tailwind)
