@@ -1,8 +1,9 @@
 # Bundle Optimization
 
-> **STATUS: APPLIED** — commit `670890b` on `numero1_sseki_2325_55`
+> **STATUS: APPLIED + ENHANCED** — Code splitting + lazyRetry
+> **Updated:** 2026-03-14
 
-## Problem
+## Problem (solved)
 
 Entire app was a single chunk:
 ```
@@ -13,29 +14,28 @@ A student downloading the login page also downloaded all admin, owner, and profe
 
 ## Solution: Route-Level Code Splitting
 
-### Technique: React Router `lazy` property
+### Technique: React Router `lazy` property + `lazyRetry`
 
-Instead of static imports:
+All 22 route components use lazy imports wrapped in `lazyRetry()`:
 ```typescript
-import { StudyHubView } from '@/app/components/content/StudyHubView';
-{ path: 'study-hub', Component: StudyHubView }
+{ path: 'study-hub', lazy: () => lazyRetry(() => import('@/app/components/content/StudyHubView')).then(m => ({ Component: m.StudyHubView })) }
 ```
 
-We use lazy imports:
-```typescript
-{ path: 'study-hub', lazy: () => import('@/app/components/content/StudyHubView').then(m => ({ Component: m.StudyHubView })) }
-```
-
-Vite automatically creates a separate chunk for each lazy import.
+`lazyRetry()` catches stale chunk errors post-deploy, auto-reloads once, prevents infinite loops via sessionStorage flag.
 
 ### Files Changed
 
 | File | Change |
 |------|--------|
-| `routes/student-routes.ts` | 16 components → lazy |
-| `routes/professor-routes.ts` | 4 real components → lazy (placeholders stay static) |
+| `routes/student-routes.ts` | 16+ components → lazy |
+| `routes/professor-routes.ts` | Components → lazy |
+| `routes/admin-routes.ts` | Components → lazy |
+| `routes/owner-routes.ts` | Components → lazy |
+| `routes/study-student-routes.ts` | Components → lazy |
+| `routes/summary-student-routes.ts` | Components → lazy |
 | `routes.tsx` | 4 role layouts → lazy |
 | `vite.config.ts` | Added `manualChunks` for vendor splitting |
+| `lib/lazyRetry.ts` | **NEW** — stale chunk error recovery |
 
 ### Vendor Chunks (vite.config.ts)
 
@@ -47,22 +47,23 @@ manualChunks: {
 }
 ```
 
-### Expected Result
+### Result
 
-| Before | After (estimated) |
-|--------|--------------------|
+| Before | After |
+|--------|-------|
 | 1 chunk, 3,236 KB | ~15-20 chunks |
 | 879 KB gzipped | ~200-300 KB initial gzipped |
 | All code loaded upfront | Per-route loading on navigation |
 
 ### How Navigation Works
 
-React Router keeps showing the current page while the next chunk loads. No blank screen, no spinner needed. For slow connections, you can add a loading bar using `useNavigation()` in the layout.
+React Router keeps showing the current page while the next chunk loads. No blank screen.
 
-### Duplicate Route Files (cleanup TODO)
+### Duplicate Route Files — CLEANED UP
 
-There are duplicate files that should be cleaned up:
-- `admin-routes.ts` + `admin-routes.tsx` (Vite uses .ts, .tsx is dead code)
-- `owner-routes.ts` + `owner-routes.tsx` (same)
+Previously there were duplicate `.ts` + `.tsx` files:
+- `admin-routes.ts` + `admin-routes.tsx` → `.tsx` deleted
+- `owner-routes.ts` + `owner-routes.tsx` → `.tsx` deleted
 
-The `.tsx` duplicates can be safely deleted.
+All layouts migrated to `layout/RoleShell` v2 (responsive).
+Old `roles/RoleShell` v1 and `roles/StudentLayout` v1 deleted.
