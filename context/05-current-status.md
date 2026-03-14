@@ -1,6 +1,6 @@
 # 05 -- Current Status
 
-> **Updated: 2026-03-14 (audit pass 8 — verified via router index files).**
+> **Updated: 2026-03-14 (audit pass 12 — 180 files verified against source).**
 
 ## Build Status
 
@@ -19,6 +19,9 @@
 | `resolution_tier` (BUG-001) | HIGH |
 | JWT crypto (BUG-002) | MEDIUM — PostgREST mitigates |
 | Content tree JS filter (BUG-006) | MEDIUM |
+| GamificationContext STUB (BUG-021) | MEDIUM — useGamification.ts is real impl |
+| Hardcoded ANON_KEY x3 (BUG-025) | MEDIUM |
+| Demo student fallback (BUG-026) | MEDIUM |
 | kv_store_* cleanup (BUG-011) | LOW |
 
 ## Database
@@ -33,13 +36,54 @@ Models: Gemini 2.5 Flash (text) + OpenAI text-embedding-3-large (1536d)
 ## Gamification: Backend 100%, Frontend ~80%
 
 8 React Query hooks, 7+ components, Axon palette, `useSessionXP.ts` for XP tracking.
+> GamificationContext.tsx is a STUB (BUG-021). useGamification.ts (React Query) is the real implementation.
 
 ## WhatsApp: COMPLETE MODULE (**10 files**)
 
 Full implementation: webhook.ts, handler.ts, tools.ts, review-flow.ts, link.ts, wa-client.ts, wa-rate-limit.ts, formatter.ts, async-queue.ts, index.ts.
 
-## Frontend: 28 services + 4 dirs, 33 hooks + 1 dir, 4 role layouts
+## Frontend File Counts (VERIFIED 2026-03-14)
 
-Connected: gamification, AI reports (`useAiReports.ts`), PDF ingest (`usePdfIngest.ts`), smart generation (`useSmartGeneration.ts`), admin AI tools, session XP.
+| Layer | Files | Audit Status |
+|---|---|---|
+| services/ | **53** | 100% read |
+| hooks/ (flat) | **35** | 100% read |
+| hooks/queries/ | **21** | 100% read |
+| lib/ | **25** | 100% read |
+| types/ | **11** | 100% read |
+| context/ | **9** | 100% read |
+| utils/ | **10** | 100% read |
+| routes/ | **10** | 100% read |
+| design-system/ | 14 | Not read (UI-only) |
+| components/ | ~100+ | Not read (UI-only) |
 
-All DONE: Layout v2, auth consolidation, code splitting (22 lazy), lazyRetry, Axon palette.
+### React Query Layer
+- `queryKeys.ts` — 25+ centralized key factories
+- `staleTimes.ts` — 6 constants (professor 10min, student 2min, connections 5min, search 30s)
+- 21 query hooks with shared cache, optimistic updates, cache seeding
+
+### Routes Architecture
+- **Student:** 22+ real routes, per-agent ownership (6 agents), all lazy + withBoundary
+- **Professor:** 8 routes — ALL PlaceholderPage (no real functionality yet)
+- **Owner:** 8 routes — ALL PlaceholderPage
+- **Admin:** 6 routes — ALL PlaceholderPage
+
+## FRONTEND-DIAGNOSTIC.md F-xxx Resolution Status (verified 2026-03-14)
+
+| ID | Original Issue | Current Status |
+|---|---|---|
+| F-001 | Dual context/ vs contexts/ | **FIXED** — consolidated to context/ |
+| F-002 | Triple API layer | **PARTIALLY FIXED** — apiConfig.ts still exists (BUG-022) |
+| F-003 | ANON_KEY hardcoded | **NOT FIXED** — now 3 copies (BUG-025) |
+| F-004 | 95KB mock data | **PARTIALLY FIXED** — courses.ts still exists, used by AppContext |
+| F-005 | .tsx doc files (62KB) | **FIXED** — removed from bundle |
+| F-006 | No ErrorBoundary | **FIXED** — withBoundary.tsx wraps all lazy routes |
+| F-007 | `any` in API layer | **PARTIALLY FIXED** — services typed, some contexts still use any |
+| F-008 | console.log in prod | **FIXED** — logger.ts with levels + devLog.ts |
+| F-009 | platformApi.ts monolith | **FIXED** — split into 53 service files |
+| F-010 | owner-routes no lazy() | **FIXED** — all routes use lazy() + lazyRetry() |
+| F-012 | Double supabase client | **NOT VERIFIED** — supabase.ts exists, supabase-client.ts not found |
+| F-014 | No data cache | **FIXED** — React Query v5 with 21 query hooks |
+| F-015 | Types in 4 places | **PARTIALLY FIXED** — 11 type files, some overlap remains (BUG-024) |
+| F-020 | Giant components | **PARTIALLY FIXED** — many hooks extracted (useKeywordPopupQueries, etc) |
+| F-024 | Hooks no barrel | By design — 56 hooks, barrel would be too large |
