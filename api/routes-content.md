@@ -7,7 +7,7 @@
 > `routes/content/prof-notes.ts`, `routes/content/reorder.ts`,
 > `routes/content/flashcards-by-topic.ts`
 >
-> **Last verified:** 2026-03-14 (audit pass 8)
+> **Last verified:** 2026-03-14 (audit pass 10 — cross-checked createFields/updateFields)
 
 ---
 
@@ -22,7 +22,10 @@
 | DELETE | `/topics/:id` | | Single (soft-delete) |
 | PUT | `/topics/:id/restore` | | Single (restore) |
 
-**Required fields:** `name`, `section_id`
+**Required fields:** `name`
+**Parent key:** `section_id` (required on LIST and CREATE)
+**Create fields:** `name`, `order_index`
+**Update fields:** `name`, `order_index`, `is_active`
 
 ## Summaries
 
@@ -35,7 +38,11 @@
 | DELETE | `/summaries/:id` | | Single (soft-delete) |
 | PUT | `/summaries/:id/restore` | | Single (restore) |
 
-**Required fields:** `topic_id`
+**Required fields:** `title`
+**Parent key:** `topic_id` (required on LIST and CREATE)
+**Create fields:** `title`, `content_markdown`, `status`, `order_index`, `estimated_study_minutes`
+**Update fields:** `title`, `content_markdown`, `status`, `order_index`, `is_active`, `estimated_study_minutes`
+**afterWrite:** `onSummaryWrite` — triggers auto-ingest (chunking + embedding) on POST/PUT
 
 > Has denormalized `institution_id` (migration `20260304_06`), stored `fts` tsvector,
 > `embedding vector(1536)` for coarse-to-fine RAG (OpenAI text-embedding-3-large),
@@ -49,12 +56,15 @@
 | GET | `/chunks/:id` | | Single |
 | POST | `/chunks` | | Single |
 | PUT | `/chunks/:id` | | Single |
-| DELETE | `/chunks/:id` | | Single (soft-delete) |
-| PUT | `/chunks/:id/restore` | | Single (restore) |
+| DELETE | `/chunks/:id` | | Single |
 
-**Required fields:** `content`, `summary_id`
+**Required fields:** `content`
+**Parent key:** `summary_id` (required on LIST and CREATE)
+**Create fields:** `content`, `order_index`, `metadata`
+**Update fields:** `content`, `order_index`, `metadata`
 
 > Has `embedding vector(1536)` for RAG (OpenAI text-embedding-3-large) and stored `fts` tsvector.
+> NO `updated_at`, NO `created_by`, NO soft-delete.
 
 ## Summary Blocks
 
@@ -65,6 +75,13 @@
 | POST | `/summary-blocks` | | Single |
 | PUT | `/summary-blocks/:id` | | Single |
 | DELETE | `/summary-blocks/:id` | | Single |
+
+**Required fields:** `type`, `content`
+**Parent key:** `summary_id` (required on LIST and CREATE)
+**Create fields:** `type`, `content`, `order_index`, `heading_text`, `heading_level`, `is_active`
+**Update fields:** `type`, `content`, `order_index`, `heading_text`, `heading_level`, `is_active`
+
+> Column is `type` NOT `block_type`.
 
 ## Keywords
 
@@ -77,8 +94,15 @@
 | DELETE | `/keywords/:id` | | Single (soft-delete) |
 | PUT | `/keywords/:id/restore` | | Single (restore) |
 
-**Required fields:** `name`, `summary_id`
-**Optional fields:** `definition` (TEXT, nullable)
+**Required fields:** `name`
+**Parent key:** `summary_id` (required on LIST and CREATE)
+**Create fields:** `name`, `definition`, `priority`, `clinical_priority`, `is_foundation`
+**Update fields:** `name`, `definition`, `priority`, `is_active`, `clinical_priority`, `is_foundation`
+
+> `definition` — TEXT, nullable. Used in tooltip previews and KeywordPopup.
+> `priority` — INTEGER, NOT NULL.
+> `clinical_priority` — FLOAT 0-1, for NeedScore exponential scaling (v4.2).
+> `is_foundation` — BOOLEAN, marks prerequisite keywords.
 
 ## Subtopics
 
@@ -90,7 +114,10 @@
 | PUT | `/subtopics/:id` | | Single |
 | DELETE | `/subtopics/:id` | | Single (soft-delete) |
 
-**Required fields:** `name`, `keyword_id`
+**Required fields:** `name`
+**Parent key:** `keyword_id` (required on LIST and CREATE)
+**Create fields:** `name`, `order_index`
+**Update fields:** `name`, `order_index`, `is_active`
 **Max 6 subtopics per keyword.**
 
 ## Content Tree (custom)
