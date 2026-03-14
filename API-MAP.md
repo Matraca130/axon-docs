@@ -1,6 +1,6 @@
 # Axon v4.5 - API Route Map
 
-> Mapa completo de rutas. **Ultima actualizacion:** 2026-03-14 (audit pass 4 — verified file-by-file)
+> Mapa completo de rutas. **Ultima actualizacion:** 2026-03-14 (audit pass 6 — verified via router index files)
 
 ---
 
@@ -16,75 +16,61 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 
 ## Modulos (10 split + 6 flat)
 
-| # | Modulo | Archivos | Tipo |
-|---|---|---|---|
-| 1 | `routes/content/` | **11** | CRUD + connections, search, reorder, tree, batch |
-| 2 | `routes/study/` | 6 | Sessions, reviews, progress, spaced-rep, batch |
-| 3 | `routes/ai/` | **14** | AI/RAG + PDF ingest + re-embed |
-| 4 | `routes/members/` | 4 | Instituciones + memberships |
-| 5 | `routes/mux/` | 5 | Video (Mux) |
-| 6 | `routes/plans/` | 5 | Planes + AI tracking |
-| 7 | `routes/search/` | 4 | Busqueda + trash |
-| 8 | `routes/gamification/` | 6 | XP, badges, streaks, goals |
-| 9 | `routes/settings/` | 2 | Algorithm config |
-| 10 | `routes/whatsapp/` | **9** | WhatsApp bot (complete module) |
+| # | Modulo | Archivos | Activos | Tipo |
+|---|---|---|---|---|
+| 1 | `routes/content/` | 11 | 11 | CRUD + connections, search, reorder, tree, batch |
+| 2 | `routes/study/` | 6 | 6 | Sessions, reviews, progress, spaced-rep, batch |
+| 3 | `routes/ai/` | 14 en disco | **11 montados** | AI/RAG + PDF ingest (2 dead: list-models, re-embed-all) |
+| 4 | `routes/members/` | 4 | 4 | Instituciones + memberships |
+| 5 | `routes/mux/` | 5 | 5 | Video (Mux) |
+| 6 | `routes/plans/` | 5 | 5 | Planes + AI tracking |
+| 7 | `routes/search/` | 4 | 4 | Busqueda + trash |
+| 8 | `routes/gamification/` | 6 | 6 | XP, badges, streaks, goals |
+| 9 | `routes/settings/` | 2 | 2 | Algorithm config |
+| 10 | `routes/whatsapp/` | 10 | ~6 routes | WhatsApp bot (feature-flagged) |
 
 | # | Flat | Proposito |
 |---|---|---|
-| 1 | `routes-auth.ts` | Auth (`/signup`, `/me`) |
-| 2 | `routes-billing.ts` | Stripe |
+| 1 | `routes-auth.ts` | Auth: POST /signup, GET/PUT /me |
+| 2 | `routes-billing.ts` | Stripe: checkout, portal, webhooks, subscription-status |
 | 3 | `routes-models.ts` | 3D models (5 CRUD + batch + upload) |
-| 4 | `routes-storage.ts` | File upload/download |
-| 5 | `routes-student.ts` | Student instruments |
-| 6 | `routes-study-queue.ts` | Study queue |
+| 4 | `routes-storage.ts` | File upload/download/delete |
+| 5 | `routes-student.ts` | 7 CRUD entities (flashcards, quizzes, quiz-questions, videos, kw-student-notes, text-annotations, video-notes) |
+| 6 | `routes-study-queue.ts` | Study queue algorithm |
 
 ---
 
-## CRUD Factory Entities (27 total)
+## CRUD Factory Entities (29 total)
 
 **Content (9):** courses, semesters, sections, topics, summaries, chunks, summary-blocks, keywords, subtopics
 **Study (3):** study-sessions, study-plans, study-plan-tasks
-**Student (6):** flashcards, quiz-questions, videos, student-notes, student-annotations, highlight-tags
+**Student (7):** flashcards, quizzes, quiz-questions, videos, kw-student-notes, text-annotations, video-notes
 **Plans (4):** platform-plans, institution-plans, plan-access-rules, institution-subscriptions
 **Models (5):** models-3d, model-3d-pins, model-3d-notes, model-layers, model-parts
+**Highlight tags:** registered elsewhere (1)
 
 ---
 
-## Content (11 archivos)
-
-| Ruta | Descripcion |
-|---|---|
-| GET `/keyword-connections?keyword_id=` | Bidireccional |
-| GET/POST/DELETE `/keyword-connections` | CRUD |
-| GET `/keyword-connections-batch?keyword_ids=` | Batch max 50 |
-| GET `/keyword-search?q=` | Cross-summary search |
-| GET/POST/DELETE `/kw-prof-notes` | Professor notes |
-| PUT `/reorder` | Bulk RPC |
-| GET `/content-tree?institution_id=` | Nested tree |
-| GET `/flashcards-by-topic?topic_id=` | Batch |
-| GET `/subtopics-batch?keyword_ids=` | Batch subtopics |
-| GET `/flashcard-mappings?keyword_id=` | Flashcard→keyword mappings |
-
-## AI / RAG (14 archivos) — 20 POST/hr rate limit
+## AI / RAG (11 active routes) — 20 POST/hr rate limit
 
 | Ruta | Descripcion |
 |---|---|
 | POST `/ai/generate` | Generate flashcard/quiz |
 | POST `/ai/generate-smart` | Adaptive NeedScore [8A] |
-| POST `/ai/pre-generate` | Bulk [8D] |
+| POST `/ai/pre-generate` | Bulk (own rate limit) [8D] |
 | POST `/ai/report` | Quality report [8B] |
 | PATCH `/ai/report/:id` | Resolve [8B] |
 | GET `/ai/report-stats` | Metrics [8C] |
 | GET `/ai/reports` | Listing [8C] |
 | POST `/ai/ingest-embeddings` | Batch embeddings (1536d) |
-| POST `/ai/ingest-pdf` | **PDF ingestion (Fase 7)** |
+| POST `/ai/ingest-pdf` | PDF ingestion (Fase 7) |
 | POST `/ai/re-chunk` | Manual re-chunking |
-| POST `/ai/re-embed-all` | **Re-embed all chunks** |
 | POST `/ai/rag-chat` | RAG chat [Fase 6] |
 | PATCH `/ai/rag-feedback` | Thumbs |
 | GET `/ai/rag-analytics` | Metrics |
 | GET `/ai/embedding-coverage` | Coverage % |
-| GET `/ai/list-models` | Diagnostic |
+
+**REMOVED (PHASE-A2):** `list-models.ts`, `re-embed-all.ts` — files exist on disk but NOT mounted in router.
 
 ## Gamification (6 archivos, 13 endpoints)
 
@@ -104,34 +90,39 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 | POST `/gamification/goals/complete` | Complete |
 | POST `/gamification/onboarding` | Init |
 
-## WhatsApp (9 archivos) — COMPLETE MODULE
-
-| Archivo | Proposito |
-|---|---|
-| `index.ts` | Route combiner |
-| `webhook.ts` | WhatsApp webhook receiver |
-| `handler.ts` | Message processing |
-| `tools.ts` | Gemini tool-calling integration |
-| `review-flow.ts` | Flashcard review via WhatsApp |
-| `link.ts` | Account linking (WhatsApp→Axon) |
-| `wa-client.ts` | WhatsApp Cloud API client |
-| `wa-rate-limit.ts` | Per-user rate limiting |
-| `formatter.ts` | Message formatting |
-| `async-queue.ts` | Background job processing |
-
-## Settings (2 archivos)
+## WhatsApp (feature-flagged: WHATSAPP_ENABLED=true)
 
 | Ruta | Descripcion |
 |---|---|
-| GET/PUT `/settings/algorithm-config` | FSRS/BKT algorithm parameters |
+| GET `/webhooks/whatsapp` | Meta verification |
+| POST `/webhooks/whatsapp` | Incoming messages |
+| POST `/whatsapp/link-code` | Generate linking code |
+| POST `/whatsapp/unlink` | Unlink phone |
+| POST `/whatsapp/process-queue` | Job processor (service_role only) |
 
-## Models 3D (5 CRUD + 2 custom)
+## Settings
 
 | Ruta | Descripcion |
 |---|---|
-| CRUD | models-3d, model-3d-pins, model-3d-notes, model-layers, model-parts |
-| GET `/models-3d/batch?topic_ids=` | Batch fetch (max 200) |
-| POST `/upload-model-3d` | Multipart .glb/.gltf upload |
+| GET `/algorithm-config?institution_id=` | Read config (fallback: global → hardcoded) |
+| PUT `/algorithm-config?institution_id=` | Upsert (admin/owner, validates weight sum=1.0) |
+
+## Auth
+
+| Ruta | Descripcion |
+|---|---|
+| POST `/signup` | Register (admin client) |
+| GET `/me` | Profile (auto-creates if missing) |
+| PUT `/me` | Update (full_name, avatar_url) |
+
+## Billing (Stripe)
+
+| Ruta | Descripcion |
+|---|---|
+| POST `/billing/checkout-session` | Create checkout |
+| POST `/billing/portal-session` | Customer portal |
+| GET `/billing/subscription-status` | Current subscription |
+| POST `/webhooks/stripe` | Webhook (HMAC + idempotent) |
 
 ## Respuestas
 
