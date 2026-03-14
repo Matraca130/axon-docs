@@ -1,23 +1,28 @@
 # API Routes: Misc
 
-> Webhooks, reorder, and utility endpoints.
+> Webhooks, reorder, health, and utility endpoints.
+> **Updated:** 2026-03-14
+
+---
 
 ## Webhooks
 
 | Method | Endpoint | Description | Notes |
 |---|---|---|---|
-| POST | `/webhooks/mux` | Mux video webhook | ⚠️ BUG-001: writes `resolution_tier` instead of `max_resolution` |
+| POST | `/webhooks/mux` | Mux video webhook | Idempotent (O-7). BUG-001: `resolution_tier` vs `max_resolution` still pending |
+| POST | `/webhooks/stripe` | Stripe webhook | Timing-safe signature (N-10). Idempotent (O-7) |
 
 ## Reorder
 
+Single unified endpoint using `bulk_reorder()` RPC (atomic):
+
 | Method | Endpoint | Body |
 |---|---|---|
-| PUT | `/semesters/reorder` | `{ items: [{ id, sort_order }] }` |
-| PUT | `/sections/reorder` | `{ items: [{ id, sort_order }] }` |
-| PUT | `/topics/reorder` | `{ items: [{ id, sort_order }] }` |
-| PUT | `/chunks/reorder` | `{ items: [{ id, sort_order }] }` |
+| PUT | `/reorder` | `{ table: "chunks"|"summaries"|"subtopics"|"videos"|..., items: [{ id, order_index }] }` |
 
-⚠️ All reorder endpoints do N individual UPDATE queries (BUG-009).
+> **BUG-008: FIXED** — Uses `bulk_reorder()` RPC (migration `20260227_01`).
+> Falls back to sequential updates if RPC unavailable.
+> Field is `order_index` (INTEGER), NOT `sort_order`.
 
 ## Health Check
 
@@ -27,18 +32,15 @@
 
 ## Route Count Summary
 
-The backend has ~12 route MODULE files generating approximately:
+The backend has 8 split modules + 6 flat route files:
 
 | Source | Count | Subtotal |
 |---|---|---|
 | CRUD factory entities | ~25 entities × 5 endpoints | ~125 |
-| Reorder endpoints | ~4 | ~4 |
-| Custom endpoints (search, content-tree, study-queue) | ~5 | ~5 |
-| Auth/webhook endpoints | ~3 | ~3 |
-| **Total** | | **~137+** |
-
-The exact count of 176 needs verification by running:
-```bash
-grep -rn "\.(get\|post\|put\|delete\|patch)(" src/ --include="*.ts" | wc -l
-```
-in the `axon-backend` repo.
+| Content manual (connections, search, reorder, tree, batch) | ~12 | ~12 |
+| Study manual (reviews, attempts, batch, progress, spaced-rep) | ~18 | ~18 |
+| AI/RAG endpoints | ~14 | ~14 |
+| Gamification endpoints | ~13 | ~13 |
+| Auth, billing, storage, search, mux | ~15 | ~15 |
+| Study queue | ~1 | ~1 |
+| **Total** | | **~200+** |
