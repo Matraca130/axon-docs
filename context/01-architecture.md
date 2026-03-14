@@ -1,7 +1,7 @@
 # 01 — Architecture
 
 > Paste this in every Figma Make session for base context.
-> **Updated:** 2026-03-14 (audit pass 2)
+> **Updated:** 2026-03-14 (audit pass 3 — verified against source)
 
 ## Stack
 
@@ -11,8 +11,8 @@
 | Backend | Hono (Supabase Edge Functions), Deno runtime | `Matraca130/axon-backend` (Supabase EF via GitHub Actions) |
 | Database | PostgreSQL + pgvector (1536d) | Supabase `xdnciktarvxyhkrokbng` |
 | Auth | Supabase Auth + custom JWT | Double-token system |
-| AI (text) | Gemini 2.5 Flash | Text generation + Re-ranking |
-| AI (embed) | OpenAI text-embedding-3-small (1536d) | Embeddings (migrated from Gemini 768d) |
+| AI (text) | Gemini 2.5 Flash | Text generation + Re-ranking + PDF extraction |
+| AI (embed) | OpenAI **text-embedding-3-large** (1536d Matryoshka) | Embeddings |
 | Video | Mux | Upload + signed playback |
 | Billing | Stripe | Checkout + portal + webhooks |
 
@@ -23,7 +23,7 @@ Browser
   → Frontend (Vercel)
     → Backend (Hono on Supabase Edge Functions)
       → Supabase PostgreSQL
-      → Gemini API (text generation, re-ranking)
+      → Gemini API (text generation, re-ranking, PDF extraction)
       → OpenAI API (embeddings)
       → Mux API (Video)
       → Stripe API (Billing)
@@ -36,21 +36,18 @@ Auth (login/signup) uses Supabase Auth SDK directly from frontend.
 
 - **Route style:** Flat routes with query params (NOT nested REST)
 - **CRUD Factory:** `crud-factory.ts` auto-generates 5 endpoints per entity
-- **Route modules:** 8 split modules + 6 flat files, ~200+ total endpoints
-- **Key modules:** content, study, ai, members, mux, plans, search, gamification
-- **Infrastructure:** `db.ts`, `validate.ts`, `gemini.ts`, `openai-embeddings.ts`, `auth-helpers.ts`, `rate-limit.ts`, `retrieval-strategies.ts`, `xp-engine.ts`, `xp-hooks.ts`, `streak-engine.ts`
-- **Tests:** 7+ Deno-native test files
+- **Route modules:** **10 split modules** + 6 flat files, ~200+ total endpoints
+- **Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, whatsapp
+- **Tests:** **16 Deno-native test files** (~183+ test cases)
 - **Migrations:** 52+ SQL files
+
+## Security Note
+
+> **CORS is currently wildcard `"*"`** (reverted for MVP development).
+> See BUG-004 in KNOWN-BUGS.md. Must be restricted before production.
 
 ## Deploy
 
 - Frontend: Push to main → Vercel auto-deploys
 - Backend: Push to main → GitHub Actions → Supabase Edge Functions
-- Docs (this repo): Push to main → nothing (no CI/CD)
-
-## Production URLs
-
-```
-Frontend: https://numero1-sseki-2325-55.vercel.app (or custom domain)
-Backend:  https://xdnciktarvxyhkrokbng.supabase.co/functions/v1/server
-```
+- Docs: Push to main → nothing (no CI/CD)
