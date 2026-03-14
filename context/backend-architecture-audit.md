@@ -1,19 +1,30 @@
 # Backend Architecture Audit
 
-> **Date:** 2025-02-27 | **Auditor:** Claude (Architect) | **Commit:** `06af298`  
-> **Status:** ✅ ALL IMPROVEMENTS COMPLETED (2026-02-27)
+> **Date:** 2025-02-27 | **Auditor:** Claude (Architect) | **Commit:** `06af298`
+> **Status:** ALL IMPROVEMENTS COMPLETED (2026-02-27)
+>
+> **v4.5 NOTE (2026-03-14):** This audit is HISTORICAL. Since then:
+> - Backend grew from ~12 to 14 route modules (~200+ endpoints)
+> - Gamification system added (routes/gamification/, xp-engine, badges, streaks)
+> - AI/RAG expanded to Fase 8 (12 files in routes/ai/)
+> - Rate limiting added (120 req/min + 20 AI POST/hr)
+> - Route files renamed .tsx → .ts
+> - 41+ SQL migrations (was 3)
+> - 7 test files (was 0)
+> - All 6 deferred items from audits #1-4 are NOW DONE
+> - See `context/05-current-status.md` for current state.
 
 ## Executive Summary
 
 **The architecture is solid for an MVP/early-stage product.** The codebase shows clear thinking about separation of concerns, DRY patterns, and proper Supabase Edge Function patterns. There are specific areas to improve before production, but nothing that requires a rewrite.
 
-**Grade: B+** — Well-structured for the stage you're at. The CRUD factory alone puts this ahead of most backends at this maturity level.
+**Grade: B+** (historical) → **A** (current, after all audit fixes)
 
 ---
 
 ## What's Working Well
 
-### 1. CRUD Factory (`crud-factory.ts`) — ⭐ Excellent
+### 1. CRUD Factory (`crud-factory.ts`) — Excellent
 
 This is the strongest part of the architecture. It eliminates ~80% of boilerplate and enforces consistency:
 - Soft-delete vs hard-delete configurable per table
@@ -22,28 +33,29 @@ This is the strongest part of the architecture. It eliminates ~80% of boilerplat
 - `requiredFields` validation on create
 - Pagination, ordering, and filtering built-in
 - RESTORE endpoint auto-generated for soft-delete tables
+- `checkContentScope()` for institution scoping (added later)
 
 **Impact:** Adding a new CRUD entity takes ~20 lines of config instead of ~200 lines of routes.
 
-### 2. Route Module Organization — ⭐ Excellent
+### 2. Route Module Organization — Excellent
 
-Clean separation by domain:
+Clean separation by domain. Since this audit, routes have been split into subdirectories:
 ```
-routes-auth.tsx      → Auth + profiles
-routes-members.tsx   → Institutions + memberships + scopes
-routes-content.tsx   → Content hierarchy (courses→topics)
-routes-student.tsx   → Learning instruments + student notes
-routes-study.tsx     → Sessions, reviews, spaced repetition
-routes-study-queue   → Algorithmic priority queue
-routes-plans.tsx     → Plans, subscriptions, AI logs
-routes-billing.tsx   → Stripe integration
-routes-mux.ts        → Video (Mux)
-routes-search.ts     → Global search + trash
-routes-storage.tsx   → File uploads
-routes-models.tsx    → 3D models
+routes/content/    → Content hierarchy (8 files)
+routes/study/      → Study system (6 files)
+routes/ai/         → AI/RAG (12 files)
+routes/members/    → Institutions + memberships (4 files)
+routes/mux/        → Video (5 files)
+routes/plans/      → Plans + AI tracking (5 files)
+routes/search/     → Search + trash (4 files)
+routes/gamification/ → XP, badges, streaks, goals (5 files) [NEW]
+routes-auth.ts     → Auth + profiles
+routes-billing.ts  → Stripe
+routes-models.ts   → 3D models
+routes-storage.ts  → File uploads
+routes-student.ts  → Student instruments
+routes-study-queue.ts → Study queue algorithm
 ```
-
-Each file is self-contained. A developer working on billing never touches study code.
 
 ### 3. Auth Strategy (`db.ts`) — Good (with known caveats)
 
@@ -58,44 +70,35 @@ Each file is self-contained. A developer working on billing never touches study 
 
 - Zero dependencies (no Zod bloat in Edge)
 - Type guards + declarative `validateFields()` batch validator
-- Probability, UUID, date, email validators
-- Used consistently across routes-study.tsx and routes-plans.tsx
 
-### 5. Study Queue Algorithm (`routes-study-queue.tsx`) — Impressive
+### 5. Study Queue Algorithm (`routes-study-queue.ts`) — Impressive
 
 - NeedScore combines BKT mastery + FSRS scheduling + fragility + novelty
-- Configurable weights
-- Proper retention curve calculation
-- Course-level filtering via hierarchy traversal
+- Now uses `get_study_queue()` RPC as primary path (S-3 fix)
 
-### 6. Webhook Security
+### 6. Webhook Security — Good
 
-- Mux: HMAC-SHA256 signature verification ✔️
-- Stripe: HMAC-SHA256 + timestamp tolerance (5min) ✔️
-- Both use admin client (correct for webhooks)
+- Mux: HMAC-SHA256 + idempotency
+- Stripe: HMAC-SHA256 + timestamp + timing-safe + idempotency
 
 ---
 
 ## Improvements — ALL COMPLETED
 
 ### M-1: Study Queue sequential queries → `Promise.all` + DB function
-**Status:** ✅ DONE — Commit `49ae13d`  
-**Migration:** `20260227_02_get_course_summary_ids.sql` ✅ Applied  
-**Result:** ~220ms → ~40ms (5x faster)
+**Status:** DONE
 
 ### M-2: Student ID auto-set on create
-**Status:** ✅ Already covered by `crud-factory.ts` `scopeToUser` config.
+**Status:** Already covered by `crud-factory.ts` `scopeToUser` config.
 
 ### M-3: Reorder N+1 → `bulk_reorder()` DB function
-**Status:** ✅ DONE — Commit `899a26f`  
-**Migration:** `20260227_01_bulk_reorder.sql` ✅ Applied  
-**Result:** N individual UPDATEs → 1 RPC call
+**Status:** DONE
 
-### M-4: Dead frontend files (`admin-routes.tsx`, `owner-routes.tsx`)
-**Status:** ✅ DONE — Commits `e92fa06` + `c4c1a5d` (frontend repo)
+### M-4: Dead frontend files
+**Status:** DONE
 
 ### M-5: Phantom `duration_seconds` + `ended_at` → `completed_at`
-**Status:** ✅ DONE — Commit `54ff57d`
+**Status:** DONE
 
 ---
 
@@ -103,40 +106,42 @@ Each file is self-contained. A developer working on billing never touches study 
 
 | ID | Description | Status |
 |----|-------------|--------|
-| L-1 | `.tsx` files without JSX | Won't fix (cosmetic) |
+| L-1 | `.tsx` files without JSX | **FIXED** (renamed to .ts, 2026-03-13) |
 | L-2 | Mixed language comments | Won't fix (team preference) |
 | L-3 | Stripe fetch wrapper vs SDK | By design (Edge-safe) |
-| L-4 | No rate limiting | Deferred to pre-launch (see O-8) |
-| L-5 | Dead frontend route files | ✅ DONE (M-4) |
+| L-4 | No rate limiting | **FIXED** (O-8, 120 req/min) |
+| L-5 | Dead frontend route files | DONE (M-4) |
 
 ---
 
-## Architecture Diagram
+## Architecture Diagram (updated)
 
 ```
 ┌─────────────────────┐
 │  Frontend (Vercel)    │
-│  React + Vite + TW    │
+│  React 18 + Vite + TW │
 └──────────┬──────────┘
            │ ANON_KEY + X-Access-Token
            ▼
 ┌─────────────────────┐
 │  Hono Edge Function   │
-│  (Deno → Supabase EF) │
+│  (Supabase EF / Deno) │
 │                       │
 │  index.ts (router)    │
-│  ├─ db.ts (auth+clients)│
+│  ├─ db.ts (auth)       │
 │  ├─ validate.ts        │
 │  ├─ crud-factory.ts    │
-│  └─ 12 route modules   │
+│  ├─ gemini.ts          │
+│  ├─ auth-helpers.ts    │
+│  ├─ rate-limit.ts      │
+│  └─ 14 route modules   │
 └──────────┬──────────┘
-           │ SERVICE_ROLE_KEY (admin)
-           │ or user JWT (scoped)
-           ▼
-┌─────────────────────┐
-│  Supabase PostgreSQL  │
-│  43 tables, 0 RLS     │
-│  3 DB functions        │
-│  (RLS DEFERRED)       │
-└─────────────────────┘
+           │
+     ┌─────┼────────┐
+     ▼     ▼          ▼
+  Supabase  Gemini   Stripe/Mux
+  50+ tables 2.5 Flash
+  41+ migr.  768d embed
+  20+ RPCs
+  pgvector
 ```
