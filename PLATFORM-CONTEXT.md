@@ -2,187 +2,110 @@
 
 > **Proposito:** Pega este archivo al inicio de cada sesion de Figma Make para dar contexto completo.
 >
-> **Ultima actualizacion:** 2026-03-14 (audit pass 3 — verified against source code)
+> **Ultima actualizacion:** 2026-03-14 (audit pass 4 — verified file-by-file)
 
 ---
 
 ## 1. Arquitectura General
 
 ```
-Frontend (React 18 + Vite + Tailwind v4)
-  ├── Deploy: Vercel
-  ├── Repo: Matraca130/numero1_sseki_2325_55
-  └── Llama al backend via apiCall() en lib/api.ts
-        |
-        v
-Backend (Hono Edge Function en Deno)
-  ├── Deploy: Supabase Edge Functions
-  ├── Repo: Matraca130/axon-backend
-  └── Conecta a Supabase via service_role key (admin) o anon key + JWT (user)
-        |
-        v
-Supabase PostgreSQL
-  ├── Project ID: xdnciktarvxyhkrokbng
-  └── ~50+ tablas reales + ~25 kv_store_* basura de Figma Make
+Frontend (React 18 + Vite + Tailwind v4) → Vercel
+  └─ apiCall() en lib/api.ts → Backend (Hono/Deno) → Supabase Edge Functions
+       └─ PostgreSQL + pgvector | Gemini API | OpenAI API | Mux | Stripe
 ```
 
 ## 2. Autenticacion (Doble Token)
 
-Todas las requests del frontend al backend llevan:
-
 ```
-Authorization: Bearer <SUPABASE_ANON_KEY>   <- Identifica el proyecto
-X-Access-Token: <USER_JWT>                  <- Identifica al usuario
+Authorization: Bearer <SUPABASE_ANON_KEY>   ← Proyecto
+X-Access-Token: <USER_JWT>                  ← Usuario
 ```
 
-`authenticate()` en `db.ts` decodifica el JWT localmente (~0.1ms).
-La verificacion criptografica real la hace PostgREST en la primera query DB.
+JWT decodificado localmente. Verificacion criptografica via PostgREST en primera DB query.
+Rol NO esta en JWT — viene de `GET /institutions`.
 
-> **Riesgo residual:** Rutas que llaman APIs externas (Gemini/OpenAI, Mux) SIN
-> hacer query a la DB primero NO validan el JWT criptograficamente.
-> Para esas rutas, siempre hacer una query canary primero. Ver PF-05.
+> **⚠️ CORS sigue siendo wildcard `"*"`** (revertido para MVP). Ver BUG-004.
 
-**IMPORTANTE:** El rol del usuario NO esta en el JWT. Viene de `GET /institutions`.
-Un usuario puede tener diferentes roles en diferentes instituciones.
+## 3. Roles: owner(4), admin(3), professor(2), student(1)
 
-## 3. Roles y Acceso
+Sets: `ALL_ROLES`, `MANAGEMENT_ROLES`, `CONTENT_WRITE_ROLES`
 
-4 roles con jerarquia estricta (definidos en `auth-helpers.ts`):
+## 4. Jerarquia: Institution → Course → Semester → Section → Topic → Summary
 
-| Rol | Nivel | Acceso |
+Summary tiene: Chunks (1536d embeddings), Keywords (Flashcards, Quiz Questions, Connections, Subtopics, Prof Notes), Videos (Mux), Student Data.
+Campos PDF: `pdf_source_url`, `pdf_page_start`, `pdf_page_end`.
+
+## 5. Backend
+
+### Rutas: planas con query params, ~200+ endpoints
+
+**10 modulos split + 6 flat:**
+
+| Modulo | Archivos | Proposito |
 |---|---|---|
-| `owner` | 4 | Acceso total a la institucion |
-| `admin` | 3 | Gestiona institucion, miembros, contenido |
-| `professor` | 2 | Gestiona cursos y contenido asignado |
-| `student` | 1 | Ve contenido de sus cursos |
+| `routes/content/` | **11** | Content CRUD, connections, search, reorder, tree, batch |
+| `routes/study/` | 6 | Sessions, reviews, progress, spaced-rep, batch-review |
+| `routes/ai/` | **14** | Generate, smart-gen, PDF ingest, re-embed, RAG chat, reports |
+| `routes/members/` | 4 | Institutions, memberships, admin-scopes |
+| `routes/mux/` | 5 | Video upload, playback, tracking, webhook |
+| `routes/plans/` | 5 | Plans, AI generations, diagnostics, access |
+| `routes/search/` | 4 | Global search, trash, restore |
+| `routes/gamification/` | 6 | XP, badges, streaks, goals, leaderboard |
+| `routes/settings/` | 2 | Algorithm config (FSRS/BKT params) |
+| `routes/whatsapp/` | **9** | **COMPLETE:** webhook, handler, tools, review-flow, link, client, rate-limit, formatter, async-queue |
 
-**Sets:** `ALL_ROLES`, `MANAGEMENT_ROLES` (owner, admin), `CONTENT_WRITE_ROLES` (owner, admin, professor)
-
-## 4. Jerarquia de Datos
-
-```
-Institution
-  └── Course
-        └── Semester
-              └── Section
-                    └── Topic
-                          └── Summary (institution_id denorm, pdf_source_url/page_start/page_end)
-                                ├── Chunks (embeddings 1536d)
-                                ├── Keywords → Subtopics, Flashcards, Quiz Questions, Connections, Prof Notes
-                                ├── Videos (Mux)
-                                └── Student Data (notes, annotations, reading_states)
-```
-
-## 5. Backend - Patrones Clave
-
-### Rutas
-- **Planas con query params**, nunca REST anidadas
-- `crud-factory.ts` genera 5 endpoints por entidad
-- **10 modulos split + 6 archivos flat**, ~200+ endpoints totales
-
-### Modulos de Rutas (10 split + 6 flat)
-
-| # | Modulo | Archivos | Proposito |
-|---|---|---|---|
-| 1 | `routes/content/` | 8 | Jerarquia de contenido |
-| 2 | `routes/study/` | 6 | Sesiones, reviews, progreso, spaced-rep |
-| 3 | `routes/ai/` | 12 | AI/RAG: generate, chat, ingest, reports |
-| 4 | `routes/members/` | 4 | Instituciones, memberships, admin-scopes |
-| 5 | `routes/mux/` | 5 | Video (upload, playback, tracking) |
-| 6 | `routes/plans/` | 5 | Planes, AI generations, diagnostics |
-| 7 | `routes/search/` | 4 | Busqueda global, trash, restore |
-| 8 | `routes/gamification/` | 5 | XP, badges, streaks, goals |
-| 9 | `routes/settings/` | ? | Configuracion (NUEVO) |
-| 10 | `routes/whatsapp/` | ? | WhatsApp integration (NUEVO) |
-
-| # | Archivo flat | Proposito |
-|---|---|---|
-| 1 | `routes-auth.ts` | Auth & profiles |
-| 2 | `routes-billing.ts` | Stripe |
-| 3 | `routes-models.ts` | 3D models |
-| 4 | `routes-storage.ts` | File upload/download |
-| 5 | `routes-student.ts` | Student instruments |
-| 6 | `routes-study-queue.ts` | Study queue algorithm |
-
-### Archivos de Infraestructura
-
-| Archivo | Proposito |
+| Flat | Proposito |
 |---|---|
-| `db.ts` | Supabase clients, JWT auth, response helpers |
-| `crud-factory.ts` | Generic CRUD route generator |
-| `validate.ts` | Runtime validation guards |
-| `auth-helpers.ts` | Role-based access control |
-| `gemini.ts` | Gemini API: text generation + PDF extraction (Fase 7) |
-| `openai-embeddings.ts` | OpenAI embeddings (1536d, text-embedding-3-**large**) |
-| `retrieval-strategies.ts` | Multi-Query, HyDE, Re-ranking |
-| `chunker.ts` + `semantic-chunker.ts` | Chunking engines |
-| `auto-ingest.ts` + `summary-hook.ts` | Auto-chunking pipeline |
-| `xp-engine.ts` + `xp-hooks.ts` + `streak-engine.ts` | Gamification engines |
-| `ai-normalizers.ts` | AI response normalization |
-| `rate-limit.ts` | 120 req/min sliding window |
-| `timing-safe.ts` | Constant-time comparison |
-| `lib/bkt-v4.ts` + `lib/fsrs-v4.ts` | Spaced repetition algorithms |
-| `lib/types.ts` | Shared TypeScript types |
+| `routes-auth.ts` | Auth (`/signup`, `/me`) |
+| `routes-billing.ts` | Stripe |
+| `routes-models.ts` | 3D models (5 CRUD + batch + upload) |
+| `routes-storage.ts` | File storage |
+| `routes-student.ts` | Student instruments |
+| `routes-study-queue.ts` | Study queue algorithm |
 
-### Tests
-- **16 archivos de test** en `tests/` (unit + integration)
-- Deno-native test runner
-- ~183+ test cases
+### Key Infrastructure Files
 
-## 6. Sistema de Gamificacion
+`db.ts`, `crud-factory.ts`, `validate.ts`, `auth-helpers.ts`, `gemini.ts` (text gen + PDF extract), `openai-embeddings.ts` (1536d), `retrieval-strategies.ts`, `chunker.ts`, `semantic-chunker.ts`, `auto-ingest.ts`, `summary-hook.ts`, `xp-engine.ts`, `xp-hooks.ts`, `streak-engine.ts`, `ai-normalizers.ts`, `rate-limit.ts`, `timing-safe.ts`, `lib/bkt-v4.ts`, `lib/fsrs-v4.ts`, `lib/types.ts`
 
-Ver `GAMIFICATION_MAP.md` en `axon-backend/docs/` para referencia completa.
+### Tests: **16 files**, ~183+ cases (unit + integration)
 
-13 endpoints, 8 hooks (11 actions), 39 badges, daily cap 500 XP, 4 bonus types.
+## 6. Gamificacion
 
-## 7. Base de Datos
+13 endpoints, 8 hooks (11 XP actions), 39 badges, daily cap 500 XP, 4 bonus types.
+Ver `GAMIFICATION_MAP.md` en backend.
 
-### Embeddings (¡VERIFICADO contra codigo fuente!)
+## 7. Embeddings (¡VERIFICADO!)
 
-> **Modelo:** OpenAI `text-embedding-3-large` (NO small) truncado a 1536d via Matryoshka
-> **Archivo:** `openai-embeddings.ts` — constantes `EMBEDDING_MODEL` y `EMBEDDING_DIMENSIONS`
-> **Generacion de texto:** Gemini 2.5 Flash (sin cambios, en `gemini.ts`)
-> **HNSW indexes:** Recreados para 1536d
+> **Modelo:** OpenAI `text-embedding-3-large` (1536d via Matryoshka)
+> **Generacion:** Gemini 2.5 Flash
+> **gemini.ts** `generateEmbedding()` = HARD ERROR (throws, prevents dimension mismatch)
 
-### Tipos que causan confusion
-| Campo | Tipo REAL | NO es |
-|---|---|---|
-| `priority` | INTEGER (1, 2, 3) | String |
-| `difficulty` | INTEGER (1, 2, 3) | String |
-| `question_type` | TEXT | Enum |
-| `daily_goal_minutes` | INTEGER (5-120) | `daily_goal` |
-| `order_index` | INTEGER | `sort_order` |
+## 8. DB: 50+ tables, 52+ migrations, pgvector 1536d, pg_trgm, pg_cron
 
-## 8. Estado Actual
+## 9. Seguridad
 
-### Seguridad — ATENCION
+| Issue | Estado |
+|---|---|
+| **CORS wildcard** | **NOT FIXED** — revertido a `"*"` |
+| RLS | Parcialmente mitigado (RPCs revoked) |
+| JWT | Mitigado por PostgREST |
 
-> **CORS sigue siendo wildcard `"*"`** en produccion (verificado en `index.ts`).
-> Fue restringido brevemente (commit `33eb56e`) pero **revertido** para desarrollo MVP.
-> Comentario en index.ts: "MVP: Temporarily reverted to '*' for development flexibility."
-> **TODO:** Re-restringir antes de launch.
+## 10. Frontend (verificado contra source)
 
-- BUG-002 (JWT): Mitigado por PostgREST
-- BUG-003 (RLS): Parcialmente mitigado (revoke RPC from authenticated)
-- BUG-004 (CORS): **NO FIXED — revertido a wildcard para desarrollo**
+- **30+ service files** en `src/app/services/` (gamification, AI, quiz, flashcard, content tree, etc.)
+- **35+ hook files** en `src/app/hooks/` incluyendo:
+  - `useGamification.ts` (8 React Query hooks)
+  - `usePdfIngest.ts` (PDF ingestion connected)
+  - `useAiReports.ts` (quality reports connected)
+  - `useSmartGeneration.ts` (adaptive gen connected)
+  - `useSessionXP.ts` (XP tracking in sessions)
+  - `useAdminAiTools.ts` (admin AI tools)
+- **4 role route files** + shared auth + `lazyRetry()`
+- **Axon Medical Academy palette** (teal/gray)
+- React Router v7 data mode, React Query v5, shadcn/ui
 
-### RAG Pipeline
-- Gemini 2.5 Flash para generacion + PDF extraction (Fase 7)
-- **OpenAI text-embedding-3-large (1536d)** para embeddings
-- Fase 7: PDF extraction code exists in `gemini.ts` (`extractTextFromPdf()`)
-- Fase 8: Smart generation, quality reports, pre-generation
+## 11. Tech Stack
 
-### Migraciones: **52+ archivos SQL**
+**Frontend:** React 18, TypeScript, Vite 6, Tailwind v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, @floating-ui/react, Sonner. Vercel.
 
-### Frontend Gamification (mas conectado de lo documentado)
-- 8 React Query hooks en `useGamification.ts`
-- 7+ componentes: GamificationView, DailyGoalWidget, GamificationCard, StreakPanel, BadgeShowcase, LeaderboardCard, XpHistoryFeed, StudyQueueCard
-- Palette migrada a Axon Medical Academy (teal/gray, commit `b7512445`)
-
-## 9. Tech Stack
-
-### Frontend
-React 18, TypeScript, Vite 6, Tailwind CSS v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, @floating-ui/react, Sonner. Deploy: Vercel.
-
-### Backend
-Hono + Deno (Supabase Edge Functions), PostgreSQL + pgvector, **Gemini 2.5 Flash** (text) + **OpenAI text-embedding-3-large** (1536d embeddings), Stripe, Mux. CI/CD: GitHub Actions.
+**Backend:** Hono + Deno, PostgreSQL + pgvector, Gemini 2.5 Flash + OpenAI text-embedding-3-large (1536d), Stripe, Mux, WhatsApp Cloud API. GitHub Actions CI/CD.
