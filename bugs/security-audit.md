@@ -1,6 +1,6 @@
 # Security Audit
 
-> **Updated:** 2026-03-14
+> **Updated:** 2026-03-14 (audit pass 3 — verified against source)
 
 ## Critical Issues
 
@@ -9,74 +9,52 @@
 **Status:** Mitigated
 **File:** `db.ts` — `authenticate()`
 
-`authenticate()` decodes the JWT locally but does NOT verify the cryptographic signature.
-
-**Mitigations:**
-- PostgREST validates JWT on every DB query
-- Expiration (`exp`) checked locally for fast-fail
-- Admin routes use `getAdminClient().auth.getUser(token)` (network verification)
-
-**Residual risk:** Routes calling Gemini/Mux/Stripe APIs without a prior DB query.
+Mitigated by PostgREST (validates on DB query), exp check, admin routes use getUser().
+Residual risk on non-DB routes.
 
 ### 2. RLS Disabled on Content Tables (BUG-003)
 
-**Status:** Pending (deferred to production hardening)
-**Tables:** `flashcards`, `quiz_questions`, `quizzes` (and others)
+**Status:** Partially mitigated
+Backend enforces via `checkContentScope()`. RPCs revoked from authenticated role (`20260312_01`).
+Direct Supabase access still bypasses.
 
-**Mitigation:** Backend enforces institution scoping via `checkContentScope()` in `crud-factory.ts`. All endpoints verify membership before operating.
+### 3. CORS Wildcard (BUG-004)
 
-**Risk:** Direct Supabase access with anon key bypasses backend.
+**Status:** **NOT FIXED — reverted to `"*"`**
+Was restricted (commit `33eb56e`) but reverted for MVP development.
+`index.ts` comment: "MVP: Temporarily reverted to '*' for development flexibility."
+**Must restrict before production launch.**
 
-### 3. ~~CORS Wildcard~~ FIXED
+### 4. ~~No Rate Limiting~~ FIXED (O-8)
 
-**Status:** **FIXED** (2026-03-06, commit `33eb56e`)
-CORS restricted to specific allowed domains.
+120 req/min sliding window + 20 AI POST/hr + 10 pre-generate/hr.
 
-### 4. ~~No Rate Limiting~~ FIXED
+### 5. ~~Webhook Idempotency~~ FIXED (O-7)
 
-**Status:** **FIXED** (O-8)
-- General: 120 req/min sliding window (in-memory)
-- AI POST: 20/hr per user (distributed via `check_rate_limit()` RPC)
-- Pre-generate: 10/hr per user (separate bucket)
+`processed_webhook_events` table for Stripe + Mux.
 
-### 5. ~~Webhook Idempotency~~ FIXED
+### 6. ~~Stripe Timing-Safe~~ FIXED (N-10)
 
-**Status:** **FIXED** (O-7)
-- Stripe: `processed_webhook_events` table + event tracking
-- Mux: Same idempotency pattern
+Constant-time via `timing-safe.ts`.
 
-### 6. ~~Stripe Timing-Safe~~ FIXED
-
-**Status:** **FIXED** (N-10)
-Constant-time string comparison via `timing-safe.ts` for webhook signature verification.
-
-### 7. ~~Storage atob() No Try/Catch~~ FIXED
-
-**Status:** **FIXED** (O-6)
-Invalid base64 returns 400 instead of unhandled exception.
-
-### 8. ~~Search SQL Injection via ilike~~ FIXED
-
-**Status:** **FIXED** (N-8)
-`escapeLike()` sanitizes `%`, `_`, `\` before constructing patterns.
-
-### 9. ~~PostgREST or() Injection~~ FIXED
-
-**Status:** **FIXED** (O-1 + P-3)
-Values quoted + double-quote escaping per PostgREST spec.
+### 7. ~~Storage atob()~~ FIXED (O-6)
+### 8. ~~Search ilike~~ FIXED (N-8)
+### 9. ~~PostgREST or()~~ FIXED (O-1 + P-3)
+### 10. ~~Password max~~ FIXED (P-5, 128 chars)
+### 11. ~~Batch size~~ FIXED (P-7, 100 paths)
 
 ## Summary
 
 | Issue | Status |
 |---|---|
 | JWT verification | Mitigated (BUG-002) |
-| RLS disabled | Pending (BUG-003) |
-| CORS | **FIXED** |
-| Rate limiting | **FIXED** |
-| Webhook idempotency | **FIXED** |
-| Stripe timing-safe | **FIXED** |
-| Storage atob() | **FIXED** |
-| Search ilike | **FIXED** |
-| or() injection | **FIXED** |
-| Password max length | **FIXED** (P-5, 128 chars) |
-| Batch size limits | **FIXED** (P-7, 100 paths) |
+| RLS disabled | Partially mitigated (BUG-003) |
+| **CORS wildcard** | **NOT FIXED — reverted to `"*"` for MVP** |
+| Rate limiting | FIXED |
+| Webhook idempotency | FIXED |
+| Stripe timing-safe | FIXED |
+| Storage atob() | FIXED |
+| Search ilike | FIXED |
+| or() injection | FIXED |
+| Password max length | FIXED |
+| Batch size limits | FIXED |
