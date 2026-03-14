@@ -1,7 +1,7 @@
 # Axon v4.5 — Platform Context
 
 > **Paste this at the start of every Figma Make session.**  
-> **Updated:** 2026-03-14 (audit pass 12 — 180 frontend files verified)
+> **Updated:** 2026-03-14 (audit pass 14 — 194 READ + ~320 LISTED + backend mapped)
 
 ---
 
@@ -26,66 +26,76 @@ Role NOT in JWT — comes from `GET /institutions`. Detailed: [`context/03-auth-
 
 ## 3. Roles: owner(4), admin(3), professor(2), student(1)
 
-> ⚠️ Admin/Owner/Professor routes are ALL placeholder pages. Only student has real components (22+ routes).
+- **Student:** 22+ real routes — fully functional
+- **Professor:** 8 routes — **REAL CMS** (38 components: flashcards, quiz, keywords, 3D models, AI reports, video)
+- **Owner:** 8 routes — PlaceholderPage
+- **Admin:** 6 routes — PlaceholderPage
 
 ## 4. Hierarchy: Institution → Course → Semester → Section → Topic → Summary
 
-Detailed: [`context/02-data-hierarchy.md`](context/02-data-hierarchy.md)
+## 5. Backend: 16 route modules mounted (10 split + 6 flat)
 
-## 5. Backend: 10 split modules + 6 flat (~200+ endpoints)
+> ⚠️ index.ts says version "4.4" but docs say "4.5" — may need update.
+
+**Flat routes:** auth, billing (16KB), models, storage, student, study-queue (16KB)  
+**Split modules (routes/):** ai, content, gamification, members, mux, plans, search, settings, study, whatsapp  
+**Core:** crud-factory (20KB), db, auth-helpers, gemini, openai-embeddings, xp-engine, xp-hooks (16KB), streak-engine, rate-limit, validate, chunker, semantic-chunker, retrieval-strategies, auto-ingest, ai-normalizers, summary-hook, timing-safe  
+**lib/:** fsrs-v4, bkt-v4, types
 
 Detailed: [`API-MAP.md`](API-MAP.md) + [`api/`](api/) directory
 
-## 6. Frontend (VERIFIED — 180 files, 8/10 layers at 100%)
+## 6. Frontend (✅ 188 logic files READ, ~320 components LISTED)
 
 | Layer | Files | Status |
 |---|---|---|
-| services/ | **53** | 100% |
-| hooks/ (flat + queries) | **56** | 100% |
-| lib/ | **25** | 100% |
-| types/ | **11** | 100% |
-| context/ | **9** | 100% |
-| utils/ | **10** | 100% |
-| routes/ | **10** | 100% |
-| design-system/ | 14 | UI-only, not read |
-| components/ | ~100+ | UI-only, not read |
+| services/ | **53** | 100% READ |
+| hooks/ (flat + queries) | **56** | 100% READ |
+| lib/ | **25** | 100% READ |
+| types/ | **11** | 100% READ |
+| context/ | **9** | 100% READ |
+| utils/ | **10** | 100% READ |
+| routes/ | **10** | 100% READ |
+| design-system/ | **14** | 100% READ |
+| **components/** | **~320** | 100% LISTED |
 
 **Key architecture:**
 - React Query v5 with 21 query hooks, 25+ centralized queryKeys, shared cache
 - Central `apiCall()` with dual-token, GET dedup, 15s timeout
-- `useStudyQueueData` = shared data hub (3 consumers, 1 fetch)
 - Grade mapper: SM-2(1-5) → FSRS(1-4), `isCorrect`: FSRS≥2, BKT≥3
-- Student routes: per-agent ownership (6 agents), all lazy + withBoundary
 - `lazyRetry` handles stale Vite chunks after deploy
+- 15 colocated hooks in components (7 student, 7 professor, 1 dashboard)
+- 11 mega-files >25KB (FlashcardsManager 61KB largest)
 
-Detailed: [`diagnostics/FRONTEND-DIAGNOSTIC.md`](diagnostics/FRONTEND-DIAGNOSTIC.md) + [`context/05-current-status.md`](context/05-current-status.md)
+Detailed: [`context/05-current-status.md`](context/05-current-status.md)
 
-## 7. Known Open Bugs
+## 7. Known Open Bugs (12 open, BUG-001..029)
 
 | ID | Sev | Summary |
 |---|---|---|
 | BUG-003 | CRIT | RLS disabled on content tables |
 | BUG-001 | HIGH | `resolution_tier` vs `max_resolution` |
-| BUG-004 | HIGH | **CORS wildcard `"*"` — NOT FIXED** |
+| BUG-004 | HIGH | **CORS wildcard `"*"` — confirmed in index.ts** |
 | BUG-021 | MED | GamificationContext is STUB |
 | BUG-025 | MED | ANON_KEY hardcoded in 3 files |
 | BUG-026 | MED | `'demo-student-001'` fallback studentId |
-| BUG-020 | LOW | `time_limit_seconds` sent but no DB column |
-| BUG-022–024, 027 | LOW | Dead code, duplicate types, dual impl |
+| BUG-028 | MED | architecture.ts 30KB stale docs-as-code |
+| BUG-020..024, 027, 029 | LOW | Tech debt (7 items) |
 
-Full list: [`KNOWN-BUGS.md`](KNOWN-BUGS.md) → canonical: [`bugs/known-bugs.md`](bugs/known-bugs.md)
+Full: [`bugs/known-bugs.md`](bugs/known-bugs.md)
 
 ## 8. Gamification: 13 endpoints, 39 badges, 11 XP actions, daily cap 500
 
-> ⚠️ GamificationContext.tsx is STUB (BUG-021). `useGamification.ts` (React Query) is the real impl.
+Backend: xp-engine.ts + xp-hooks.ts + streak-engine.ts + gamification routes  
+Frontend: 14 components, 8 React Query hooks, `useSessionXP.ts`  
+> GamificationContext.tsx is STUB (BUG-021). `useGamification.ts` is the real impl.
 
 ## 9. AI/RAG: Gemini 2.5 Flash + OpenAI text-embedding-3-large (1536d)
 
-Phases 1-8D ALL DONE. 14 AI route files, 11 mounted. Detailed: [`context/RAG_PHASES.md`](context/RAG_PHASES.md)
+Phases 1-8D ALL DONE. Backend: gemini.ts, openai-embeddings.ts, chunker.ts, semantic-chunker.ts, retrieval-strategies.ts, auto-ingest.ts + 10 split AI routes (11 mounted).
 
 ## 10. DB: 50+ tables, 53 migrations, pgvector 1536d
 
-Detailed: [`database/`](database/) directory
+Backend lib: FSRS v4 (`fsrs-v4.ts`) + BKT v4 (`bkt-v4.ts`) for spaced repetition.
 
 ## 11. Tech Stack
 
