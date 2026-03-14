@@ -2,9 +2,9 @@
 
 > Mapa completo de rutas del backend y su estado.
 >
-> **Ultima actualizacion:** 2026-03-14
+> **Ultima actualizacion:** 2026-03-14 (audit pass 2)
 >
-> **Fuente de verdad:** `docs/BACKEND_MAP.md` en `axon-backend`
+> **Fuente de verdad:** `docs/BACKEND_MAP.md` y `docs/GAMIFICATION_MAP.md` en `axon-backend`
 
 ---
 
@@ -50,26 +50,14 @@ Content-Type: application/json
 |---|---|---|
 | 1 | `routes-auth.ts` | Auth & profiles (`/signup`, `/me`) |
 | 2 | `routes-billing.ts` | Stripe (checkout, portal, webhooks) |
-| 3 | `routes-models.ts` | 3D models, pins, notes |
+| 3 | `routes-models.ts` | 3D models, pins, notes, layers, parts |
 | 4 | `routes-storage.ts` | File upload/download/delete |
 | 5 | `routes-student.ts` | Student instruments & notes |
 | 6 | `routes-study-queue.ts` | Study queue algorithm |
 
 ---
 
-## CRUD Factory - Endpoints por Entidad
-
-Cada entidad registrada en el factory genera estos 5 endpoints:
-
-```
-GET    /{entity}          Lista paginada (query params: limit, offset, filtros)
-GET    /{entity}/:id      Obtener uno por ID
-POST   /{entity}           Crear nuevo
-PUT    /{entity}/:id      Actualizar
-DELETE /{entity}/:id      Soft-delete (o hard delete segun config)
-```
-
-### Entidades CRUD Factory
+## CRUD Factory - Entidades
 
 **Content (9):** `courses`, `semesters`, `sections`, `topics`, `summaries`, `chunks`, `summary-blocks`, `keywords`, `subtopics`
 
@@ -79,7 +67,9 @@ DELETE /{entity}/:id      Soft-delete (o hard delete segun config)
 
 **Plans (4):** `platform-plans`, `institution-plans`, `plan-access-rules`, `institution-subscriptions`
 
-**Models (3):** `models-3d`, `model-3d-pins`, `model-3d-notes`
+**Models (5):** `models-3d`, `model-3d-pins`, `model-3d-notes`, `model-layers`, `model-parts`
+
+Cada entidad genera 5 endpoints: LIST, GET, POST, PUT, DELETE.
 
 ---
 
@@ -89,221 +79,96 @@ DELETE /{entity}/:id      Soft-delete (o hard delete segun config)
 
 | Metodo | Ruta | Descripcion |
 |---|---|---|
-| GET | `/keyword-connections?keyword_id=` | List connections (bidireccional) |
+| GET | `/keyword-connections?keyword_id=` | Connections bidireccional |
 | GET | `/keyword-connections/:id` | Get by ID |
-| POST | `/keyword-connections` | Create (enforces a < b canonical order) |
+| POST | `/keyword-connections` | Create (canonical a < b) |
 | DELETE | `/keyword-connections/:id` | Hard delete |
-| GET | `/keyword-connections-batch?keyword_ids=uuid1,uuid2,...` | **NUEVO** Batch load (max 50, elimina N+1) |
-| GET | `/keyword-search?q=&exclude_summary_id=&course_id=&limit=15` | Cross-summary keyword search (institution-scoped RPC) |
-| GET | `/kw-prof-notes?keyword_id=` | List professor notes |
-| POST | `/kw-prof-notes` | Upsert (one per prof per keyword) |
+| GET | `/keyword-connections-batch?keyword_ids=...` | Batch (max 50, EC-02) |
+| GET | `/keyword-search?q=&exclude_summary_id=&course_id=&limit=15` | Cross-summary search |
+| GET | `/kw-prof-notes?keyword_id=` | Professor notes |
+| POST | `/kw-prof-notes` | Upsert |
 | DELETE | `/kw-prof-notes/:id` | Hard delete |
-| PUT | `/reorder` | Bulk reorder (RPC + fallback) |
-| GET | `/content-tree?institution_id=` | Nested hierarchy tree |
-| GET | `/flashcards-by-topic?topic_id=` | Batch flashcards por topico (PERF C1) |
+| PUT | `/reorder` | Bulk reorder (RPC) |
+| GET | `/content-tree?institution_id=` | Nested tree |
+| GET | `/flashcards-by-topic?topic_id=` | Batch (PERF C1) |
 
 ### Study (`routes/study/`)
 
 | Metodo | Ruta | Descripcion |
 |---|---|---|
-| GET | `/topic-progress?topic_id=` | Summaries + reading states + flashcard counts (1 request) |
-| GET | `/topics-overview?topic_ids=a,b,c` | Batch (max 50) summaries + keyword counts |
-| GET | `/reviews?session_id=` | List reviews (session ownership verified) |
-| POST | `/reviews` | Create review (grade 0-5) |
-| GET | `/quiz-attempts?quiz_question_id=&session_id=` | List attempts |
-| POST | `/quiz-attempts` | Create attempt |
-| POST | `/review-batch` | **PERF** Atomic batch: reviews + FSRS + BKT (90 reqs → 1) |
-| GET | `/reading-states?summary_id=` | Get reading state |
-| POST | `/reading-states` | Upsert reading state |
-| GET | `/daily-activities?from=&to=` | List (capped 500) |
-| POST | `/daily-activities` | Upsert |
-| GET | `/student-stats` | Get student stats |
-| POST | `/student-stats` | Upsert |
-| GET | `/fsrs-states?flashcard_id=&state=&due_before=` | List FSRS states (capped 500) |
-| POST | `/fsrs-states` | Upsert |
-| GET | `/bkt-states?subtopic_id=` | List BKT states (capped 500) |
-| POST | `/bkt-states` | Upsert |
+| GET | `/topic-progress?topic_id=` | Unified progress |
+| GET | `/topics-overview?topic_ids=a,b,c` | Batch (max 50) |
+| GET/POST | `/reviews` | Reviews (session ownership) |
+| GET/POST | `/quiz-attempts` | Quiz attempts |
+| POST | `/review-batch` | Atomic batch (PERF M1) |
+| GET/POST | `/reading-states` | Upsert |
+| GET/POST | `/daily-activities` | Activities |
+| GET/POST | `/student-stats` | Stats |
+| GET/POST | `/fsrs-states` | FSRS |
+| GET/POST | `/bkt-states` | BKT |
 
-### AI / RAG (`routes/ai/`)
+### AI / RAG (`routes/ai/`) — Rate limited: 20 POST/hr
 
-Rate limited: 20 POST/hour per user (excepto report y pre-generate).
+| Metodo | Ruta | Descripcion |
+|---|---|---|
+| POST | `/ai/generate` | Generate flashcard/quiz |
+| POST | `/ai/generate-smart` | Adaptive (NeedScore) [Fase 8A] |
+| POST | `/ai/pre-generate` | Bulk (own rate limit) [Fase 8D] |
+| POST | `/ai/report` | Quality report [Fase 8B] |
+| PATCH | `/ai/report/:id` | Resolve report [Fase 8B] |
+| GET | `/ai/report-stats` | Quality metrics [Fase 8C] |
+| GET | `/ai/reports` | Report listing [Fase 8C] |
+| POST | `/ai/ingest-embeddings` | Batch embeddings (1536d) |
+| POST | `/ai/re-chunk` | Manual re-chunking [Fase 5] |
+| POST | `/ai/rag-chat` | RAG chat [Fase 6] |
+| PATCH | `/ai/rag-feedback` | Feedback (thumbs) |
+| GET | `/ai/rag-analytics` | Metrics |
+| GET | `/ai/embedding-coverage` | Coverage % |
+| GET | `/ai/list-models` | Diagnostic |
 
-| Metodo | Ruta | Auth | Descripcion |
-|---|---|---|---|
-| POST | `/ai/generate` | ALL_ROLES | Generate flashcard/quiz (client provides IDs) |
-| POST | `/ai/generate-smart` | ALL_ROLES | Adaptive (NeedScore auto-selects keyword) [Fase 8A] |
-| POST | `/ai/pre-generate` | CONTENT_WRITE | Bulk pre-generation (own rate limit) [Fase 8D] |
-| POST | `/ai/report` | ALL_ROLES | Report AI content quality issue [Fase 8B] |
-| PATCH | `/ai/report/:id` | CONTENT_WRITE | Resolve/dismiss report [Fase 8B] |
-| GET | `/ai/report-stats` | CONTENT_WRITE | Aggregate quality metrics [Fase 8C] |
-| GET | `/ai/reports` | CONTENT_WRITE | Paginated report listing [Fase 8C] |
-| POST | `/ai/ingest-embeddings` | MANAGEMENT | Batch embeddings for chunks + summaries |
-| POST | `/ai/re-chunk` | CONTENT_WRITE | Manual re-chunking [Fase 5] |
-| POST | `/ai/rag-chat` | ALL_ROLES | Multi-Query/HyDE + Re-rank + hybrid search [Fase 6] |
-| PATCH | `/ai/rag-feedback` | ALL_ROLES | Feedback on RAG response (thumbs up/down) |
-| GET | `/ai/rag-analytics` | MANAGEMENT | RAG query metrics |
-| GET | `/ai/embedding-coverage` | MANAGEMENT | % chunks with embeddings |
-| GET | `/ai/list-models` | ALL_ROLES | Diagnostic: list Gemini models |
+### Gamification (`routes/gamification/`)
 
-### Gamification (`routes/gamification/`) — NUEVO
+Fuente de verdad: `docs/GAMIFICATION_MAP.md` en backend.
 
 | Metodo | Ruta | Descripcion |
 |---|---|---|
 | GET | `/gamification/profile` | XP, level, streaks, stats |
-| GET | `/gamification/xp-history` | XP history timeline |
-| GET | `/gamification/leaderboard` | Weekly leaderboard (institution-scoped) |
+| GET | `/gamification/xp-history` | XP transaction log |
+| GET | `/gamification/leaderboard` | Weekly (institution-scoped) |
 | GET | `/gamification/badges` | All badges + earned status |
-| POST | `/gamification/check-badges` | Evaluate and award eligible badges |
-| GET | `/gamification/notifications` | Badge notifications (unread) |
-| GET | `/gamification/streak-status` | Current streak info |
-| POST | `/gamification/daily-check-in` | Daily check-in (XP + streak) |
-| POST | `/gamification/streak-freeze` | Use a streak freeze (max 3) |
-| POST | `/gamification/streak-repair` | Repair broken streak |
-| PUT | `/gamification/daily-goal` | Set daily goal (5-120 minutes) |
-| POST | `/gamification/goals/complete` | Mark daily goal as completed |
-| POST | `/gamification/onboarding` | Initial gamification setup |
+| POST | `/gamification/check-badges` | Evaluate and award |
+| GET | `/gamification/notifications` | XP + badge events |
+| GET | `/gamification/streak-status` | Streak info + repair eligibility |
+| POST | `/gamification/daily-check-in` | Daily login (XP + streak) |
+| POST | `/gamification/streak-freeze/buy` | Purchase freeze with XP |
+| POST | `/gamification/streak-repair` | Repair streak with XP |
+| PUT | `/gamification/daily-goal` | Set goal (5-120 min) |
+| POST | `/gamification/goals/complete` | Mark completed + bonus |
+| POST | `/gamification/onboarding` | Initialize profile |
 
-### Members (`routes/members/`)
+### Members, Mux, Plans, Search, Auth, Billing, Storage, Study Queue, Student, Models
 
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| CRUD | `/institutions` | Institution management |
-| POST | `/institutions/join` | Join by code |
-| CRUD | `/memberships` | Institution memberships |
-| - | `/admin-scopes` | Admin scope management |
-
-### Mux Video (`routes/mux/`)
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| POST | `/mux/create-upload` | Direct upload to Mux |
-| GET | `/mux/playback-token` | Signed JWT for playback |
-| GET | `/mux/asset/:video_id` | Asset info |
-| POST | `/mux/track-view` | Track video view (atomic upsert) |
-| GET | `/mux/video-stats` | Video statistics |
-| POST | `/webhooks/mux` | Mux webhook (idempotent) |
-
-### Plans (`routes/plans/`)
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| GET | `/ai-generations` | AI generation history |
-| GET | `/usage-today` | Today's AI usage count |
-| GET | `/summary-diagnostics` | Summary diagnostics |
-| GET | `/content-access` | Content access check |
-
-### Search (`routes/search/`)
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| GET | `/search` | Global search (parallel queries) |
-| GET | `/trash` | List deleted items |
-| POST | `/restore/:table/:id` | Restore deleted item |
-
-### Auth (`routes-auth.ts`)
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| POST | `/signup` | Create account |
-| GET | `/me` | Get profile |
-| PUT | `/me` | Update profile |
-
-### Billing (`routes-billing.ts`)
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| POST | `/billing/checkout` | Stripe checkout session |
-| POST | `/billing/portal` | Stripe customer portal |
-| GET | `/billing/subscription` | Current subscription |
-| POST | `/webhooks/stripe` | Stripe webhook (timing-safe) |
-
-### Storage (`routes-storage.ts`)
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| POST | `/storage/upload` | File upload (base64 or form) |
-| POST | `/storage/signed-url` | Batch signed URLs (max 100) |
-| POST | `/storage/delete` | Delete file |
-
-### Study Queue (`routes-study-queue.ts`)
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| GET | `/study-queue?course_id=&limit=&include_future=` | NeedScore-based study queue |
-
-### Student (`routes-student.ts`)
-
-CRUD factory for student-scoped tables: `flashcards`, `quiz-questions`, `videos`, `student-notes`, `student-annotations`, `highlight-tags`
-
-Plus manual:
-
-| Metodo | Ruta | Descripcion |
-|---|---|---|
-| GET | `/kw-student-notes?keyword_id=` | Student notes on keywords |
-| POST | `/kw-student-notes` | Create note |
-| PUT | `/kw-student-notes/:id` | Update note |
-| DELETE | `/kw-student-notes/:id` | Soft-delete |
-| GET | `/text-annotations?summary_id=` | Text annotations |
-| POST | `/text-annotations` | Create annotation |
-| PUT | `/text-annotations/:id` | Update |
-| DELETE | `/text-annotations/:id` | Soft-delete |
-| GET | `/video-notes?video_id=` | Video notes |
-| POST | `/video-notes` | Create note |
-| PUT | `/video-notes/:id` | Update |
-| DELETE | `/video-notes/:id` | Soft-delete |
+Sin cambios desde la actualizacion anterior. Ver secciones correspondientes en la version previa.
 
 ---
 
 ## Respuestas
 
-### Lista paginada (factory CRUD)
-```json
-{
-  "data": {
-    "items": [{ "id": "uuid", "...fields" }],
-    "total": 100,
-    "limit": 20,
-    "offset": 0
-  }
-}
-```
-
-### Item unico
-```json
-{
-  "data": { "id": "uuid", "...fields" }
-}
-```
-
-### Lista custom (array plano)
-```json
-{
-  "data": [...]
-}
-```
-
-### Error
-```json
-{
-  "error": "mensaje descriptivo"
-}
-```
+| Tipo | Formato |
+|---|---|
+| Lista paginada | `{ "data": { "items": [...], "total", "limit", "offset" } }` |
+| Item unico | `{ "data": { ... } }` |
+| Lista custom | `{ "data": [...] }` |
+| Error | `{ "error": "mensaje" }` |
 
 ---
 
 ## Estado de Conexion Frontend ↔ Backend
 
-### Conectado (funciona)
-- CRUD completo de todas las entidades de contenido
-- Content tree, search, reorder
-- Study sessions, reviews, batch-review
-- Reading states, FSRS/BKT states
-- AI generate, RAG chat
-- Video (Mux upload, playback, tracking)
-- Auth (signup, login, profile)
-- Gamificacion (parcial — Sprint 3 en progreso)
+### Conectado
+CRUD completo, content tree, search, reorder, study sessions, reviews, batch-review, reading states, FSRS/BKT, AI generate, RAG chat, video (Mux), auth, gamificacion (parcial).
 
 ### En progreso
-- Gamificacion frontend (DailyGoalWidget, GamificationCard conectados)
-- AI quality reports (frontend por implementar)
-- Pre-generate bulk (frontend por implementar)
+- Gamificacion frontend (Sprint 3)
+- AI quality reports frontend
+- WhatsApp integration (tablas creadas, backend en desarrollo)
