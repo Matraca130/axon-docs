@@ -2,7 +2,7 @@
 
 > **Proposito:** Pega este archivo al inicio de cada sesion de Figma Make para dar contexto completo.
 >
-> **Ultima actualizacion:** 2026-03-14 (audit pass 2)
+> **Ultima actualizacion:** 2026-03-14 (audit pass 3 — verified against source code)
 
 ---
 
@@ -51,21 +51,12 @@ Un usuario puede tener diferentes roles en diferentes instituciones.
 
 | Rol | Nivel | Acceso |
 |---|---|---|
-| `owner` | 4 | Acceso total a la institucion. Puede asignar cualquier rol. |
-| `admin` | 3 | Gestiona institucion, miembros, contenido. NO puede asignar owners. |
-| `professor` | 2 | Gestiona cursos y contenido asignado. Puede asignar professors y students. |
-| `student` | 1 | Ve contenido de sus cursos. Solo puede asignar students. |
+| `owner` | 4 | Acceso total a la institucion |
+| `admin` | 3 | Gestiona institucion, miembros, contenido |
+| `professor` | 2 | Gestiona cursos y contenido asignado |
+| `student` | 1 | Ve contenido de sus cursos |
 
-Controlado por:
-- `memberships` tabla (user_id + institution_id + role + is_active)
-- `requireInstitutionRole()` en auth-helpers.ts (fail-closed)
-- `canAssignRole()` previene escalacion de privilegios
-- Multi-tenancy: todo filtrado por `institution_id`
-
-**Sets de roles pre-definidos:**
-- `ALL_ROLES` — cualquier miembro activo
-- `MANAGEMENT_ROLES` — owner, admin
-- `CONTENT_WRITE_ROLES` — owner, admin, professor
+**Sets:** `ALL_ROLES`, `MANAGEMENT_ROLES` (owner, admin), `CONTENT_WRITE_ROLES` (owner, admin, professor)
 
 ## 4. Jerarquia de Datos
 
@@ -75,49 +66,45 @@ Institution
         └── Semester
               └── Section
                     └── Topic
-                          └── Summary (institution_id denormalized, pdf_source_url, pdf_page_start/end)
-                                ├── Chunks (fragmentos + embeddings 1536d)
-                                ├── Keywords (conceptos clave)
-                                │     ├── Flashcards
-                                │     ├── Quiz Questions → Quizzes
-                                │     ├── Keyword Connections
-                                │     ├── Subtopics (max 6 por keyword)
-                                │     └── Prof Notes (kw_prof_notes)
+                          └── Summary (institution_id denorm, pdf_source_url/page_start/page_end)
+                                ├── Chunks (embeddings 1536d)
+                                ├── Keywords → Subtopics, Flashcards, Quiz Questions, Connections, Prof Notes
                                 ├── Videos (Mux)
-                                └── Student Data (kw_student_notes, text_annotations, video_notes, reading_states)
+                                └── Student Data (notes, annotations, reading_states)
 ```
 
 ## 5. Backend - Patrones Clave
 
 ### Rutas
 - **Planas con query params**, nunca REST anidadas
-- Ejemplo: `GET /topics?section_id=xxx` (no `/sections/xxx/topics`)
-- `crud-factory.ts` genera 5 endpoints por entidad (LIST, GET, POST, PUT, DELETE)
-- 8 modulos split + 6 archivos flat, ~200+ endpoints totales
+- `crud-factory.ts` genera 5 endpoints por entidad
+- **10 modulos split + 6 archivos flat**, ~200+ endpoints totales
 
-### Modulos de Rutas (8 split + 6 flat)
+### Modulos de Rutas (10 split + 6 flat)
 
 | # | Modulo | Archivos | Proposito |
 |---|---|---|---|
-| 1 | `routes/content/` | 8 | Jerarquia de contenido (courses→subtopics, keyword-search, connections, reorder, content-tree, flashcards-by-topic) |
-| 2 | `routes/study/` | 6 | Sesiones, reviews, progreso, spaced-rep, batch-review |
-| 3 | `routes/ai/` | 12 | AI/RAG: generate, generate-smart, pre-generate, report, chat, ingest, analytics |
+| 1 | `routes/content/` | 8 | Jerarquia de contenido |
+| 2 | `routes/study/` | 6 | Sesiones, reviews, progreso, spaced-rep |
+| 3 | `routes/ai/` | 12 | AI/RAG: generate, chat, ingest, reports |
 | 4 | `routes/members/` | 4 | Instituciones, memberships, admin-scopes |
-| 5 | `routes/mux/` | 5 | Video (upload, playback, tracking, webhook) |
-| 6 | `routes/plans/` | 5 | Planes, AI generations, diagnostics, access |
+| 5 | `routes/mux/` | 5 | Video (upload, playback, tracking) |
+| 6 | `routes/plans/` | 5 | Planes, AI generations, diagnostics |
 | 7 | `routes/search/` | 4 | Busqueda global, trash, restore |
-| 8 | `routes/gamification/` | 5 | XP, badges, streaks, goals, leaderboard |
+| 8 | `routes/gamification/` | 5 | XP, badges, streaks, goals |
+| 9 | `routes/settings/` | ? | Configuracion (NUEVO) |
+| 10 | `routes/whatsapp/` | ? | WhatsApp integration (NUEVO) |
 
 | # | Archivo flat | Proposito |
 |---|---|---|
 | 1 | `routes-auth.ts` | Auth & profiles |
-| 2 | `routes-billing.ts` | Stripe (checkout, portal, webhooks) |
-| 3 | `routes-models.ts` | 3D models, pins, notes |
-| 4 | `routes-storage.ts` | File upload/download/delete |
-| 5 | `routes-student.ts` | Student instruments & notes |
+| 2 | `routes-billing.ts` | Stripe |
+| 3 | `routes-models.ts` | 3D models |
+| 4 | `routes-storage.ts` | File upload/download |
+| 5 | `routes-student.ts` | Student instruments |
 | 6 | `routes-study-queue.ts` | Study queue algorithm |
 
-### Archivos de Infraestructura Clave
+### Archivos de Infraestructura
 
 | Archivo | Proposito |
 |---|---|
@@ -125,158 +112,77 @@ Institution
 | `crud-factory.ts` | Generic CRUD route generator |
 | `validate.ts` | Runtime validation guards |
 | `auth-helpers.ts` | Role-based access control |
-| `gemini.ts` | Gemini API helpers + GENERATE_MODEL constant |
-| `openai-embeddings.ts` | OpenAI embeddings (1536d) — post-migration |
+| `gemini.ts` | Gemini API: text generation + PDF extraction (Fase 7) |
+| `openai-embeddings.ts` | OpenAI embeddings (1536d, text-embedding-3-**large**) |
 | `retrieval-strategies.ts` | Multi-Query, HyDE, Re-ranking |
-| `chunker.ts` | Recursive character chunking engine |
-| `semantic-chunker.ts` | Semantic chunking engine |
-| `auto-ingest.ts` | Auto-chunking + embedding pipeline |
-| `summary-hook.ts` | afterWrite hook for summaries |
-| `xp-engine.ts` | XP calculation + level thresholds |
-| `xp-hooks.ts` | 8 fire-and-forget XP hooks |
-| `streak-engine.ts` | Streak computation |
+| `chunker.ts` + `semantic-chunker.ts` | Chunking engines |
+| `auto-ingest.ts` + `summary-hook.ts` | Auto-chunking pipeline |
+| `xp-engine.ts` + `xp-hooks.ts` + `streak-engine.ts` | Gamification engines |
 | `ai-normalizers.ts` | AI response normalization |
 | `rate-limit.ts` | 120 req/min sliding window |
 | `timing-safe.ts` | Constant-time comparison |
+| `lib/bkt-v4.ts` + `lib/fsrs-v4.ts` | Spaced repetition algorithms |
+| `lib/types.ts` | Shared TypeScript types |
 
-### Formatos de Respuesta
+### Tests
+- **16 archivos de test** en `tests/` (unit + integration)
+- Deno-native test runner
+- ~183+ test cases
 
-**Rutas CRUD (factory):**
-```json
-{ "data": { "items": [...], "total": 100, "limit": 20, "offset": 0 } }
-```
+## 6. Sistema de Gamificacion
 
-**Rutas custom:**
-```json
-{ "data": { ... } }
-```
-
-## 6. Sistema de Gamificacion (2026-03-13)
-
-Sistema completo de XP, badges, streaks, y goals.
 Ver `GAMIFICATION_MAP.md` en `axon-backend/docs/` para referencia completa.
 
-### Componentes
-- **XP Engine** (`xp-engine.ts`): Calcula XP con multiplicadores (streak, on-time, flow zone, variable reward)
-- **XP Hooks** (`xp-hooks.ts`): 8 hooks fire-and-forget + `streak_daily` inline
-- **Badges** (`badges.ts`): 39 badges (19 criteria + 20 COUNT-based), evaluacion en 2 fases
-- **Streaks** (`streak.ts`): Check-in diario, freeze (3 max), repair
-- **Goals** (`goals.ts`): Daily goal configurable (5-120 min), completion tracking
-- **Profile** (`profile.ts`): XP history, leaderboard, student stats
+13 endpoints, 8 hooks (11 actions), 39 badges, daily cap 500 XP, 4 bonus types.
 
-### XP Actions (11 total)
-| Accion | XP Base |
-|---|---|
-| `review_flashcard` | 5 |
-| `review_correct` (grade ≥3) | 10 |
-| `quiz_answer` | 5 |
-| `quiz_correct` | 15 |
-| `complete_session` | 25 |
-| `complete_reading` | 30 |
-| `complete_video` | 20 |
-| `streak_daily` | 15 |
-| `complete_plan_task` | 15 |
-| `complete_plan` | 100 |
-| `rag_question` | 5 |
+## 7. Base de Datos
 
-Daily cap: 500 XP. Post-cap rate: 10%.
+### Embeddings (¡VERIFICADO contra codigo fuente!)
 
-## 7. Base de Datos - Datos Criticos
-
-### Embeddings (¡CAMBIO RECIENTE!)
-
-> **Migracion 20260311_01:** Embeddings migrados de `vector(768)` (Gemini) a `vector(1536)` (OpenAI text-embedding-3-small).
-> Archivo: `openai-embeddings.ts` reemplaza `generateEmbedding()` de `gemini.ts` para embeddings.
-> Generacion de texto sigue usando Gemini 2.5 Flash.
-> HNSW indexes recreados (migration `20260311_02_recreate_hnsw_indexes.sql`).
+> **Modelo:** OpenAI `text-embedding-3-large` (NO small) truncado a 1536d via Matryoshka
+> **Archivo:** `openai-embeddings.ts` — constantes `EMBEDDING_MODEL` y `EMBEDDING_DIMENSIONS`
+> **Generacion de texto:** Gemini 2.5 Flash (sin cambios, en `gemini.ts`)
+> **HNSW indexes:** Recreados para 1536d
 
 ### Tipos que causan confusion
-| Campo | Tipo REAL en DB | NO es |
+| Campo | Tipo REAL | NO es |
 |---|---|---|
 | `priority` | INTEGER (1, 2, 3) | String |
 | `difficulty` | INTEGER (1, 2, 3) | String |
-| `question_type` | TEXT con CHECK | Enum |
-| `daily_goal_minutes` | INTEGER (5-120) | `daily_goal` (renombrado en B-001) |
+| `question_type` | TEXT | Enum |
+| `daily_goal_minutes` | INTEGER (5-120) | `daily_goal` |
+| `order_index` | INTEGER | `sort_order` |
 
-### Valores validos de `question_type`
-`"mcq"`, `"true_false"`, `"fill_blank"`, `"open"`
+## 8. Estado Actual
 
-### `quiz_questions` - Campos reales
-`["keyword_id", "question_type", "question", "correct_answer"]`
-**NO tiene columna `name`**.
+### Seguridad — ATENCION
 
-### Campos nullable vs required
-- `flashcards.keyword_id`: NULLABLE en DB pero REQUIRED en backend
+> **CORS sigue siendo wildcard `"*"`** en produccion (verificado en `index.ts`).
+> Fue restringido brevemente (commit `33eb56e`) pero **revertido** para desarrollo MVP.
+> Comentario en index.ts: "MVP: Temporarily reverted to '*' for development flexibility."
+> **TODO:** Re-restringir antes de launch.
 
-## 8. Estado Actual del Proyecto
-
-### Bugs conocidos
-Ver `KNOWN-BUGS.md` para la lista completa.
-- BUG-002 (JWT): Mitigado por PostgREST, riesgo residual en rutas sin DB query
-- BUG-003 (RLS): Pendiente — parcialmente mitigado (revoke RPC from authenticated, migration `20260312_01`)
-- BUG-004 (CORS): **FIXED** (2026-03-06)
-- BUG-008 (Reorder): **FIXED**
-- BUG-010 (Frontend build roto): **FIXED**
-
-### Nuevas Funcionalidades (post-docs anteriores)
-
-**WhatsApp Integration (2026-03-14):**
-- Migracion `20260314_01_whatsapp_tables.sql` — tablas para mensajeria WhatsApp
-- Migracion `20260315_01_whatsapp_job_processor_cron.sql` — procesador de jobs con pg_cron
-- Estado: Tablas creadas, backend en desarrollo
-
-**PDF Source Tracking (2026-03-10):**
-- Migracion `20260310_01_pdf_source_columns.sql` — columnas en summaries para tracking de fuente PDF
-- Campos: `pdf_source_url`, `pdf_page_start`, `pdf_page_end`
-- Preparacion para Fase 7 (multi-source ingestion)
-
-**RAG Security Hardening (2026-03-11/12):**
-- Migracion `20260311_02_rag_security_hardening.sql`
-- Migracion `20260312_01_revoke_rpc_from_authenticated.sql` — revoca acceso directo a RPCs sensibles
+- BUG-002 (JWT): Mitigado por PostgREST
+- BUG-003 (RLS): Parcialmente mitigado (revoke RPC from authenticated)
+- BUG-004 (CORS): **NO FIXED — revertido a wildcard para desarrollo**
 
 ### RAG Pipeline
-- Gemini 2.5 Flash para generacion de texto
-- **OpenAI text-embedding-3-small (1536d)** para embeddings (migrado de Gemini 768d)
-- rag_hybrid_search() actualizado para vector(1536)
-- Fase 6: Multi-Query, HyDE, Re-ranking con Gemini-as-Judge
-- Fase 7: PDF source columns preparados
-- Fase 8: Generacion adaptativa (NeedScore), quality reports, pre-generacion bulk
+- Gemini 2.5 Flash para generacion + PDF extraction (Fase 7)
+- **OpenAI text-embedding-3-large (1536d)** para embeddings
+- Fase 7: PDF extraction code exists in `gemini.ts` (`extractTextFromPdf()`)
+- Fase 8: Smart generation, quality reports, pre-generation
 
-### Migraciones
-- **52+ archivos SQL** en `supabase/migrations/`
-- Incluye: gamificacion, WhatsApp, PDF, RAG security, embedding migration, badge seeds
+### Migraciones: **52+ archivos SQL**
 
-## 9. Frontend - Cambios Recientes (2026-03-13/14)
+### Frontend Gamification (mas conectado de lo documentado)
+- 8 React Query hooks en `useGamification.ts`
+- 7+ componentes: GamificationView, DailyGoalWidget, GamificationCard, StreakPanel, BadgeShowcase, LeaderboardCard, XpHistoryFeed, StudyQueueCard
+- Palette migrada a Axon Medical Academy (teal/gray, commit `b7512445`)
 
-### Layout v2 (Responsive)
-- Todos los layouts migrados a `layout/RoleShell` v2 (MobileDrawer + auto-close)
-- `roles/RoleShell` v1 eliminado (dead code)
-- `roles/StudentLayout` v1 eliminado (faltaba providers)
-
-### Auth Consolidation
-- `contexts/AuthContext.tsx` bridge eliminado
-- Canonical: `context/AuthContext.tsx` (unico `createContext()`)
-
-### lazyRetry
-- Nuevo `lazyRetry()` utility en 22 lazy route imports
-- Captura errores de chunks stale post-deploy, auto-reload una vez
-
-## 10. Tablas Basura (seguro eliminar)
-
-~25 tablas `kv_store_*` creadas automaticamente por Figma Make. Se pueden dropear sin impacto.
-
-## 11. Tech Stack
+## 9. Tech Stack
 
 ### Frontend
-- React 18 + TypeScript + Vite 6
-- Tailwind CSS v4 + shadcn/ui (Radix UI) + Lucide icons
-- React Router v7 (data mode) + React Query v5
-- Motion, TipTap, Three.js, Mux Player, @floating-ui/react, Sonner
-- Deploy: Vercel
+React 18, TypeScript, Vite 6, Tailwind CSS v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, @floating-ui/react, Sonner. Deploy: Vercel.
 
 ### Backend
-- Hono + Deno (Supabase Edge Functions)
-- Supabase PostgreSQL + pgvector
-- **Gemini 2.5 Flash** (text generation) + **OpenAI text-embedding-3-small** (1536d embeddings)
-- Stripe (billing), Mux (video)
-- GitHub Actions CI/CD
+Hono + Deno (Supabase Edge Functions), PostgreSQL + pgvector, **Gemini 2.5 Flash** (text) + **OpenAI text-embedding-3-large** (1536d embeddings), Stripe, Mux. CI/CD: GitHub Actions.
