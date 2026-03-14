@@ -1,6 +1,6 @@
 # 03 -- Auth & Roles
 
-> **UPDATED with Query 2 corrections.**
+> **Updated:** 2026-03-14
 
 ## Double Token System
 
@@ -11,21 +11,25 @@ Authorization: Bearer <SUPABASE_ANON_KEY>
 X-Access-Token: <USER_JWT>
 ```
 
-## Roles (CORRECTED: 4 roles)
+**IMPORTANT:** The user role is NOT in the JWT. It comes from `GET /institutions`.
+A user can have different roles across different institutions.
 
-| Role | Value | Permissions |
+## Roles (4 roles)
+
+| Role | Value | Level | Permissions |
+|---|---|---|---|
+| Student | `student` | 1 | Read content, take quizzes, study flashcards, personal notes |
+| Professor | `professor` | 2 | All student perms + create/edit content |
+| Admin | `admin` | 3 | Scoped admin (see admin_scopes table) |
+| Owner | `owner` | 4 | Full institution management |
+
+## Role Sets (defined in `auth-helpers.ts`)
+
+| Set | Roles | Used for |
 |---|---|---|
-| Student | `student` | Read content, take quizzes, study flashcards |
-| Professor | `professor` | All student perms + create/edit content |
-| Admin | `admin` | Scoped admin (see admin_scopes table) |
-| Owner | `owner` | Full institution management |
-
-## Platform Roles (separate from institution roles)
-
-| Role | Value | Notes |
-|---|---|---|
-| User | `user` | Default for all users |
-| Platform Admin | `platform_admin` | Super-admin across all institutions |
+| `ALL_ROLES` | owner, admin, professor, student | Any authenticated member |
+| `MANAGEMENT_ROLES` | owner, admin | Institution management |
+| `CONTENT_WRITE_ROLES` | owner, admin, professor | Content creation/editing |
 
 ## Access Control
 
@@ -39,7 +43,7 @@ is_active        -> BOOLEAN (NOT status enum!)
 institution_plan_id -> institution_plans.id (nullable)
 ```
 
-### Table: `admin_scopes` (NEW)
+### Table: `admin_scopes`
 
 Limits admin access to specific parts of the content tree:
 
@@ -59,10 +63,15 @@ scope_type -> 'course' | 'semester' | 'section' | 'topic' | 'summary'
 scope_id   -> UUID of the accessible entity
 ```
 
-## Known Security Issues
+## Security Status
 
-- JWT not cryptographically verified
-- RLS disabled on flashcards, quiz_questions, quizzes
-- CORS: origin "*"
+| Issue | Status | Details |
+|---|---|---|
+| JWT verification | Mitigated (BUG-002) | PostgREST validates on DB query. Residual risk on non-DB routes |
+| RLS disabled | Pending (BUG-003) | Backend enforces scoping via `checkContentScope()` |
+| CORS wildcard | **FIXED** (2026-03-06) | Restricted to specific domains |
+| Rate limiting | **DONE** (O-8) | 120 req/min sliding window + 20 AI POST/hr distributed |
+| Webhook idempotency | **DONE** (O-7) | Event tracking for Stripe and Mux |
+| Stripe timing-safe | **DONE** (N-10) | Constant-time signature comparison |
 
-See `bugs/security-audit.md` for full details.
+See `KNOWN-BUGS.md` for full details.
