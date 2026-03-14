@@ -1,23 +1,28 @@
 # Frontend Build Errors
 
-> **STATUS: RESOLVED** — Vercel build passes as of commit `a33f6ea`.
-> Build time: 12.15s, 3207 modules. Deploy successful.
+> **STATUS: ALL RESOLVED** — Build passes, code-split, deployed.
+> **Updated:** 2026-03-14
 
 ## HF-B — RESOLVED (2025-02-27)
 
-The original TS2339 errors (`createStudySession`, `updateStudySession`, `submitReview` not on platformApi) were resolved by adding these functions to `studySessionApi.ts` and `quizApi.ts` instead. No component imports them from `platformApi`.
+The original TS2339 errors (`createStudySession`, `updateStudySession`, `submitReview` not on platformApi) were resolved by adding these functions to `studySessionApi.ts` and `quizApi.ts`.
 
-Additionally, `vite build` uses esbuild (not tsc), so TypeScript type errors don't block the build.
+## Runtime Payload Bugs — RESOLVED (2026-03-13)
 
-## Remaining: Runtime Payload Bugs
+Study session and review APIs are now fully connected. See EC-03/04/05 commits in `axon-docs`.
 
-These don't break the build but cause **HTTP 400/500 errors at runtime** when students use study sessions, flashcard reviews, or quizzes. See `bugs/runtime-payload-bugs.md` for details and fix plan.
+## Bundle Size — RESOLVED (code splitting applied)
 
-## Bundle Size Warning
+Previous state: Entire app in ONE chunk (3,236 KB / 879 KB gzipped).
 
-```
-dist/assets/index-CMBHrIfe.js  3,236.75 kB | gzip: 879.38 kB
-```
+Current state:
+- 22 lazy route imports via `React Router lazy()`
+- Vendor chunks: `vendor-react`, `vendor-three`, `vendor-motion`
+- `lazyRetry()` utility handles stale chunk errors post-deploy
+- Per-role code splitting: student never downloads admin/owner/professor code
 
-Entire app is in ONE chunk. Needs code-splitting via lazy routes.
-See `frontend/bundle-optimization.md` (TODO).
+## Stale Chunk Errors — RESOLVED (2026-03-14)
+
+After deploys, cached HTML pointed to old chunk filenames. `lazyRetry()` catches the error, auto-reloads once, and prevents infinite loops via sessionStorage flag.
+
+Applied to all 22 lazy route imports across 6 route files.
