@@ -1,18 +1,18 @@
 # API Routes: Study
 
-> Flashcards, quizzes, quiz questions, study sessions, reviews, and spaced repetition.
+> Flashcards, quizzes, quiz questions, study sessions, reviews, spaced repetition, and study plans.
 >
-> **Verified against:** `routes-student.tsx`, `routes/study/reviews.ts`,
+> **Verified against:** `routes-student.ts`, `routes/study/reviews.ts`,
 > `routes/study/sessions.ts`, `routes/study/spaced-rep.ts`,
-> `routes/study/progress.ts`, `routes-study-queue.tsx`
+> `routes/study/progress.ts`, `routes-study-queue.ts`
 >
-> **Last verified:** 2026-03-06
+> **Last verified:** 2026-03-14 (audit pass 10 — cross-checked all createFields/updateFields)
 
 ---
 
 ## Flashcards
 
-**Source:** `routes-student.tsx` via `crud-factory.ts`
+**Source:** `routes-student.ts` via `crud-factory.ts`
 **Parent key:** `summary_id` (required on LIST and CREATE)
 
 | Method | Endpoint | Query Params | Response |
@@ -31,7 +31,7 @@
 
 ## Quizzes
 
-**Source:** `routes-student.tsx` via `crud-factory.ts`
+**Source:** `routes-student.ts` via `crud-factory.ts`
 **Parent key:** `summary_id` (required on LIST and CREATE)
 
 | Method | Endpoint | Query Params | Response |
@@ -50,7 +50,7 @@
 
 ## Quiz Questions
 
-**Source:** `routes-student.tsx` via `crud-factory.ts`
+**Source:** `routes-student.ts` via `crud-factory.ts`
 **Parent key:** `summary_id` (required on LIST and CREATE)
 
 | Method | Endpoint | Query Params | Response |
@@ -72,7 +72,7 @@
 
 ## Videos
 
-**Source:** `routes-student.tsx` via `crud-factory.ts`
+**Source:** `routes-student.ts` via `crud-factory.ts`
 **Parent key:** `summary_id` (required on LIST and CREATE)
 
 | Method | Endpoint | Query Params | Response |
@@ -88,6 +88,51 @@
 **Create fields:** `title`, `url`, `platform`, `duration_seconds`, `order_index`
 **Update fields:** `title`, `url`, `platform`, `duration_seconds`, `order_index`, `is_active`
 **Flags:** `hasCreatedBy`, `hasUpdatedAt`, `hasOrderIndex`, `softDelete`, `hasIsActive`
+
+## Student Notes (3 entities from routes-student.ts)
+
+All use `scopeToUser: "student_id"` — auto-set from JWT, auto-filtered on all ops.
+
+### Keyword Student Notes
+
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/kw-student-notes` | `keyword_id` (required) | Paginated (user-scoped) |
+| GET | `/kw-student-notes/:id` | | Single |
+| POST | `/kw-student-notes` | | Single (201) |
+| PUT | `/kw-student-notes/:id` | | Single |
+| DELETE | `/kw-student-notes/:id` | | Single (soft-delete) |
+
+**Required:** `note`
+**Create/Update fields:** `note`
+
+### Text Annotations
+
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/text-annotations` | `summary_id` (required) | Paginated (user-scoped) |
+| GET | `/text-annotations/:id` | | Single |
+| POST | `/text-annotations` | | Single (201) |
+| PUT | `/text-annotations/:id` | | Single |
+| DELETE | `/text-annotations/:id` | | Single (soft-delete) |
+
+**Required:** `start_offset`, `end_offset`
+**Create fields:** `start_offset`, `end_offset`, `color`, `note`
+**Update fields:** `color`, `note`
+
+### Video Notes
+
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/video-notes` | `video_id` (required) | Paginated (user-scoped) |
+| GET | `/video-notes/:id` | | Single |
+| POST | `/video-notes` | | Single (201) |
+| PUT | `/video-notes/:id` | | Single |
+| DELETE | `/video-notes/:id` | | Single (soft-delete) |
+
+**Required:** `note`
+**Create fields:** `timestamp_seconds`, `note`
+**Update fields:** `timestamp_seconds`, `note`
 
 ## Study Sessions
 
@@ -105,10 +150,55 @@
 **Required fields (POST):** `session_type`
 **Create fields:** `course_id`, `session_type`
 **Update fields:** `completed_at`, `total_reviews`, `correct_reviews`
+**afterWrite:** `xpHookForSessionComplete` — Awards XP when session completed
 
 > `student_id` is auto-set from JWT, never sent by client.
 > `session_type` valid values: `"flashcard"`, `"quiz"`, `"reading"`, `"mixed"`
 > There is NO `user_id`, `topic_id`, or `score` field.
+
+## Study Plans
+
+**Source:** `routes/study/sessions.ts` via `crud-factory.ts`
+**Scope:** `scopeToUser: "student_id"`
+
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/study-plans` | `course_id`, `status` (optional) | Paginated |
+| GET | `/study-plans/:id` | | Single |
+| POST | `/study-plans` | | Single (201) |
+| PUT | `/study-plans/:id` | | Single |
+| DELETE | `/study-plans/:id` | | Single (hard delete) |
+
+**Required fields (POST):** `name`
+**Create fields:** `course_id`, `name`, `status`, `completion_date`, `weekly_hours`, `metadata`
+**Update fields:** `name`, `status`, `completion_date`, `weekly_hours`, `metadata`
+
+> `status` valid values: `"active"`, `"completed"`, `"archived"`
+> `completion_date` — DATE, DT-02 FIX
+> `weekly_hours` — NUMERIC, DT-02 FIX
+> `metadata` — JSONB, DT-02 FIX
+
+## Study Plan Tasks
+
+**Source:** `routes/study/sessions.ts` via `crud-factory.ts`
+**Parent key:** `study_plan_id` (required on LIST and CREATE)
+
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/study-plan-tasks` | `study_plan_id` (required) | Paginated (ordered by `order_index`) |
+| GET | `/study-plan-tasks/:id` | | Single |
+| POST | `/study-plan-tasks` | | Single (201) |
+| PUT | `/study-plan-tasks/:id` | | Single |
+| DELETE | `/study-plan-tasks/:id` | | Single (hard delete) |
+
+**Required fields (POST):** `item_type`, `item_id`
+**Create fields:** `item_type`, `item_id`, `status`, `order_index`, `original_method`, `scheduled_date`, `estimated_minutes`, `task_kind`
+**Update fields:** `status`, `order_index`, `completed_at`, `scheduled_date`, `estimated_minutes`, `original_method`, `task_kind`
+**afterWrite:** `xpHookForPlanTaskComplete` — Awards 15 XP per task + 100 XP bonus on full plan completion
+
+> `item_type` valid values: `"flashcard"`, `"quiz"`, `"reading"`, `"keyword"`
+> `status` valid values: `"pending"`, `"completed"`, `"skipped"`
+> `task_kind` — PR1a scheduling engine field
 
 ## Reviews
 
@@ -125,6 +215,7 @@
 
 > `instrument_type` valid values: `"flashcard"`, `"quiz"`
 > O-3 FIX: Verifies session ownership before any operation.
+> Gamification: `xpHookForReview` fires on POST (Sprint 1).
 > There is NO `user_id`, `rating`, `flashcard_id`, or `quiz_question_id` field.
 
 ## Quiz Attempts
@@ -141,10 +232,11 @@
 **Optional fields:** `session_id` (UUID), `time_taken_ms` (non-negative integer)
 
 > `student_id` is auto-set from JWT.
+> Gamification: `xpHookForQuizAttempt` fires on POST (Sprint 1).
 
 ## Study Queue
 
-**Source:** `routes-study-queue.tsx` (custom)
+**Source:** `routes-study-queue.ts` (custom)
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
@@ -153,6 +245,7 @@
 > Uses `get_study_queue()` RPC as primary path (S-3 FIX).
 > Falls back to JS-based logic if RPC unavailable.
 > Algorithm: NeedScore = 0.40*overdue + 0.30*(1-p_know) + 0.20*fragility + 0.10*novelty
+> v4.2: clinical_priority exponential scaling, 5-color mastery scale, leech detection
 > There is NO `user_id` or `topic_id` parameter.
 
 ## Spaced Repetition
@@ -174,7 +267,7 @@
 
 | Method | Endpoint | Query Params | Response |
 |---|---|---|---|
-| GET | `/bkt-states` | `subtopic_id` (optional) | Array (paginated) |
+| GET | `/bkt-states` | `subtopic_id` (optional), `subtopic_ids` (optional, comma-separated, max 200) | Array (paginated) |
 | POST | `/bkt-states` | | Single (upsert) |
 
 **Required (POST):** `subtopic_id` (UUID)
@@ -182,6 +275,9 @@
 **Upsert key:** `student_id,subtopic_id`
 
 > M-1 FIX: `total_attempts`/`correct_attempts` INCREMENT instead of replace.
+> M-5 FIX: `subtopic_ids` (plural) batch filter — comma-separated UUIDs, max 200.
+>   Mutually exclusive with `subtopic_id` (singular). Reduces "fetch all BKT states"
+>   to "only BKT states for this summary's subtopics".
 
 ## Progress Tracking
 
@@ -201,6 +297,34 @@
 |---|---|---|---|
 | GET | `/topics-overview` | `topic_ids` (required, comma-separated UUIDs, max 50) | `{ summaries_by_topic, keyword_counts_by_topic }` |
 
-### Reading States, Daily Activities, Student Stats
+### Reading States
 
-All use GET (list/single) + POST (upsert) pattern with `student_id` auto-set from JWT.
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/reading-states` | `summary_id` (required UUID) | Single (user-scoped) |
+| POST | `/reading-states` | | Single (upsert) |
+
+**Optional (POST):** `scroll_position`, `time_spent_seconds`, `completed`, `last_read_at`
+**Upsert key:** `student_id,summary_id`
+> Gamification: `xpHookForReadingComplete` fires when `completed=true` (Sprint 1).
+
+### Daily Activities
+
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/daily-activities` | `from`, `to` (optional YYYY-MM-DD) | Array (paginated, default 90) |
+| POST | `/daily-activities` | | Single (upsert) |
+
+**Required (POST):** `activity_date` (YYYY-MM-DD)
+**Optional:** `reviews_count`, `correct_count`, `time_spent_seconds`, `sessions_count`
+**Upsert key:** `student_id,activity_date`
+
+### Student Stats
+
+| Method | Endpoint | Query Params | Response |
+|---|---|---|---|
+| GET | `/student-stats` | (none — auto-scoped to user) | Single |
+| POST | `/student-stats` | | Single (upsert) |
+
+**Optional (POST):** `current_streak`, `longest_streak`, `total_reviews`, `total_time_seconds`, `total_sessions`, `last_study_date`
+**Upsert key:** `student_id`
