@@ -1,8 +1,8 @@
 # 02 -- Data Hierarchy
 
-> The core data model of Axon. **UPDATED with Query 2 corrections.**
+> The core data model of Axon. **Updated: 2026-03-14**
 
-## Hierarchy (Corrected)
+## Hierarchy
 
 ```
 Institution
@@ -10,19 +10,20 @@ Institution
   |     +-- Semester
   |     |     +-- Section
   |     |           +-- Topic
-  |     |                 +-- Summary
-  |     |                 |     +-- Chunks
+  |     |                 +-- Summary (institution_id denormalized)
+  |     |                 |     +-- Chunks (embedding 768d, fts tsvector)
+  |     |                 |     +-- Summary Blocks
   |     |                 |     +-- Keywords
-  |     |                 |     |     +-- Subtopics
+  |     |                 |     |     +-- Subtopics (max 6 per keyword)
   |     |                 |     |     |     +-- BKT States (per student)
   |     |                 |     |     |     +-- Flashcards (subtopic_id FK)
   |     |                 |     |     |     +-- Quiz Questions (subtopic_id FK)
   |     |                 |     |     +-- Flashcards (keyword_id FK, nullable)
-  |     |                 |     |     +-- Keyword Connections
+  |     |                 |     |     +-- Keyword Connections (bidirectional, canonical a<b)
   |     |                 |     |     +-- Kw Prof Notes
   |     |                 |     |     +-- Kw Student Notes
   |     |                 |     |     +-- Model 3D Pins (keyword_id FK)
-  |     |                 |     +-- Videos
+  |     |                 |     +-- Videos (Mux)
   |     |                 |     +-- Quizzes
   |     |                 |     +-- Quiz Questions (summary_id FK)
   |     |                 |     +-- Flashcards (summary_id FK)
@@ -36,21 +37,38 @@ Institution
   |     |                       +-- Model 3D Notes (per student)
   |     +-- Study Sessions (course_id FK)
   |     +-- Study Plans (course_id FK)
+  |           +-- Study Plan Tasks
   +-- Institution Plans
   |     +-- Plan Access Rules
   |     +-- Memberships (institution_plan_id FK)
   +-- Institution Subscriptions
   +-- Memberships
-        +-- Admin Scopes
+  |     +-- Admin Scopes
+  +-- Badge Definitions (institution-scoped)
+  +-- Algorithm Config (NeedScore weights)
 
 Platform Plans (global, no institution)
 Profiles (= auth.users)
-  +-- Student Stats
+  +-- Student Stats (XP, level, streaks)
+  +-- XP History
+  +-- Student Badges
+  +-- Badge Notifications
+  +-- Streak Repairs
+  +-- Streak Freezes
   +-- Daily Activities
   +-- AI Generations
+  +-- FSRS States (per flashcard)
+  +-- BKT States (per subtopic)
+
+System Tables:
+  +-- RAG Query Log (RLS enabled)
+  +-- AI Content Reports
+  +-- Processed Webhook Events
+  +-- Rate Limit (UNLOGGED)
+  +-- Materialized View: mv_student_knowledge_profile
 ```
 
-## Key Relationships (Corrected)
+## Key Relationships
 
 | Parent | Child | FK Column | Notes |
 |---|---|---|---|
@@ -66,27 +84,26 @@ Profiles (= auth.users)
 | Summary | Quiz | `summary_id` | **FK is summary_id NOT keyword_id** |
 | Summary | Flashcard | `summary_id` | Primary parent |
 | Summary | Quiz Question | `summary_id` | Primary parent |
-| Keyword | Subtopic | `keyword_id` | Sub-divisions |
+| Keyword | Subtopic | `keyword_id` | Sub-divisions (max 6) |
 | Keyword | Flashcard | `keyword_id` | **NULLABLE** secondary FK |
 | Keyword | Quiz Question | `keyword_id` | **NULLABLE** secondary FK |
-| Keyword | Keyword Connection | `keyword_a_id`, `keyword_b_id` | Bidirectional |
+| Keyword | Keyword Connection | `keyword_a_id`, `keyword_b_id` | Bidirectional, canonical a<b |
 | Subtopic | BKT State | `subtopic_id` | Per-student knowledge state |
-| Subtopic | Flashcard | `subtopic_id` | Optional tertiary FK |
-| Subtopic | Quiz Question | `subtopic_id` | Optional tertiary FK |
 
 ## Multi-Tenancy
 
 All queries scoped by `institution_id` through the membership chain.
+`summaries` has denormalized `institution_id` (migration `20260304_06`).
 
 ## Ordering
 
 All ordering uses `order_index` INTEGER NOT NULL (NOT `sort_order`).
 
-## Roles (CORRECTED: 4 not 3)
+## Roles (4 roles)
 
-| Role | Value |
-|---|---|
-| Student | `student` |
-| Professor | `professor` |
-| Admin | `admin` |
-| Owner | `owner` |
+| Role | Value | Level |
+|---|---|---|
+| Student | `student` | 1 |
+| Professor | `professor` | 2 |
+| Admin | `admin` | 3 |
+| Owner | `owner` | 4 |
