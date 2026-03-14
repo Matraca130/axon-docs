@@ -2,7 +2,7 @@
 
 > **Proposito:** Pega este archivo al inicio de cada sesion de Figma Make para dar contexto completo.
 >
-> **Ultima actualizacion:** 2026-03-14 (audit pass 12 — 74 frontend files read end-to-end)
+> **Ultima actualizacion:** 2026-03-14 (audit pass 12 FINAL — 180 files read, 8/10 layers 100%)
 
 ---
 
@@ -26,132 +26,136 @@ Rol NO esta en JWT — viene de `GET /institutions`.
 
 AuthContext flow: supabase.signIn → setAccessToken(jwt) → GET /me → GET /institutions → auto-select if 1 institution → route by role.
 
-> **⚠️ CORS sigue siendo wildcard `"*"`** (revertido para MVP). Ver BUG-004.
-> **⚠️ supabase.ts tiene ANON_KEY hardcodeado** (no env var). Ver BUG-017.
+> **⚠️ CORS sigue siendo wildcard `"*"`** (BUG-004).
+> **⚠️ ANON_KEY hardcodeado en 3 archivos** (supabase.ts, config.ts, lib/api.ts) (BUG-017).
 
 ## 3. Roles: owner(4), admin(3), professor(2), student(1)
 
 Sets: `ALL_ROLES`, `MANAGEMENT_ROLES`, `CONTENT_WRITE_ROLES`
 
+> **⚠️ Admin/Owner/Professor routes son ALL placeholder pages.** Solo student tiene componentes reales (22+ routes).
+
 ## 4. Jerarquia: Institution → Course → Semester → Section → Topic → Summary
 
 Summary tiene: Chunks (1536d embeddings), Keywords (Flashcards, Quiz Questions, Connections, Subtopics, Prof Notes), Videos (Mux), Student Data.
-Campos PDF: `pdf_source_url`, `pdf_page_start`, `pdf_page_end`.
 
 ## 5. Backend
 
-### Rutas: planas con query params, ~200+ endpoints
-
 **10 modulos split + 6 flat** (ver API-MAP.md para detalle completo)
-
-### Key Infrastructure Files
-
-`db.ts`, `crud-factory.ts`, `validate.ts`, `auth-helpers.ts`, `gemini.ts` (text gen + PDF extract), `openai-embeddings.ts` (1536d), `retrieval-strategies.ts`, `chunker.ts`, `semantic-chunker.ts`, `auto-ingest.ts`, `summary-hook.ts`, `xp-engine.ts`, `xp-hooks.ts`, `streak-engine.ts`, `ai-normalizers.ts`, `rate-limit.ts`, `timing-safe.ts`, `lib/bkt-v4.ts`, `lib/fsrs-v4.ts`, `lib/types.ts`
-
-### Tests: **16 files**
 
 ## 6. Gamificacion
 
-13 endpoints, 8 hooks (11 XP actions), 39 badges, daily cap 500 XP, 4 bonus types.
-MVP constants: FREEZE_COST=100, MAX_FREEZES=3, REPAIR_COST=200.
+13 endpoints, 11 XP actions, 39 badges, daily cap 500 XP, 12 levels.
+> **⚠️ GamificationContext es STUB** (BUG-013). useGamification.ts (React Query) es la impl real.
 
-> **⚠️ GamificationContext es un STUB** (BUG-013). useGamification.ts (React Query) es la impl real.
-
-## 7. Embeddings
-
-> **Modelo:** OpenAI `text-embedding-3-large` (1536d via Matryoshka)
-> **Generacion:** Gemini 2.5 Flash
-> **gemini.ts** `generateEmbedding()` = HARD ERROR (throws, prevents dimension mismatch)
+## 7. Embeddings: OpenAI text-embedding-3-large (1536d), Gemini 2.5 Flash
 
 ## 8. DB: 50+ tables, 53 migrations, pgvector 1536d, pg_trgm, pg_cron
 
 ## 9. Seguridad
 
-| Issue | Estado |
-|---|---|
-| CORS wildcard | NOT FIXED (BUG-004) |
-| RLS | Parcialmente mitigado (BUG-003) |
-| JWT | Mitigado por PostgREST (BUG-002) |
-| Hardcoded anon key | Pendiente (BUG-017) |
-
-## 10. Frontend (verified pass 12 — 74 files read)
-
-### 10.0 File Counts (VERIFIED)
-
-| Layer | Files | Read % |
+| Issue | Estado | Bug |
 |---|---|---|
-| services/ (flat) | 32 | 100% |
-| services/student-api/ | 6 | 100% |
-| services/platform-api/ | 7 | 100% |
-| services/ai-service/ | 8 | 100% |
-| **services/ TOTAL** | **53** | **100%** |
-| hooks/ (flat) | 35 | 29% |
-| hooks/queries/ | 20 | 0% |
-| context/ | 9 | 100% |
-| types/ | 11 | 100% |
-| lib/ | 25 | 28% |
-| utils/ | 10 | 40% |
-| routes/ | 10 | 0% |
-| design-system/ | 14 | 0% |
-| components/ | 20 subdirs + 2 root | 0% |
+| CORS wildcard | NOT FIXED | BUG-004 |
+| RLS deshabilitado | Parcialmente mitigado | BUG-003 |
+| JWT sin crypto local | Mitigado por PostgREST | BUG-002 |
+| Hardcoded credentials | 3 archivos | BUG-017 |
+| Demo student fallback | useSummaryPersistence | BUG-018 |
 
-All paths relative to `src/app/`.
+## 10. Frontend (VERIFIED — 180 files read, 8/10 layers 100%)
 
-### 10.1 Types Layer (11 files — ALL READ)
+### 10.0 File Counts
 
-- `content.ts` — UI nested types (Course > Semester > Section > Topic > Flashcard) + stub courses[]
-- `platform.ts` — DB row types (Institution, MemberListItem, Plans, Subscriptions, AdminScope, AccessRules, Content Hierarchy)
-- `student.ts` — Student domain (Profile, Preferences, Stats, CourseProgress, Reviews, DailyActivity, KeywordState)
-- `gamification.ts` — XP (11 actions, XP_TABLE, 12 levels), Badges, StreakStatus, StudyQueueItem/Meta/Response
-- `keyword-connections.ts` — KeywordConnection (canonical A<B order), CreateConnectionInput, SearchResultKeyword
-- `keywords.ts` — MasteryLevel (red/yellow/green), KeywordData, masteryConfig
-- `model3d.ts` — Model3D, Pin, Note, Layer, Part, PaginatedResponse, SectionWithModels
-- `study-plan.ts` — StudyPlan + StudyPlanTask (extracted from AppContext)
-- `legacy-stubs.ts` — Old data/ folder stubs (courses, lessons, keywords, studyContent, sectionImages)
-- `flashcard-manager.ts` — Subtopic type for FlashcardsManager
-- `keyword-notes.ts` — KwProfNote re-export from useKeywordPopupQueries
+| Layer | Files | Status |
+|---|---|---|
+| services/ | 53 | **100%** |
+| context/ | 9 | **100%** |
+| types/ | 11 | **100%** |
+| hooks/ (flat + queries/) | 56 | **100%** |
+| lib/ | 25 | **100%** |
+| utils/ | 10 | **100%** |
+| routes/ | 10 | **100%** |
+| design-system/ | 14 | 0% (UI-only) |
+| components/ | ~100+ | 0% (UI-only) |
 
-### 10.2 Critical Lib Files
+### 10.1 Types Layer (11 files)
 
-- `api.ts` — Central apiCall() wrapper: dual-token, GET dedup, 15s timeout, { data } unwrap
-- `supabase.ts` — Singleton client (HARDCODED URL+KEY, Symbol.for HMR protection)
-- `xp-constants.ts` — Frontend mirror of backend XP_TABLE (11 actions), LEVEL_THRESHOLDS (12 levels), DAILY_CAP=500
-- `sessionAnalytics.ts` — postSessionAnalytics() with READ-THEN-INCREMENT + module-level mutex
-- `studyQueueApi.ts` — GET /study-queue, NeedScore = overdue(40%) + mastery(30%) + fragility(20%) + novelty(10%)
-- `grade-mapper.ts` — SM-2(1-5) → FSRS(1-4) translation, different isCorrect thresholds per context (FSRS≥2, BKT≥3)
-- `connection-types.ts` — 10 medical connection types (prerequisito, causa-efecto, mecanismo, dx-diferencial, tratamiento, manifestacion, regulacion, contraste, componente, asociacion)
+- `content.ts` — UI nested types (Course > Semester > Section > Topic > Flashcard)
+- `platform.ts` — DB row types (Institution, Members, Plans, Subscriptions)
+- `student.ts` — Student domain (Profile, Stats, CourseProgress, KeywordState)
+- `gamification.ts` — XP (11 actions), Badges, StreakStatus, StudyQueue
+- `keyword-connections.ts` — ConnectionTypes, canonical A<B order
+- `keywords.ts` — MasteryLevel, KeywordData
+- `model3d.ts` — Model3D, Pin, Note, Layer, Part
+- `study-plan.ts` — StudyPlan + StudyPlanTask
+- `legacy-stubs.ts`, `flashcard-manager.ts`, `keyword-notes.ts`
 
-### 10.3 Context Architecture (9 files — ALL READ)
+### 10.2 Critical Lib Files (25 total)
 
-- `AuthContext` (17KB) — Login/signup/logout, supabase.auth, /me + /institutions, role from membership, backward-compat aliases
-- `StudentDataContext` (14.7KB) — v2: uses platformApi (not studentApi), profile from AuthContext, READ-THEN-INCREMENT via sessionAnalytics, legacy stubs warn
-- `PlatformDataContext` (11KB) — 6 parallel API calls per institution change, CRUD mutation wrappers, per-slice refresh
-- `ContentTreeContext` (8.9KB) — Full CRUD for courses/semesters/sections/topics, role-based canEdit
-- `AppContext` (5KB) — UI state: currentCourse, currentTopic, sidebar, studyPlans, theme, quizAutoStart
-- `GamificationContext` (3.2KB) — **STUB** (BUG-013). All methods are no-ops. useGamification.ts hook is the real impl.
-- `StudyPlansContext` (2.8KB) — Thin wrapper around useStudyPlans hook + reschedule data injection
-- `StudyTimeEstimatesContext` (1.3KB) — Thin wrapper around useStudyTimeEstimates hook
-- `TopicMasteryContext` (1.2KB) — Thin wrapper around useTopicMastery hook
+- `api.ts` — Central apiCall(): dual-token, GET dedup, 15s timeout
+- `supabase.ts` — Singleton client (hardcoded URL+KEY)
+- `config.ts` — 3rd copy of hardcoded credentials
+- `xp-constants.ts` — Mirror of backend XP_TABLE, LEVEL_THRESHOLDS, DAILY_CAP=500
+- `sessionAnalytics.ts` — READ-THEN-INCREMENT with module-level mutex
+- `studyQueueApi.ts` — NeedScore = overdue(40%) + mastery(30%) + fragility(20%) + novelty(10%)
+- `grade-mapper.ts` — SM-2(1-5) → FSRS(1-4), isCorrect: FSRS≥2, BKT≥3
+- `connection-types.ts` — 10 medical connection types
+- `model3d-api.ts` — XHR upload with progress tracking
+- `muxApi.ts` — 5 Mux video endpoints
+- `palette.ts` — SSoT for Axon Medical Academy colors
+- `queryClient.ts` — React Query defaults: 5min stale, 10min gc, no refetch on focus
+- `mastery-helpers.ts` — BKT p_know → color (green≥0.8, yellow≥0.5, red<0.5)
+- `flashcard-export.ts` — CSV/JSON export
+- `flashcard-utils.ts` — CardType detection, image extraction
+- `summary-content-helpers.tsx` — HTML enrichment, pagination, plain text rendering
+- `withBoundary.tsx` — ErrorBoundary HOC for lazy routes
+- `lazyRetry.ts` (utils) — Stale chunk auto-reload
 
-### 10.4 Dead Code + Tech Debt
+### 10.3 Context Architecture (9 files)
 
-- `aiFlashcardGenerator.ts` — wraps deprecated function returning [] (BUG-015)
-- `apiConfig.ts` — duplicate fetch logic parallel to lib/api.ts (BUG-014)
+- `AuthContext` (17KB) — Login/signup/logout, role from /institutions
+- `StudentDataContext` (14.7KB) — v2: uses platformApi, profile from AuthContext
+- `PlatformDataContext` (11KB) — 6 parallel API calls per institution
+- `ContentTreeContext` (8.9KB) — Full CRUD for content hierarchy
+- `AppContext` (5KB) — UI state, study plans, theme
+- `GamificationContext` (3.2KB) — **STUB** (BUG-013)
+- `StudyPlansContext`, `StudyTimeEstimatesContext`, `TopicMasteryContext` — Thin wrappers
+
+### 10.4 React Query Layer (21 query hooks)
+
+- `queryKeys.ts` — 25+ centralized key factories
+- `staleTimes.ts` — 6 constants (professor 10min, student 2min, connections 5min, search 30s)
+- Shared cache patterns: professor+student share same queryKey, use `select` for role-specific views
+- Optimistic updates: annotations, kw-notes, connections
+- Cache seeding: batch subtopics → individual kwSubtopics entries
+
+### 10.5 Routes Architecture (10 files)
+
+- **Student** (22+ real routes): per-agent ownership pattern (6 agents)
+  - Agent 1: quiz, Agent 2: summary, Agent 3: flashcard, Agent 5: study/dashboard, Agent 6: 3D
+  - Includes gamification sub-pages (badges, leaderboard, xp-history)
+- **Professor** (8 routes): ALL PlaceholderPage (no real functionality)
+- **Owner** (8 routes): ALL PlaceholderPage
+- **Admin** (6 routes): ALL PlaceholderPage
+- All routes use `lazyRetry()` for stale chunk handling + `withBoundary()` for error recovery
+
+### 10.6 Dead Code + Tech Debt
+
+- `aiFlashcardGenerator.ts` — wraps deprecated fn returning [] (BUG-015)
+- `apiConfig.ts` — duplicate fetch logic (BUG-014)
+- `config.ts` — 3rd copy of hardcoded credentials (BUG-017)
 - `studentNotesApi.ts` vs `studentSummariesApi.ts` — overlapping types (BUG-016)
-- `legacy-stubs.ts` — TODO: migrate remaining views to ContentTreeContext
-- Barrel re-exporters: `studentApi.ts`, `platformApi.ts`, `aiService.ts`, `quizApi.ts` (backward compat)
+- `useSummaryPersistence.ts` — 'demo-student-001' fallback (BUG-018)
+- `hooks/useContentTree.ts` vs `context/ContentTreeContext.tsx` — dual impl (BUG-019)
+- Barrel re-exporters: `studentApi.ts`, `platformApi.ts`, `aiService.ts`, `quizApi.ts`
 
-### 10.5 Missing API-MAP Endpoints (found in frontend, not in API-MAP.md)
+### 10.7 Missing API-MAP Endpoints
 
-- `GET /flashcard-mappings` — lightweight id→subtopic→keyword mapping
-- `GET /flashcards-by-topic?topic_id=` — PERF C1 batch
-- `GET /topic-progress?topic_id=` — unified progress
-- `GET /topics-overview?topic_ids=` — batch section-level
-- `GET /subtopics-batch?keyword_ids=` — batch subtopic fetch
-- `PUT /study-plan-tasks/batch` — batch task update
+- `GET /flashcard-mappings`, `GET /flashcards-by-topic`, `GET /topic-progress`
+- `GET /topics-overview`, `GET /subtopics-batch`, `PUT /study-plan-tasks/batch`
 
 ## 11. Tech Stack
 
-**Frontend:** React 18, TypeScript, Vite 6, Tailwind v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, @floating-ui/react, Sonner. Vercel.
+**Frontend:** React 18, TypeScript, Vite 6, Tailwind v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, @floating-ui/react, Sonner, date-fns. Vercel.
 
 **Backend:** Hono + Deno, PostgreSQL + pgvector, Gemini 2.5 Flash + OpenAI text-embedding-3-large (1536d), Stripe, Mux, WhatsApp Cloud API. GitHub Actions CI/CD.
