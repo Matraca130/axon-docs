@@ -4,7 +4,7 @@
 > **Repo:** `Matraca130/numero1_sseki_2325_55`
 > **Commit analizado:** `c4c1a5d` (original), `d0b012e` (latest)
 > **Total archivos (recount 2026-03-17):** 586 TypeScript/TSX files (346 components, 42 hooks, 35 services, 9 contexts)
-> **Metodo:** Lectura linea por linea de todo archivo < 30KB; listado de directorio para el resto.
+> **Método:** Lectura línea por línea de todo archivo < 30KB; listado de directorio para el resto.
 >
 > **Cambios recientes (2026-03-17):** Voice call mode (OpenAI Realtime API, 3 new files), Admin Messaging Integrations (Telegram/WhatsApp, 2 new files), StudyHub merge (2 new files), Flashcard v4.5.1 UX audit, Vitest test infrastructure.
 
@@ -12,9 +12,9 @@
 
 ## Resumen Ejecutivo
 
-El frontend tiene una **arquitectura ambiciosa y bien intencionada** — code splitting por rol, lazy loading, separation of concerns con contexts, y un buen sistema de UI con Radix/ShadCN. Sin embargo, tiene **deuda tecnica acumulada significativa**: directorios duplicados, capas de API redundantes, datos mock hardcodeados que coexisten con la API real, y archivos de documentacion incrustados como `.tsx`. El path a millones de usuarios requiere resolver estas fricciones antes de escalar.
+El frontend tiene una **arquitectura ambiciosa y bien intencionada** — code splitting por rol, lazy loading, separation of concerns con contexts, y un buen sistema de UI con Radix/ShadCN. Sin embargo, tiene **deuda técnica acumulada significativa**: directorios duplicados, capas de API redundantes, datos mock hardcodeados que coexisten con la API real, y archivos de documentación incrustados como `.tsx`. El path a millones de usuarios requiere resolver estas fricciones antes de escalar.
 
-**Nota:** Muchos de estos hallazgos son consecuencia natural del desarrollo rapido con AI (Figma Make). No son errores de diseno — son deuda tecnica acumulada que se debe resolver sistematicamente.
+**Nota:** Muchos de estos hallazgos son consecuencia natural del desarrollo rápido con AI (Figma Make). No son errores de diseño — son deuda técnica acumulada que se debe resolver sistemáticamente.
 
 ---
 
@@ -22,7 +22,7 @@ El frontend tiene una **arquitectura ambiciosa y bien intencionada** — code sp
 
 | Dimension | Grado | Notas |
 |-----------|-------|-------|
-| **Arquitectura** | B- | Buena separacion por rol, pero duplicaciones severas |
+| **Arquitectura** | B- | Buena separación por rol, pero duplicaciones severas |
 | **Seguridad** | C | ANON_KEY hardcodeado, console.log en prod, sin ErrorBoundary |
 | **Performance** | C+ | Code splitting existe pero es inconsistente; no hay cache |
 | **Mantenibilidad** | C | Directorios duplicados, 3 archivos .tsx de docs, types incoherentes |
@@ -83,17 +83,17 @@ src/app/services/platformApi.ts <- 26KB monolito que usa realRequest()
 | Error handling | `throw new Error()` | `throw new ApiError()` |
 | Token source | Module variable | Module variable + localStorage |
 
-Ademas, `getAdminStudents()` en platformApi.ts **bypassa ambas** y hace su propio `fetch()` con headers manuales (linea ~350).
+Además, `getAdminStudents()` en platformApi.ts **bypassa ambas** y hace su propio `fetch()` con headers manuales (línea ~350).
 
-**Fix:** Un unico `apiClient.ts` con:
-- Una sola funcion `request<T>()`
+**Fix:** Un único `apiClient.ts` con:
+- Una sola función `request<T>()`
 - Una sola clase de error
 - Una sola fuente de token
 - Eliminar `apiConfig.ts`, renombrar `api.ts` a `apiClient.ts`
 
 ---
 
-#### F-003: ANON_KEY hardcodeado en codigo fuente
+#### F-003: ANON_KEY hardcodeado en código fuente
 
 **Severidad:** CRÍTICA (seguridad)  
 **Archivo:** `src/app/lib/api.ts:3`
@@ -102,12 +102,12 @@ Ademas, `getAdminStudents()` en platformApi.ts **bypassa ambas** y hace su propi
 export const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
 ```
 
-**Problema:** La Supabase ANON_KEY esta hardcodeada en el source code. Si bien es una key publica (anon), la best practice es usar variables de entorno:
+**Problema:** La Supabase ANON_KEY está hardcodeada en el source code. Si bien es una key publica (anon), la best practice es usar variables de entorno:
 - Permite rotar keys sin re-deploy
 - Permite diferentes keys por environment (dev/staging/prod)
-- `import.meta.env.VITE_SUPABASE_ANON_KEY` ya esta soportado por Vite
+- `import.meta.env.VITE_SUPABASE_ANON_KEY` ya está soportado por Vite
 
-**Nota:** La API_BASE URL tambien esta hardcodeada. Misma solucion.
+**Nota:** La API_BASE URL también está hardcodeada. Misma solución.
 
 **Fix:** Mover a `.env` y usar `import.meta.env.VITE_*`.
 
@@ -126,9 +126,9 @@ sectionImages.ts  6,303 bytes   <- Hardcoded URLs
 lessonData.ts     1,933 bytes   <- Mock data
 ```
 
-**Total: ~95KB de datos mock** que se incluyen en el bundle de produccion.
+**Total: ~95KB de datos mock** que se incluyen en el bundle de producción.
 
-Ademas, `types/content.ts` exporta un array `courses` con datos stub, Y `types/legacy-stubs.ts` TAMBIEN exporta un array `courses` vacio. Dos simbolos identicos, importados desde distintos archivos por distintos componentes.
+Además, `types/content.ts` exporta un array `courses` con datos stub, Y `types/legacy-stubs.ts` TAMBIEN exporta un array `courses` vacio. Dos simbolos identicos, importados desde distintos archivos por distintos componentes.
 
 `AppContext.tsx` todavia hace:
 ```typescript
@@ -145,7 +145,7 @@ Esto significa que el AppContext depende de datos mock hardcodeados.
 
 ---
 
-#### F-005: Archivos de documentacion como `.tsx` (62KB muertos)
+#### F-005: Archivos de documentación como `.tsx` (62KB muertos)
 
 **Severidad:** CRÍTICA (bundle)  
 **Archivos:**
@@ -155,10 +155,10 @@ src/app/PARALLEL_READINESS_AUDIT.tsx 30,539 bytes
 src/app/STUDENT_VIEW_CONTRACT.tsx    18,333 bytes
 ```
 
-**Total: 62KB** de archivos `.tsx` que no son componentes React. Son documentacion en formato de comentarios/objetos TypeScript.
+**Total: 62KB** de archivos `.tsx` que no son componentes React. Son documentación en formato de comentarios/objetos TypeScript.
 
 **Problema:**
-- Se incluyen en el bundle de produccion (Vite los procesa como modulos)
+- Se incluyen en el bundle de producción (Vite los procesa como modulos)
 - Confunden el tree del proyecto
 - No son importados por nada — dead code puro
 
@@ -186,7 +186,7 @@ class ErrorBoundary extends React.Component {
 ```
 
 Colocar:
-1. Uno global en `App.tsx` (atrapa crasheos criticos)
+1. Uno global en `App.tsx` (atrapa crasheos críticos)
 2. Uno por lazy route (permite recovery sin perder la sesion)
 
 ---
@@ -223,7 +223,7 @@ catch (err: any)   // 8 occurrences
 
 ---
 
-#### F-008: console.log en cada API call (produccion)
+#### F-008: console.log en cada API call (producción)
 
 **Severidad:** ALTA  
 **Archivos:** `lib/api.ts`, `services/apiConfig.ts`
@@ -235,8 +235,8 @@ console.log(`[Auth] Profile loaded: ${u.email}`);
 console.log(`[Auth] ${mapped.length} institution(s) loaded`);
 ```
 
-**Problema:** En produccion, cada interaccion del usuario genera decenas de console.log. Esto:
-- Expone informacion sensible (emails, IDs) en la consola del usuario
+**Problema:** En producción, cada interaccion del usuario genera decenas de console.log. Esto:
+- Expone información sensible (emails, IDs) en la consola del usuario
 - Puede afectar performance en loops de rendering
 - No es filtrable (no usa log levels)
 
@@ -251,12 +251,12 @@ const logger = {
 
 ---
 
-#### F-009: platformApi.ts es un monolito de 26KB (750+ lineas)
+#### F-009: platformApi.ts es un monolito de 26KB (750+ líneas)
 
 **Severidad:** ALTA  
 **Archivo:** `src/app/services/platformApi.ts`
 
-**Problema:** Un solo archivo con ALL API calls, ALL interfaces, ALL types. Ningun developer va a leer 750 lineas para encontrar la funcion que necesita.
+**Problema:** Un solo archivo con ALL API calls, ALL interfaces, ALL types. Ningún developer va a leer 750 líneas para encontrar la función que necesita.
 
 **Fix:** Split por dominio (mirror del backend):
 ```
@@ -301,7 +301,7 @@ function OwnerDashboardPlaceholder() {
 
 Con 8 rutas placeholder, es menor, pero sienta un mal precedente. Cuando se implementen las paginas reales, si no se migra a `lazy()`, el bundle del owner se inflara.
 
-**Fix:** Usar el mismo patron de lazy() que student-routes.ts.
+**Fix:** Usar el mismo patrón de lazy() que student-routes.ts.
 
 ---
 
@@ -310,7 +310,7 @@ Con 8 rutas placeholder, es menor, pero sienta un mal precedente. Cuando se impl
 **Severidad:** ALTA  
 **Path:** `node_modules/` visible en root listing
 
-**Problema:** El directorio `node_modules/` esta commiteado al repositorio Git. Esto:
+**Problema:** El directorio `node_modules/` está commiteado al repositorio Git. Esto:
 - Agrega ~500MB+ al repo
 - Hace que clones sean lentos
 - Conflictos de merge constantes
@@ -335,7 +335,7 @@ utils/supabase/                   <- directorio adicional
 - Multiple websocket connections
 - Memory leaks
 
-**Fix:** Un unico `supabase.ts` en `lib/`, importado por todos.
+**Fix:** Un único `supabase.ts` en `lib/`, importado por todos.
 
 ---
 
@@ -350,7 +350,7 @@ utils/supabase/                   <- directorio adicional
 
 ---
 
-### MEDIOS (Deuda tecnica)
+### MEDIOS (Deuda técnica)
 
 ---
 
@@ -371,7 +371,7 @@ Para 1 usuario esto no importa. Para 10,000 usuarios concurrentes, el backend re
 - Background refetch
 - Optimistic updates
 
-**Fix minimo:** Agregar un timestamp de ultima carga y no refetchear si < 30s.
+**Fix mínimo:** Agregar un timestamp de última carga y no refetchear si < 30s.
 
 ---
 
@@ -389,7 +389,7 @@ src/app/hooks/flashcard-types.ts <- Flashcard types (en hooks?)
 src/app/services/platformApi.ts <- Inline interfaces (AdminStudentListItem, FlashcardCard, etc.)
 ```
 
-**Problema:** El mismo concepto (ej: `Course`) esta definido en 3 archivos distintos con campos diferentes:
+**Problema:** El mismo concepto (ej: `Course`) está definido en 3 archivos distintos con campos diferentes:
 
 | Archivo | Course type | Tiene data? |
 |---------|------------|-------------|
@@ -400,7 +400,7 @@ src/app/services/platformApi.ts <- Inline interfaces (AdminStudentListItem, Flas
 **Fix:**
 1. `types/platform.ts` es la fuente de verdad para tipos que matchean la DB
 2. `types/ui.ts` para tipos derivados/nested que solo el UI necesita
-3. Eliminar `content.ts` y `legacy-stubs.ts` (mover tipos utiles a `ui.ts`)
+3. Eliminar `content.ts` y `legacy-stubs.ts` (mover tipos útiles a `ui.ts`)
 4. Mover interfaces inline de `platformApi.ts` a `types/platform.ts`
 
 ---
@@ -454,7 +454,7 @@ status, memberships, activeMembership, setActiveMembership,
 signIn, signUp, signOut
 ```
 
-Ademas hay una funcion `toMembership()` que convierte entre formatos.
+Además hay una función `toMembership()` que convierte entre formatos.
 
 **Problema:** Doble interfaz = doble area de bugs. Cada nuevo consumer puede usar el nombre viejo o el nuevo inconsistentemente.
 
@@ -462,7 +462,7 @@ Ademas hay una funcion `toMembership()` que convierte entre formatos.
 
 ---
 
-#### F-019: No hay patron de loading/error consistente
+#### F-019: No hay patrón de loading/error consistente
 
 **Severidad:** MEDIA  
 
@@ -529,9 +529,9 @@ Existe `src/app/design-system/` que no se leyo en detalle. Puede tener component
 
 #### F-023: lib/ tiene logica de negocio (BKT, FSRS, mastery-helpers)
 
-`src/app/lib/bkt-engine.ts`, `fsrs-engine.ts`, `mastery-helpers.ts` contienen calculos de repeticion espaciada. Estos DUPLICAN logica que existe en el backend (`routes-study-queue.tsx`). Si el algoritmo cambia en el backend, hay que cambiarlo en el frontend tambien.
+`src/app/lib/bkt-engine.ts`, `fsrs-engine.ts`, `mastery-helpers.ts` contienen cálculos de repetición espaciada. Estos DUPLICAN logica que existe en el backend (`routes-study-queue.tsx`). Si el algoritmo cambia en el backend, hay que cambiarlo en el frontend también.
 
-**Evaluacion:** Depende del caso de uso. Si se necesitan calculos offline/optimistic, es OK. Si no, deberian ser solo rendering de datos que vienen del backend.
+**Evaluacion:** Depende del caso de uso. Si se necesitan cálculos offline/optimistic, es OK. Si no, deberian ser solo rendering de datos que vienen del backend.
 
 ---
 
@@ -559,13 +559,13 @@ Sin esto, refresh en rutas como `/student/dashboard` da 404.
 
 #### F-026: Three.js importado pero isolado
 
-Three.js esta en `manualChunks` de Vite (correcto), pero `@types/three` esta en `dependencies` en vez de `devDependencies`. Moverlo a devDependencies reduce el metadata del package.
+Three.js está en `manualChunks` de Vite (correcto), pero `@types/three` está en `dependencies` en vez de `devDependencies`. Moverlo a devDependencies reduce el metadata del package.
 
 ---
 
 #### F-027: services/ tiene 15 archivos API
 
-Hay 15 archivos en `services/` pero muchos son variaciones del mismo patron:
+Hay 15 archivos en `services/` pero muchos son variaciones del mismo patrón:
 ```
 platformApi.ts, flashcardApi.ts, quizApi.ts, summariesApi.ts,
 studentApi.ts, studentSummariesApi.ts, studySessionApi.ts,
@@ -574,7 +574,7 @@ studyQueueApi.ts, aiFlashcardGenerator.ts, aiService.ts,
 apiConfig.ts, authApi.ts
 ```
 
-Bien separados por dominio (esto es bueno), pero sin una capa de abstraccion comun. Cada archivo repite el patron de `request()` con headers.
+Bien separados por dominio (esto es bueno), pero sin una capa de abstracción común. Cada archivo repite el patrón de `request()` con headers.
 
 ---
 
@@ -601,7 +601,7 @@ export interface Course {
 }
 ```
 
-Esto contradice `context/04-api-conventions.md` que dice que el nombre real es `order_index`, no `sort_order`. Este bug ya esta documentado en axon-docs, pero el type no se ha corregido.
+Esto contradice `context/04-api-conventions.md` que dice que el nombre real es `order_index`, no `sort_order`. Este bug ya está documentado en axon-docs, pero el type no se ha corregido.
 
 ---
 
@@ -620,13 +620,13 @@ Esto contradice `context/04-api-conventions.md` que dice que el nombre real es `
 - Duplica logica del backend
 - Es dificil de debuggear
 
-**Recomendacion:** Si los calculos DEBEN ocurrir en frontend (optimistic UI), extraer a una libreria pura con tests unitarios. Si no, delegar al backend.
+**Recomendacion:** Si los cálculos DEBEN ocurrir en frontend (optimistic UI), extraer a una libreria pura con tests unitarios. Si no, delegar al backend.
 
 ---
 
 #### F-032: No hay testing infrastructure
 
-No hay ningun test file en el frontend. Ni `vitest.config.ts`, ni archivos `*.test.tsx`. Para escalar a millones, los componentes criticos (auth flow, study session, review submission) necesitan tests.
+No hay ningun test file en el frontend. Ni `vitest.config.ts`, ni archivos `*.test.tsx`. Para escalar a millones, los componentes críticos (auth flow, study session, review submission) necesitan tests.
 
 ---
 
@@ -636,11 +636,11 @@ El archivo mas grande del proyecto tiene datos de Anatomia Humana hardcodeados e
 
 ---
 
-## Plan de Accion
+## Plan de Acción
 
 ### Fase 1: Limpieza Critica (1-2 sesiones)
 
-| # | Accion | Hallazgos | Riesgo | Esfuerzo |
+| # | Acción | Hallazgos | Riesgo | Esfuerzo |
 |---|--------|-----------|--------|----------|
 | 1 | Consolidar `context/` + `contexts/` | F-001 | Bajo | 30 min |
 | 2 | Unificar API layer en un `apiClient.ts` | F-002, F-028 | Medio | 2 hrs |
@@ -653,7 +653,7 @@ El archivo mas grande del proyecto tiene datos de Anatomia Humana hardcodeados e
 
 ### Fase 2: Calidad de Tipos (1-2 sesiones)
 
-| # | Accion | Hallazgos | Riesgo | Esfuerzo |
+| # | Acción | Hallazgos | Riesgo | Esfuerzo |
 |---|--------|-----------|--------|----------|
 | 9 | Eliminar `any` en contexts y API | F-007 | Medio | 2 hrs |
 | 10 | Consolidar types en `types/platform.ts` + `types/ui.ts` | F-015, F-029 | Medio | 1 hr |
@@ -661,7 +661,7 @@ El archivo mas grande del proyecto tiene datos de Anatomia Humana hardcodeados e
 
 ### Fase 3: Performance (2-3 sesiones)
 
-| # | Accion | Hallazgos | Riesgo | Esfuerzo |
+| # | Acción | Hallazgos | Riesgo | Esfuerzo |
 |---|--------|-----------|--------|----------|
 | 12 | Implementar logger con niveles | F-008 | Bajo | 30 min |
 | 13 | Split platformApi.ts en modulos | F-009 | Bajo | 1.5 hrs |
@@ -672,14 +672,14 @@ El archivo mas grande del proyecto tiene datos de Anatomia Humana hardcodeados e
 
 ### Fase 4: Escalabilidad (futuro)
 
-| # | Accion | Hallazgos | Riesgo | Esfuerzo |
+| # | Acción | Hallazgos | Riesgo | Esfuerzo |
 |---|--------|-----------|--------|----------|
 | 18 | Migrar a React Query | F-014 | Alto | 4-6 hrs |
 | 19 | Split componentes gigantes | F-020 | Medio | 3-4 hrs |
 | 20 | Eliminar navegacion de AppContext | F-017 | Medio | 2 hrs |
 | 21 | Setup testing (Vitest) | F-032 | Bajo | 2 hrs |
 | 22 | Evaluar logica duplicada frontend/backend | F-023, F-031 | Alto | Evaluacion |
-| 23 | Supabase client unico | F-012 | Medio | 30 min |
+| 23 | Supabase client único | F-012 | Medio | 30 min |
 
 ---
 
@@ -709,7 +709,7 @@ App.tsx
 ```
 App.tsx
   ErrorBoundary (global)
-    AuthProvider (context/AuthContext.tsx) ← unico directorio
+    AuthProvider (context/AuthContext.tsx) ← único directorio
       RouterProvider
         AuthLayout
           LoginPage | RequireAuth
@@ -720,7 +720,7 @@ App.tsx
                 <QueryClientProvider> ← React Query
                   LazyPageComponents
                     ← useQuery() hooks (cache + dedupe)
-                    ← apiClient.ts (unica capa)
+                    ← apiClient.ts (única capa)
                     ← types/platform.ts (fuente de verdad)
 ```
 
@@ -735,6 +735,6 @@ App.tsx
 | Console.log en prod | ~50+ statements | 0 |
 | Directorios duplicados | 2 (`context/` + `contexts/`) | 0 |
 | Dead code files | 6 (3 .tsx docs + 5 data files + 1 patch) | 0 |
-| Test coverage | 0% | > 30% (flows criticos) |
+| Test coverage | 0% | > 30% (flows críticos) |
 | Largest component file | 36KB | < 10KB |
 | Time to interactive (cold) | Unknown | < 2s |

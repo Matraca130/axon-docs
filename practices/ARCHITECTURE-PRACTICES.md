@@ -1,6 +1,6 @@
 # Practicas Arquitectonicas — Axon v4.4+
 
-> **Proposito:** Reglas estructurales y patrones arquitectonicos para frontend y backend. Complementa `ENGINEERING-PRACTICES.md` (que cubre patrones de codigo) con reglas de **estructura de directorios, composicion de componentes, flujo de datos, y limites de modulo**.
+> **Propósito:** Reglas estructurales y patrones arquitectónicos para frontend y backend. Complementa `ENGINEERING-PRACTICES.md` (que cubre patrones de código) con reglas de **estructura de directorios, composición de componentes, flujo de datos, y límites de módulo**.
 >
 > **Audiencia:** Cualquier desarrollador (humano o AI) que toque el codebase.
 >
@@ -11,14 +11,14 @@
 ## Tabla de Contenidos
 
 ### Parte I — Principios Compartidos
-1. [Limites de Modulo](#1-limites-de-modulo)
+1. [Límites de Modulo](#1-límites-de-módulo)
 2. [Flujo de Dependencias](#2-flujo-de-dependencias)
 3. [Naming Conventions Unificadas](#3-naming-conventions-unificadas)
 4. [Tipos Compartidos — Fuente de Verdad](#4-tipos-compartidos--fuente-de-verdad)
 
 ### Parte II — Arquitectura Frontend
 5. [Estructura de Directorios](#5-estructura-de-directorios-frontend)
-6. [Jerarquia de Componentes](#6-jerarquia-de-componentes)
+6. [Jerarquia de Componentes](#6-jerarquía-de-componentes)
 7. [Estado y Flujo de Datos](#7-estado-y-flujo-de-datos)
 8. [Capa de API del Frontend](#8-capa-de-api-del-frontend)
 9. [Routing y Code Splitting](#9-routing-y-code-splitting)
@@ -28,7 +28,7 @@
 
 ### Parte III — Arquitectura Backend
 13. [Estructura de Directorios Backend](#13-estructura-de-directorios-backend)
-14. [Patron de Ruta Extendido](#14-patron-de-ruta-extendido)
+14. [Patron de Ruta Extendido](#14-patrón-de-ruta-extendido)
 15. [Middleware Chain](#15-middleware-chain)
 16. [Performance Backend](#16-performance-backend)
 
@@ -42,7 +42,7 @@
 
 ---
 
-## 1. Limites de Modulo
+## 1. Límites de Modulo
 
 ### 1.1 Regla del Unico Responsable
 
@@ -55,18 +55,18 @@ Cada archivo tiene UNA razon para existir. Si un archivo tiene dos responsabilid
 
 ### 1.2 Regla de Tamanio
 
-| Tipo de archivo | Limite suave | Limite duro | Accion si excede |
+| Tipo de archivo | Límite suave | Límite duro | Acción si excede |
 |-----------------|-------------|-------------|------------------|
-| Componente React | 300 lineas | 500 lineas | Split en sub-componentes |
-| Service/API file | 200 lineas | 400 lineas | Split por dominio |
-| Hook | 150 lineas | 250 lineas | Extraer sub-hooks |
-| Route handler (backend) | 80 lineas | 150 lineas | Extraer logica a helper |
-| Archivo de tipos | 200 lineas | Sin limite | Mantener organizado por seccion |
-| Context/Provider | 150 lineas | 300 lineas | Extraer logica a hooks |
+| Componente React | 300 líneas | 500 líneas | Split en sub-componentes |
+| Service/API file | 200 líneas | 400 líneas | Split por dominio |
+| Hook | 150 líneas | 250 líneas | Extraer sub-hooks |
+| Route handler (backend) | 80 líneas | 150 líneas | Extraer logica a helper |
+| Archivo de tipos | 200 líneas | Sin límite | Mantener organizado por sección |
+| Context/Provider | 150 líneas | 300 líneas | Extraer logica a hooks |
 
 ### 1.3 Regla Anti-Circular
 
-Ningun modulo puede importar de un modulo que directa o indirectamente lo importa a el.
+Ningún módulo puede importar de un módulo que directa o indirectamente lo importa a el.
 
 ```
 // PROHIBIDO:
@@ -79,11 +79,11 @@ Ningun modulo puede importar de un modulo que directa o indirectamente lo import
 
 ### 1.4 Regla de Bridge Files
 
-Un bridge file (re-export) es aceptable TEMPORALMENTE durante una migracion. Pero:
+Un bridge file (re-export) es aceptable TEMPORALMENTE durante una migración. Pero:
 
 - Debe tener un comentario `// TODO: Eliminar cuando todos los imports migren`
 - No debe durar mas de 2 sprints
-- Debe listarse en `KNOWN-BUGS.md` como deuda tecnica
+- Debe listarse en `KNOWN-BUGS.md` como deuda técnica
 
 ```typescript
 // context/AuthContext.tsx — BRIDGE FILE (temporal)
@@ -217,7 +217,7 @@ src/app/types/
 
 | Regla | Explicacion |
 |-------|------------|
-| **DB types van en `platform.ts`** | Si el campo existe como columna en Supabase, el tipo va aqui |
+| **DB types van en `platform.ts`** | Si el campo existe como columna en Supabase, el tipo va aquí |
 | **UI-only types van en `ui.ts`** | Tipos que el backend nunca ve (ej: `ViewType`, `ThemeType`) |
 | **Inline types prohibidos en services** | `platformApi.ts` NO debe definir interfaces. Importar de `types/` |
 | **`any` prohibido en tipos de API** | Toda response de API debe tener un tipo especifico |
@@ -283,7 +283,7 @@ src/
       ...
 
     services/                 ← API calls organizados por dominio
-      api-client.ts           ← UNA funcion request<T>() — unica capa
+      api-client.ts           ← UNA función request<T>() — única capa
       institutions.ts         ← getInstitutions, createInstitution, etc.
       members.ts              ← getMembers, createMember, etc.
       content.ts              ← getCourses, getSummaries, etc.
@@ -304,7 +304,7 @@ src/
       ui.ts                   ← UI-only types
       index.ts                ← Barrel re-export
 
-    design-system/            ← Tokens y constantes de diseno
+    design-system/            ← Tokens y constantes de diseño
       colors.ts
       typography.ts
       animation.ts
@@ -321,7 +321,7 @@ src/
 
 | Regla | Detalle |
 |-------|--------|
-| **No colocar archivos .tsx de documentacion en `src/`** | Documentacion va en `axon-docs/`, no como `DEVELOPER_CONTRACT.tsx` |
+| **No colocar archivos .tsx de documentación en `src/`** | Documentación va en `axon-docs/`, no como `DEVELOPER_CONTRACT.tsx` |
 | **No colocar datos mock en `data/`** | Datos de ejemplo van como seed en la DB, no en el bundle |
 | **Un solo directorio de context** | Elegir `context/` (singular). Eliminar `contexts/` |
 | **No duplicar clientes Supabase** | Un solo `lib/supabase.ts`, importado por todo |
@@ -350,29 +350,29 @@ import type { Course } from '@/app/types/platform';
 
 | Tipo | Responsabilidad | Imports permitidos | Tamano max |
 |------|----------------|-------------------|------------|
-| **Page** | Composicion + data loading | Hooks, Context, Components | 200 lineas |
-| **Feature** | Logica de una feature completa | Hooks, UI components, Services | 500 lineas |
-| **UI (shared)** | Rendering puro, design system | Solo props + Tailwind | 100 lineas |
-| **Layout** | Shell, sidebar, nav | Context (theme, auth), UI components | 200 lineas |
+| **Page** | Composicion + data loading | Hooks, Context, Components | 200 líneas |
+| **Feature** | Logica de una feature completa | Hooks, UI components, Services | 500 líneas |
+| **UI (shared)** | Rendering puro, design system | Solo props + Tailwind | 100 líneas |
+| **Layout** | Shell, sidebar, nav | Context (theme, auth), UI components | 200 líneas |
 
 ### 6.2 Patron de Split para Componentes Grandes
 
-Cuando un componente excede 500 lineas:
+Cuando un componente excede 500 líneas:
 
 ```
-// ANTES: KeywordPopup.tsx (36KB, 900+ lineas)
+// ANTES: KeywordPopup.tsx (36KB, 900+ líneas)
 // - Fetching de datos
 // - Logica de UI (tabs, estados)
 // - Rendering de contenido
-// - Botones de accion
+// - Botones de acción
 
 // DESPUES:
 KeywordPopup/
-  index.tsx              ← Orchestrator: state + composition (< 150 lineas)
-  KeywordContent.tsx     ← Rendering del contenido (< 200 lineas)
-  KeywordActions.tsx     ← Botones y acciones (< 100 lineas)
-  KeywordTabs.tsx        ← Tab navigation (< 100 lineas)
-  useKeywordData.ts      ← Hook de datos (< 100 lineas)
+  index.tsx              ← Orchestrator: state + composition (< 150 líneas)
+  KeywordContent.tsx     ← Rendering del contenido (< 200 líneas)
+  KeywordActions.tsx     ← Botones y acciones (< 100 líneas)
+  KeywordTabs.tsx        ← Tab navigation (< 100 líneas)
+  useKeywordData.ts      ← Hook de datos (< 100 líneas)
 ```
 
 ### 6.3 Regla de Props Drilling
@@ -623,7 +623,7 @@ export function createCrud<T>(slug: string): CrudEndpoints<T> {
 
 ### 9.1 Patron de routes.tsx
 
-`routes.tsx` es un **thin assembler** — no importa componentes de pagina directamente.
+`routes.tsx` es un **thin assembler** — no importa componentes de página directamente.
 
 ```typescript
 // routes.tsx — CORRECTO (actual)
@@ -637,7 +637,7 @@ import { studentChildren } from '@/app/routes/student-routes';
 }
 ```
 
-### 9.2 Regla: TODA pagina usa lazy()
+### 9.2 Regla: TODA página usa lazy()
 
 ```typescript
 // student-routes.ts — CORRECTO
@@ -693,7 +693,7 @@ Agregar cuando sea necesario:
 
 | # | Regla | Detalle |
 |---|-------|--------|
-| 1 | **Toda lista usa `key` unico (no index)** | `key={item.id}`, nunca `key={index}` |
+| 1 | **Toda lista usa `key` único (no index)** | `key={item.id}`, nunca `key={index}` |
 | 2 | **Componentes de lista usan `React.memo`** | `FlashcardItem`, `KeywordBadge`, etc. |
 | 3 | **Callbacks en listas usan `useCallback`** | Evitar re-creacion en cada render |
 | 4 | **Heavy components son lazy** | Three.js, recharts, MUX player |
@@ -766,7 +766,7 @@ class ErrorBoundary extends React.Component<
 
 ```
 App.tsx                    ← ErrorBoundary GLOBAL (crash total = pantalla de error amigable)
-  [Role]Layout             ← ErrorBoundary POR ROL (crash en una pagina no mata la nav)
+  [Role]Layout             ← ErrorBoundary POR ROL (crash en una página no mata la nav)
     LazyPageComponent      ← Suspense con fallback (loading skeleton)
       FeatureComponent     ← try/catch en event handlers
 ```
@@ -808,7 +808,7 @@ export const logger = {
 |-----------|-----|------|------------------|
 | **P0** | Auth flow (login, logout, token refresh) | Integration test | 90% |
 | **P0** | API client (request, error handling) | Unit test | 100% |
-| **P1** | Hooks criticos (useFlashcardEngine, useStudyPlans) | Unit test | 80% |
+| **P1** | Hooks críticos (useFlashcardEngine, useStudyPlans) | Unit test | 80% |
 | **P1** | Calculos puros (BKT, FSRS, mastery) | Unit test | 100% |
 | **P2** | Componentes de formulario | Component test | 60% |
 | **P3** | Componentes de UI (rendering) | Snapshot test | Opcional |
@@ -868,14 +868,14 @@ supabase/functions/server/
   routes-study.ts       ← Study sessions + reviews + BKT/FSRS
   routes-study-queue.ts ← Study queue + NeedScore
   routes-models.ts      ← 3D models
-  tests/                ← Deno-native tests (UNICO directorio)
+  tests/                ← Deno-native tests (ÚNICO directorio)
   migrations/           ← SQL migration files
 ```
 
 ### 13.2 Archivos a Agregar (cuando se necesiten)
 
 ```
-require-role.ts         ← Middleware de autorizacion por rol
+require-role.ts         ← Middleware de autorización por rol
 cache.ts                ← In-memory TTL cache
 request-id.ts           ← X-Request-Id middleware
 error-codes.ts          ← Enum de codigos de error estandarizados
@@ -955,7 +955,7 @@ app.use("*", requestIdMiddleware);
 // 3. Rate Limiting (antes de cualquier logica)
 app.use("*", rateLimitMiddleware);
 
-// 4. Logging (despues de rate limit para no loggear requests rechazados)
+// 4. Logging (después de rate limit para no loggear requests rechazados)
 app.use("*", loggerMiddleware);
 
 // 5. Routes
@@ -992,7 +992,7 @@ export async function requireRole(
 
 ## 16. Performance Backend
 
-(Complementa seccion 5 de ENGINEERING-PRACTICES.md)
+(Complementa sección 5 de ENGINEERING-PRACTICES.md)
 
 ### 16.1 Patron de Cache para Datos Semi-Estaticos
 
@@ -1041,10 +1041,10 @@ export function invalidate(keyPrefix: string) {
 ### 17.1 Response Envelope
 
 ```typescript
-// Exito: SIEMPRE envuelve en { data: ... }
+// Éxito: SIEMPRE envuelve en { data: ... }
 { "data": { "id": "abc", "name": "Course 1" } }
 
-// Exito lista: items + metadata de paginacion
+// Éxito lista: items + metadata de paginación
 { "data": { "items": [...], "total": 42, "limit": 20, "offset": 0 } }
 
 // Error: SIEMPRE { error: string, code?: string }
@@ -1055,7 +1055,7 @@ export function invalidate(keyPrefix: string) {
 
 ```
 Authorization: Bearer <ANON_KEY>     ← SIEMPRE (gateway Supabase)
-X-Access-Token: <USER_JWT>           ← Cuando el usuario esta autenticado
+X-Access-Token: <USER_JWT>           ← Cuando el usuario está autenticado
 Content-Type: application/json       ← Para POST/PUT/PATCH
 X-Request-Id: <UUID>                 ← Para tracing (futuro)
 ```
@@ -1086,7 +1086,7 @@ Copiar y llenar ANTES de crear cualquier feature nueva:
 ## Architecture Checklist: [FEATURE NAME]
 
 ### Frontend
-- [ ] Componente < 500 lineas?
+- [ ] Componente < 500 líneas?
 - [ ] Datos de servidor en hook (no Context)?
 - [ ] Navegacion en URL params (no Context)?
 - [ ] Usa apiClient (no fetch directo)?
@@ -1097,10 +1097,10 @@ Copiar y llenar ANTES de crear cualquier feature nueva:
 - [ ] Logger en vez de console.log?
 
 ### Backend
-- [ ] Archivo de ruta < 400 lineas?
+- [ ] Archivo de ruta < 400 líneas?
 - [ ] Secuencia: Auth → Role → Validate → Logic → Response?
 - [ ] Input validado con validate.ts (no typeof inline)?
-- [ ] LIST tiene paginacion con MAX cap?
+- [ ] LIST tiene paginación con MAX cap?
 - [ ] SELECT usa columnas especificas (no *)?
 - [ ] Queries independientes en Promise.all?
 - [ ] Aggregaciones en SQL (no JS reduce)?
@@ -1119,10 +1119,10 @@ Copiar y llenar ANTES de crear cualquier feature nueva:
 ## Apendice: Migrar de Estado Actual a Ideal
 
 ### Paso 1: Consolidacion (2-3 sesiones)
-1. Merge `context/` + `contexts/` → `context/` unico
-2. Merge `lib/api.ts` + `services/apiConfig.ts` → `services/api-client.ts` unico
+1. Merge `context/` + `contexts/` → `context/` único
+2. Merge `lib/api.ts` + `services/apiConfig.ts` → `services/api-client.ts` único
 3. Eliminar `data/` completo (95KB de mock data)
-4. Eliminar archivos .tsx de documentacion (62KB)
+4. Eliminar archivos .tsx de documentación (62KB)
 5. Eliminar `platformApi.ts.patch` (0 bytes)
 6. `git rm -r --cached node_modules/`
 
@@ -1133,7 +1133,7 @@ Copiar y llenar ANTES de crear cualquier feature nueva:
 4. Reemplazar `any` en responses de API
 
 ### Paso 3: Componentes (2-3 sesiones)
-1. Split componentes > 500 lineas (KeywordPopup, QuizTaker, FlashcardReviewer)
+1. Split componentes > 500 líneas (KeywordPopup, QuizTaker, FlashcardReviewer)
 2. Agregar ErrorBoundary global + per-role
 3. Agregar React.memo a componentes de lista
 4. Lazy() en owner-routes.ts
@@ -1144,4 +1144,4 @@ Copiar y llenar ANTES de crear cualquier feature nueva:
 2. Reemplazar PlatformDataContext con hooks de React Query
 3. Reemplazar StudentDataContext con hooks de React Query
 4. AppContext: eliminar currentCourse, currentTopic (usar route params)
-5. Setup Vitest + tests criticos
+5. Setup Vitest + tests críticos

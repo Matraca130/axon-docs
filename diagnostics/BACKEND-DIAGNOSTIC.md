@@ -3,25 +3,25 @@
 > **Fecha:** 2026-02-28  
 > **Scope:** `Matraca130/axon-backend` — Hono Edge Function (Deno)  
 > **Archivos analizados:** 16 source files, 5 test files, 4 migrations  
-> **Metodo:** Lectura linea por linea de todo el codigo fuente  
+> **Método:** Lectura línea por línea de todo el código fuente  
 
 ---
 
 ## Resumen Ejecutivo
 
-El backend de Axon tiene una **arquitectura solida y bien pensada**. El `crud-factory.ts` es un patron excelente que elimina codigo repetitivo para ~15 tablas. El sistema de validacion (`validate.ts`) es limpio y extensible. Los comentarios son de alta calidad — explican el *por que*, no solo el *que*.
+El backend de Axon tiene una **arquitectura sólida y bien pensada**. El `crud-factory.ts` es un patrón excelente que elimina código repetitivo para ~15 tablas. El sistema de validación (`validate.ts`) es limpio y extensible. Los comentarios son de alta calidad — explican el *por que*, no solo el *que*.
 
-Sin embargo, hay **3 problemas criticos de seguridad** que deben resolverse antes de cualquier uso con datos reales, y varias oportunidades de performance que impactaran a escala.
+Sin embargo, hay **3 problemas críticos de seguridad** que deben resolverse antes de cualquier uso con datos reales, y varias oportunidades de performance que impactaran a escala.
 
 ### Scorecard
 
 | Eje | Nota | Detalle |
 |-----|------|---------|
-| Seguridad | **D** | JWT sin verificar + RLS deshabilitado = sin autorizacion real |
-| Performance | **B-** | Buenas bases, pero N+1 y fetches sin limite en rutas criticas |
+| Seguridad | **D** | JWT sin verificar + RLS deshabilitado = sin autorización real |
+| Performance | **B-** | Buenas bases, pero N+1 y fetches sin límite en rutas críticas |
 | Escalabilidad | **B** | Edge Function monolitica pero adecuada para MVP |
-| Mantenibilidad | **A-** | Excelente estructura, CRUD factory, buena documentacion |
-| Calidad de Codigo | **B+** | Patrones consistentes, validacion robusta, pocos `any` |
+| Mantenibilidad | **A-** | Excelente estructura, CRUD factory, buena documentación |
+| Calidad de Codigo | **B+** | Patrones consistentes, validación robusta, pocos `any` |
 
 ---
 
@@ -29,11 +29,11 @@ Sin embargo, hay **3 problemas criticos de seguridad** que deben resolverse ante
 
 ### 1.1 CRÍTICO — JWT Sin Verificación Criptográfica (BUG-003)
 
-**Archivo:** `db.ts` lineas 85-105 (`decodeJwtPayload`)  
+**Archivo:** `db.ts` líneas 85-105 (`decodeJwtPayload`)  
 **Status:** Documentado, DEFERRED  
 
 ```
-El JWT NUNCA se verifica criptograficamente en el backend.
+El JWT NUNCA se verifica criptográficamente en el backend.
 authenticate() solo hace base64 decode del payload.
 ```
 
@@ -42,9 +42,9 @@ authenticate() solo hace base64 decode del payload.
 - Rutas que llaman APIs externas (Stripe checkout, Mux create-upload) usan `user.id` del JWT falso → consumo de creditos pagados
 - El comentario en db.ts dice "PostgREST/RLS handles that" pero RLS tiene 0 policies
 
-**Solucion recomendada (Phase 1 — minimo viable):**
+**Solucion recomendada (Phase 1 — mínimo viable):**
 ```typescript
-// En authenticate(), agregar verificacion via network:
+// En authenticate(), agregar verificación via network:
 const { data: { user }, error } = await getAdminClient().auth.getUser(token);
 if (error) return err(c, "Invalid token", 401);
 ```
@@ -55,7 +55,7 @@ Alternativa (Phase 2): Verificar localmente con `jose` + `SUPABASE_JWT_SECRET`.
 
 **Archivos:** `routes-members.tsx`, `routes-content.tsx`, `routes-storage.tsx`  
 
-Los comentarios dicen "Authorization enforced by RLS" pero RLS esta deshabilitado. Esto significa:
+Los comentarios dicen "Authorization enforced by RLS" pero RLS está deshabilitado. Esto significa:
 
 | Ruta | Riesgo |
 |------|--------|
@@ -63,8 +63,8 @@ Los comentarios dicen "Authorization enforced by RLS" pero RLS esta deshabilitad
 | `PUT /institutions/:id` | Cualquier usuario puede editar CUALQUIER institucion |
 | `DELETE /institutions/:id` | Cualquier usuario puede desactivar CUALQUIER institucion |
 | `POST /kw-prof-notes` | Un estudiante puede crear notas de profesor |
-| `DELETE /keyword-connections/:id` | Sin verificacion de permisos |
-| `DELETE /kw-prof-notes/:id` | Sin verificacion de permisos |
+| `DELETE /keyword-connections/:id` | Sin verificación de permisos |
+| `DELETE /kw-prof-notes/:id` | Sin verificación de permisos |
 
 **Solucion recomendada:**
 Crear un middleware `requireRole()` que consulte la tabla `memberships`:
@@ -83,10 +83,10 @@ async function requireRole(c: Context, db: SupabaseClient, userId: string,
 
 ### 1.3 CRÍTICO — CORS origin: "*" (BUG-004) — FIXED
 
-**Archivo:** `index.ts` linea 32  
+**Archivo:** `index.ts` línea 32  
 **Status:** Documentado, DEFERRED  
 
-Cualquier sitio web puede hacer requests autenticados al backend. Combinado con la falta de verificacion JWT, un atacante solo necesita conocer el URL del backend.
+Cualquier sitio web puede hacer requests autenticados al backend. Combinado con la falta de verificación JWT, un atacante solo necesita conocer el URL del backend.
 
 **Solucion:** Restringir a dominios conocidos:
 ```typescript
@@ -95,7 +95,7 @@ origin: ["https://axon-app.vercel.app", "http://localhost:5173"]
 
 ### 1.4 ALTO — Storage Path Traversal
 
-**Archivo:** `routes-storage.tsx` linea 205  
+**Archivo:** `routes-storage.tsx` línea 205  
 
 ```typescript
 const unauthorized = paths.filter((p: string) => !p.includes(`/${user.id}/`));
@@ -112,7 +112,7 @@ if (!normalized.startsWith(`/${folder}/${user.id}/`)) { ... }
 
 ### 1.5 ALTO — Rate Limiter Key Collision
 
-**Archivo:** `rate-limit.ts` linea 37  
+**Archivo:** `rate-limit.ts` línea 37  
 
 ```typescript
 function extractKey(token: string): string {
@@ -143,9 +143,9 @@ O-7 solo se implemento en `routes-billing.tsx` (Stripe). El webhook de Mux en `r
 
 ### 2.1 CRÍTICO — Content Tree N+1 (N-5 Incompleto)
 
-**Archivo:** `routes-content.tsx` lineas 329-371  
+**Archivo:** `routes-content.tsx` líneas 329-371  
 
-La migracion `get_content_tree()` existe pero el route **no fue actualizado** para usarla. Sigue usando el patron PostgREST embed + JS filter:
+La migración `get_content_tree()` existe pero el route **no fue actualizado** para usarla. Sigue usando el patrón PostgREST embed + JS filter:
 
 ```
 db.from("courses").select(`id, ..., semesters(id, ..., sections(id, ..., topics(id, ...)))`)  
@@ -153,7 +153,7 @@ db.from("courses").select(`id, ..., semesters(id, ..., sections(id, ..., topics(
 → filterActiveTree() descarta en JavaScript  
 ```
 
-**Impacto:** Con 100 courses × 10 semesters × 10 sections × 20 topics = 200,000 rows transferidos por request. La funcion SQL filtra en la DB y devuelve solo activos.
+**Impacto:** Con 100 courses × 10 semesters × 10 sections × 20 topics = 200,000 rows transferidos por request. La función SQL filtra en la DB y devuelve solo activos.
 
 **Fix requerido:**
 ```typescript
@@ -163,9 +163,9 @@ if (!error) return ok(c, data);
 // Fallback: current PostgREST embed pattern
 ```
 
-### 2.2 ALTO — Study Queue Sin Limite de Flashcards
+### 2.2 ALTO — Study Queue Sin Límite de Flashcards
 
-**Archivo:** `routes-study-queue.tsx` linea ~170  
+**Archivo:** `routes-study-queue.tsx` línea ~170  
 
 ```typescript
 const flashcardsQuery = db.from("flashcards").select(...)
@@ -182,7 +182,7 @@ Fetches TODAS las flashcards activas de TODA la plataforma (no hay institution_i
 
 ### 2.3 ALTO — Video Stats Agregacion en JavaScript
 
-**Archivo:** `routes-mux.ts` lineas 327-348  
+**Archivo:** `routes-mux.ts` líneas 327-348  
 
 ```typescript
 const { data: views } = await db.from("video_views").select(...).eq("video_id", videoId);
@@ -193,15 +193,15 @@ Un video popular con 5,000 views = 5,000 rows transferidos para calcular un prom
 
 ### 2.4 ALTO — Trash Query Sin Scope de Institucion
 
-**Archivo:** `routes-search.ts` lineas 199-230  
+**Archivo:** `routes-search.ts` líneas 199-230  
 
 El endpoint `GET /trash` busca items borrados en 5 tablas **sin filtrar por institution_id**. Esto es un full table scan × 5 tablas.
 
 ### 2.5 MEDIO — Migraciones Pendientes
 
-| Migracion | Status | Impacto si no se aplica |
+| Migración | Status | Impacto si no se aplica |
 |-----------|--------|------------------------|
-| `upsert_video_view` | PENDIENTE | Race condition en view tracking (fallback funciona pero no es atomico) |
+| `upsert_video_view` | PENDIENTE | Race condition en view tracking (fallback funciona pero no es atómico) |
 | `get_content_tree` | PENDIENTE | N+1 en content tree (el route ni siquiera lo usa aun) |
 | `trigram_indexes` | PENDIENTE | ILIKE search hace sequential scan en toda la tabla |
 | `webhook_events_table` | PENDIENTE | Idempotency check falla silenciosamente (table doesn't exist) |
@@ -242,7 +242,7 @@ Implementacion: `Cache-Control` headers + edge caching, o in-memory Map con TTL.
 
 ### 3.3 MEDIO — Sin Paginacion en Varias Rutas
 
-| Ruta | Sin paginacion |
+| Ruta | Sin paginación |
 |------|---------------|
 | `GET /memberships` | Lista todos los miembros |
 | `GET /admin-scopes` | Lista todos los scopes |
@@ -323,7 +323,7 @@ Rutas que usan Patron B y deberian migrar a Patron A:
 
 ### 4.5 MEDIO — Sin Request ID / Tracing
 
-No hay correlacion entre logs. Cuando ocurre un error en produccion:
+No hay correlación entre logs. Cuando ocurre un error en producción:
 ```
 [Axon Error] List summaries failed: connection timeout
 [Axon Error] List summaries failed: connection timeout
@@ -348,17 +348,17 @@ El frontend tiene que hacer `error.includes("...")` para distinguir tipos.
 
 ---
 
-## 5. CALIDAD DE CODIGO — Lo que esta BIEN
+## 5. CALIDAD DE CODIGO — Lo que está BIEN
 
-Esto es importante documentar. Mucho del backend esta bien hecho:
+Esto es importante documentar. Mucho del backend está bien hecho:
 
 | Aspecto | Evaluacion |
 |---------|------------|
-| **crud-factory.ts** | Excelente. Elimina ~2000 lineas de CRUD repetitivo. Configurable, extensible, maneja soft-delete, scoping, pagination, restore. |
-| **validate.ts** | Limpio, zero-dependency, bien tipado, completo. validateFields() es un patron elegante. |
-| **Fallback patterns** | Todos los RPCs (bulk_reorder, upsert_video_view, get_content_tree) tienen fallback graceful si la migracion no existe. Excelente para deploys sin downtime. |
-| **Comentarios** | De alta calidad. Explican decisiones de diseno, no solo que hace el codigo. Los ⚠️ WARNING en db.ts son honestos y utiles. |
-| **Error handling** | Consistente patron err(c, msg, status). safeJson() previene crashes por JSON malformado. |
+| **crud-factory.ts** | Excelente. Elimina ~2000 líneas de CRUD repetitivo. Configurable, extensible, maneja soft-delete, scoping, pagination, restore. |
+| **validate.ts** | Limpio, zero-dependency, bien tipado, completo. validateFields() es un patrón elegante. |
+| **Fallback patterns** | Todos los RPCs (bulk_reorder, upsert_video_view, get_content_tree) tienen fallback graceful si la migración no existe. Excelente para deploys sin downtime. |
+| **Comentarios** | De alta calidad. Explican decisiones de diseño, no solo que hace el código. Los ⚠️ WARNING en db.ts son honestos y útiles. |
+| **Error handling** | Consistente patrón err(c, msg, status). safeJson() previene crashes por JSON malformado. |
 | **Atomic operations** | Buen uso de upsert + ON CONFLICT para race conditions (reading_states, daily_activities, etc). |
 | **timing-safe.ts** | Implementacion correcta de comparacion constant-time. |
 | **Study Queue algorithm** | NeedScore es un scoring system bien pensado con pesos configurables. |
@@ -390,7 +390,7 @@ Esto es importante documentar. Mucho del backend esta bien hecho:
 
 | # | Item | Esfuerzo |
 |---|------|----------|
-| 10 | Agregar limite a flashcards query en study-queue | 15 min |
+| 10 | Agregar límite a flashcards query en study-queue | 15 min |
 | 11 | Video stats como SQL aggregate | 30 min |
 | 12 | Trash con institution_id filter | 20 min |
 | 13 | Cache headers en content-tree, plans | 1h |
@@ -414,14 +414,14 @@ Esto es importante documentar. Mucho del backend esta bien hecho:
 |---------|-------|
 | Archivos fuente | 16 |
 | Archivos de test | 5 (2 duplicados) |
-| Lineas de codigo (approx) | ~3,800 |
+| Lineas de código (approx) | ~3,800 |
 | Rutas HTTP | ~65 |
 | Tablas cubiertas por CRUD factory | 15 |
-| Rutas con validacion completa (validate.ts) | ~40% |
+| Rutas con validación completa (validate.ts) | ~40% |
 | Rutas con inline typeof checks | ~35% |
-| Rutas sin validacion de input | ~25% |
+| Rutas sin validación de input | ~25% |
 | Migraciones SQL pendientes | 4 |
 | RLS policies activas | 0 |
 | Tests unitarios | 5 archivos |
-| Tests de integracion | 0 |
+| Tests de integración | 0 |
 | Tests E2E | 0 |
