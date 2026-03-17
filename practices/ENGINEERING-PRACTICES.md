@@ -1,6 +1,6 @@
 # Practicas de Ingenieria — Axon v4.4+
 
-> **Proposito:** Guia viva de practicas arquitecturales, de performance, seguridad y modularizacion para que Axon pueda evolucionar y escalar sin reescrituras.
+> **Propósito:** Guia viva de practicas arquitecturales, de performance, seguridad y modularizacion para que Axon pueda evolucionar y escalar sin reescrituras.
 >
 > **Audiencia:** Cualquier desarrollador (humano o AI) que toque el codebase.
 >
@@ -12,7 +12,7 @@
 
 1. [Principios Fundamentales](#1-principios-fundamentales)
 2. [Backend — Modularizacion](#2-backend--modularizacion)
-3. [Backend — Patron de Ruta](#3-backend--patron-de-ruta)
+3. [Backend — Patron de Ruta](#3-backend--patrón-de-ruta)
 4. [Base de Datos — Practicas SQL](#4-base-de-datos--practicas-sql)
 5. [Performance — Reglas No Negociables](#5-performance--reglas-no-negociables)
 6. [Seguridad — Checklist por Ruta](#6-seguridad--checklist-por-ruta)
@@ -20,8 +20,8 @@
 8. [Testing — Estrategia por Capa](#8-testing--estrategia-por-capa)
 9. [Frontend — Arquitectura de Consumo](#9-frontend--arquitectura-de-consumo)
 10. [Migraciones — Protocolo de Seguridad](#10-migraciones--protocolo-de-seguridad)
-11. [Documentacion — Fuente de Verdad](#11-documentacion--fuente-de-verdad)
-12. [Checklist Pre-Implementacion](#12-checklist-pre-implementacion)
+11. [Documentación — Fuente de Verdad](#11-documentación--fuente-de-verdad)
+12. [Checklist Pre-Implementacion](#12-checklist-pre-implementación)
 
 ---
 
@@ -31,7 +31,7 @@ Estos principios gobiernan TODAS las decisiones. Cuando haya conflicto, resuelve
 
 ### 1.1 Evolve, Don't Replace
 
-Nunca reescribir un modulo funcional. Extender el existente. Si un cambio rompe la firma de una funcion exportada, es una senal de que estas reemplazando en vez de evolucionando.
+Nunca reescribir un módulo funcional. Extender el existente. Si un cambio rompe la firma de una función exportada, es una señal de que estas reemplazando en vez de evolucionando.
 
 ```
 // MAL: Reescribir crud-factory.ts para agregar una feature
@@ -40,7 +40,7 @@ Nunca reescribir un modulo funcional. Extender el existente. Si un cambio rompe 
 
 ### 1.2 Fail Fast, Fail Loud
 
-Toda validacion de input ocurre ANTES de tocar la base de datos. Todo error se loguea con contexto suficiente para reproducir.
+Toda validación de input ocurre ANTES de tocar la base de datos. Todo error se loguea con contexto suficiente para reproducir.
 
 ```typescript
 // MAL: Dejar que PostgreSQL rechace un UUID invalido
@@ -49,7 +49,7 @@ Toda validacion de input ocurre ANTES de tocar la base de datos. Todo error se l
 
 ### 1.3 Computar en SQL, No en JavaScript
 
-Si una operacion involucra filtrar, agregar, o transformar datos de multiples rows, SIEMPRE preferir un RPC/function SQL sobre fetching + procesamiento en JS.
+Si una operación involucra filtrar, agregar, o transformar datos de multiples rows, SIEMPRE preferir un RPC/function SQL sobre fetching + procesamiento en JS.
 
 ```
 // MAL: fetch 5000 rows → .filter() → .reduce() en Deno
@@ -58,7 +58,7 @@ Si una operacion involucra filtrar, agregar, o transformar datos de multiples ro
 
 ### 1.4 Graceful Degradation with Fallback
 
-Toda feature nueva que dependa de un RPC o migracion SQL debe tener fallback al patron anterior. Esto permite deployer backend antes que la migracion corra.
+Toda feature nueva que dependa de un RPC o migración SQL debe tener fallback al patrón anterior. Esto permite deployer backend antes que la migración corra.
 
 ```typescript
 const { data, error } = await db.rpc("new_function", params);
@@ -69,7 +69,7 @@ console.warn(`[route] RPC failed, using fallback: ${error.message}`);
 
 ### 1.5 Institution-Scoped Everything
 
-Axon es multi-tenant. TODA query que toque datos de usuario debe filtrar por `institution_id` directa o indirectamente. Si una ruta no tiene `institution_id` en su query, es un bug de diseno.
+Axon es multi-tenant. TODA query que toque datos de usuario debe filtrar por `institution_id` directa o indirectamente. Si una ruta no tiene `institution_id` en su query, es un bug de diseño.
 
 ---
 
@@ -97,7 +97,7 @@ Cada `routes-*.ts` maneja UN dominio y no importa de otros route files.
 
 ```
 routes-auth.ts      → Solo auth y profiles
-routes-content.ts   → Solo jerarquia de contenido
+routes-content.ts   → Solo jerarquía de contenido
 routes-study.ts     → Solo sesiones, reviews, estados
 ```
 
@@ -118,7 +118,7 @@ request-id.ts     → X-Request-Id middleware
 
 **Regla 3: NUNCA exportar funciones internas de un route file.**
 
-Si `routes-content.ts` tiene una funcion util, y `routes-search.ts` la necesita, MUEVELA a un archivo compartido. No crees dependencias cruzadas entre routes.
+Si `routes-content.ts` tiene una función util, y `routes-search.ts` la necesita, MUEVELA a un archivo compartido. No crees dependencias cruzadas entre routes.
 
 **Regla 4: El crud-factory.ts es SAGRADO.**
 
@@ -137,7 +137,7 @@ No separar ahora. Separar cuando:
 - Memory usage > 128MB consistentemente
 - Un dominio necesita scaling independiente (e.g., webhooks)
 
-Cuando llegue el momento, separar asi:
+Cuando llegue el momento, separar así:
 
 ```
 supabase/functions/api/         ← CRUD + search + content (80% del trafico)
@@ -146,7 +146,7 @@ supabase/functions/study/       ← Study queue + sessions (CPU-intensive)
 supabase/functions/storage/     ← Uploads (memory-intensive)
 ```
 
-Compartir codigo entre functions via un directorio `_shared/`:
+Compartir código entre functions via un directorio `_shared/`:
 ```
 supabase/functions/_shared/
   db.ts
@@ -189,15 +189,15 @@ app.post(`${PREFIX}/resource`, async (c: Context) => {
 });
 ```
 
-**NUNCA mezclar estos pasos.** No validar despues de un INSERT. No hacer auth despues de parsear el body.
+**NUNCA mezclar estos pasos.** No validar después de un INSERT. No hacer auth después de parsear el body.
 
 ### 3.2 Patron para Rutas que Llaman APIs Externas
 
-Rutas que llaman Stripe, Mux, OpenAI, etc. requieren verificacion EXTRA del JWT porque el admin client no valida el token:
+Rutas que llaman Stripe, Mux, OpenAI, etc. requieren verificación EXTRA del JWT porque el admin client no valida el token:
 
 ```typescript
 // ANTES de llamar a una API externa con user.id:
-// Hacer una query canary a la DB para forzar validacion del JWT
+// Hacer una query canary a la DB para forzar validación del JWT
 const { error: canaryErr } = await db.from("profiles").select("id").eq("id", user.id).single();
 if (canaryErr) return err(c, "Invalid user token", 401);
 
@@ -224,29 +224,29 @@ await stripe.request("POST", "/checkout/sessions", { ...params });
 
 ### 4.1 Migraciones
 
-Toda migracion SQL sigue este template:
+Toda migración SQL sigue este template:
 
 ```sql
 -- ============================================================
 -- TICKET-ID: Descripcion corta
 -- ============================================================
--- Contexto: por que existe esta migracion
+-- Contexto: por que existe esta migración
 -- Impacto: que queries mejora/cambia
 -- Rollback: como revertir
 --
 -- Run in: Supabase SQL Editor
 -- ============================================================
 
--- El DDL aqui (CREATE, ALTER, etc.)
+-- El DDL aquí (CREATE, ALTER, etc.)
 
 -- Verification query:
 -- SELECT ... FROM ... WHERE ...;
 ```
 
 **Reglas:**
-- TODA migracion es idempotente (`IF NOT EXISTS`, `CREATE OR REPLACE`)
-- TODA migracion tiene query de verificacion
-- TODA migracion tiene instruccion de rollback
+- TODA migración es idempotente (`IF NOT EXISTS`, `CREATE OR REPLACE`)
+- TODA migración tiene query de verificación
+- TODA migración tiene instrucción de rollback
 - Nombrar: `YYYYMMDD_NN_descripcion.sql`
 - Archivo va en `migrations/` del repo backend
 
@@ -279,7 +279,7 @@ Crear indexes para:
 | Composite: `WHERE a = x AND b = y` | B-tree composite `(a, b)` |
 | Unique constraint: `ON CONFLICT (a, b)` | UNIQUE index `(a, b)` |
 
-**Regla:** Verificar con `EXPLAIN ANALYZE` antes y despues en queries lentas.
+**Regla:** Verificar con `EXPLAIN ANALYZE` antes y después en queries lentas.
 
 ### 4.4 Multi-tenancy en Queries
 
@@ -363,7 +363,7 @@ const { data } = await db.from("video_views")
   .eq("video_id", id);
 ```
 
-### Regla 5: Batch Operations con Limites
+### Regla 5: Batch Operations con Límites
 
 Todo batch (reorder, bulk delete, bulk create) tiene un MAX_ITEMS:
 
@@ -435,9 +435,9 @@ Antes de mergear cualquier ruta nueva:
 
 ### 6.3 Role Matrix de Axon
 
-| Accion | Student | Professor | Admin | Owner |
+| Acción | Student | Professor | Admin | Owner |
 |--------|---------|-----------|-------|-------|
-| Ver contenido de su seccion | Si | Si | Si | Si |
+| Ver contenido de su sección | Si | Si | Si | Si |
 | Crear notas personales | Si | - | - | - |
 | Crear/editar contenido (summaries, keywords) | - | Si | Si | Si |
 | Crear flashcards/quizzes | - | Si | Si | Si |
@@ -454,13 +454,13 @@ Esta matriz DEBE implementarse como middleware `requireRole()`.
 ### 7.1 Response Format (estandar)
 
 ```typescript
-// Exito — item singular
+// Éxito — item singular
 { "data": { id: "...", ... } }
 
-// Exito — lista paginada (factory)
+// Éxito — lista paginada (factory)
 { "data": { "items": [...], "total": 42, "limit": 20, "offset": 0 } }
 
-// Exito — lista custom
+// Éxito — lista custom
 { "data": { "results": [...], "meta": { ... } } }
 
 // Error
@@ -474,7 +474,7 @@ Esta matriz DEBE implementarse como middleware `requireRole()`.
 | `VALIDATION_ERROR` | 400 | Input invalido |
 | `AUTH_REQUIRED` | 401 | Sin token o token expirado |
 | `AUTH_INVALID` | 401 | Token invalido/malformado |
-| `FORBIDDEN` | 403 | Sin permisos para esta accion |
+| `FORBIDDEN` | 403 | Sin permisos para esta acción |
 | `NOT_FOUND` | 404 | Recurso no encontrado |
 | `CONFLICT` | 409 | Duplicado o conflicto de estado |
 | `RATE_LIMITED` | 429 | Rate limit excedido |
@@ -500,7 +500,7 @@ NO versionear prematuramente. Solo cuando un cambio rompe el contrato del fronte
 ### 8.1 Directorio Canonico
 
 ```
-supabase/functions/server/tests/    ← UNICO directorio de tests
+supabase/functions/server/tests/    ← ÚNICO directorio de tests
   {module}_test.ts                   ← Deno.test() native
 ```
 
@@ -597,7 +597,7 @@ function crudEndpoints(slug: string) {
 
 ### 9.3 State Management
 
-Para Axon, usar esta jerarquia:
+Para Axon, usar esta jerarquía:
 
 | Tipo de Estado | Solucion | Ejemplo |
 |----------------|----------|---------|
@@ -650,44 +650,44 @@ src/app/
 
 ## 10. Migraciones — Protocolo de Seguridad
 
-### 10.1 Flujo de Migracion
+### 10.1 Flujo de Migración
 
 ```
 1. Escribir SQL en migrations/YYYYMMDD_NN_descripcion.sql
 2. Incluir rollback y verification query
 3. Commit al repo axon-backend
-4. Deploy backend (con fallback — no depende de la migracion)
-5. Correr migracion en Supabase SQL Editor
-6. Verificar con el query de verificacion
+4. Deploy backend (con fallback — no depende de la migración)
+5. Correr migración en Supabase SQL Editor
+6. Verificar con el query de verificación
 7. Confirmar que la ruta usa el path primario (RPC) en lugar del fallback
 ```
 
-### 10.2 Reglas de Migracion
+### 10.2 Reglas de Migración
 
-- **NUNCA** hacer `DROP TABLE` o `DROP COLUMN` sin migracion previa que elimine las referencias
+- **NUNCA** hacer `DROP TABLE` o `DROP COLUMN` sin migración previa que elimine las referencias
 - **NUNCA** renombrar columnas — agregar la nueva, migrar datos, deprecar la vieja
 - **SIEMPRE** `IF NOT EXISTS` / `CREATE OR REPLACE`
 - **SIEMPRE** testear en un proyecto Supabase de staging primero (cuando exista)
 
-### 10.3 Tipos de Migracion por Riesgo
+### 10.3 Tipos de Migración por Riesgo
 
 | Tipo | Riesgo | Requiere downtime? |
 |------|--------|-------------------|
-| Crear funcion RPC | Nulo | No |
+| Crear función RPC | Nulo | No |
 | Crear index | Bajo (bloqueo breve en tablas grandes) | No |
 | Crear tabla | Nulo | No |
 | Agregar columna nullable | Nulo | No |
 | Agregar columna NOT NULL con default | Bajo | No |
 | Cambiar tipo de columna | ALTO | Posiblemente |
-| Drop column/table | CRITICO | Si, coordinado |
+| Drop column/table | CRÍTICO | Si, coordinado |
 
 ---
 
-## 11. Documentacion — Fuente de Verdad
+## 11. Documentación — Fuente de Verdad
 
 ### 11.1 axon-docs es la Fuente de Verdad
 
-Todo conocimiento del proyecto vive en `Matraca130/axon-docs`. Los repos de codigo (backend, frontend) contienen solo READMEs basicos de setup.
+Todo conocimiento del proyecto vive en `Matraca130/axon-docs`. Los repos de código (backend, frontend) contienen solo READMEs básicos de setup.
 
 ### 11.2 Estructura de axon-docs
 
@@ -703,7 +703,7 @@ axon-docs/
   practices/             ← ESTE archivo y guias de ingenieria
 ```
 
-### 11.3 Cuando Actualizar Documentacion
+### 11.3 Cuando Actualizar Documentación
 
 | Evento | Que actualizar |
 |--------|---------------|
@@ -711,7 +711,7 @@ axon-docs/
 | Nueva tabla/columna | database/schema-*.md |
 | Bug encontrado | KNOWN-BUGS.md |
 | Bug resuelto | KNOWN-BUGS.md (status → RESOLVED) |
-| Migracion creada | Commit en migrations/ + database/*.md |
+| Migración creada | Commit en migrations/ + database/*.md |
 | Auditoria realizada | diagnostics/ |
 | Cambio arquitectural | context/ + PLATFORM-CONTEXT.md |
 
@@ -727,7 +727,7 @@ Copiar y llenar ANTES de empezar cualquier feature nueva:
 ### Impacto
 - [ ] Que archivos se modifican?
 - [ ] Que tablas se tocan?
-- [ ] Requiere migracion SQL?
+- [ ] Requiere migración SQL?
 - [ ] Rompe alguna API existente?
 
 ### Seguridad
@@ -737,7 +737,7 @@ Copiar y llenar ANTES de empezar cualquier feature nueva:
 - [ ] Input validado con validate.ts?
 
 ### Performance
-- [ ] LIST tiene paginacion?
+- [ ] LIST tiene paginación?
 - [ ] Queries usan select() especifico (no *)?
 - [ ] Queries independientes en Promise.all?
 - [ ] Aggregaciones en SQL (no JS reduce)?
@@ -746,7 +746,7 @@ Copiar y llenar ANTES de empezar cualquier feature nueva:
 - [ ] Tiene test unitario para logica pura?
 - [ ] Casos edge cubiertos?
 
-### Documentacion
+### Documentación
 - [ ] API-MAP.md actualizado?
 - [ ] Schema docs actualizado si hay cambios de DB?
 - [ ] KNOWN-BUGS.md actualizado si resuelve un bug?

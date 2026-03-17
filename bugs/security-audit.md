@@ -1,6 +1,6 @@
 # Security Audit
 
-> **Updated:** 2026-03-14 (audit pass 3 — verified against source)
+> **Updated:** 2026-03-17 (audit pass 17 — messaging integrations added)
 
 ## Critical Issues
 
@@ -20,10 +20,8 @@ Direct Supabase access still bypasses.
 
 ### 3. CORS Wildcard (BUG-004)
 
-**Status:** **NOT FIXED — reverted to `"*"`**
-Was restricted (commit `33eb56e`) but reverted for MVP development.
-`index.ts` comment: "MVP: Temporarily reverted to '*' for development flexibility."
-**Must restrict before production launch.**
+**Status:** **FIXED**
+CORS is now restricted to a whitelist of allowed origins.
 
 ### 4. ~~No Rate Limiting~~ FIXED (O-8)
 
@@ -49,7 +47,7 @@ Constant-time via `timing-safe.ts`.
 |---|---|
 | JWT verification | Mitigated (BUG-002) |
 | RLS disabled | Partially mitigated (BUG-003) |
-| **CORS wildcard** | **NOT FIXED — reverted to `"*"` for MVP** |
+| **CORS wildcard** | **FIXED** — restricted to whitelist of allowed origins |
 | Rate limiting | FIXED |
 | Webhook idempotency | FIXED |
 | Stripe timing-safe | FIXED |
@@ -58,3 +56,7 @@ Constant-time via `timing-safe.ts`.
 | or() injection | FIXED |
 | Password max length | FIXED |
 | Batch size limits | FIXED |
+| RAG function security | FIXED (SECURITY DEFINER + auth.uid() checks) |
+| Telegram webhook auth | OK (secret token verified) |
+| WhatsApp PII protection | OK (SHA-256 + salt phone hashing) |
+| Messaging admin RLS | OK (admin/owner only via memberships check) |

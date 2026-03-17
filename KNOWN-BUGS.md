@@ -2,7 +2,7 @@
 
 > **Canonical list:** [`bugs/known-bugs.md`](bugs/known-bugs.md)  
 > **Security details:** [`bugs/security-audit.md`](bugs/security-audit.md)  
-> **Updated:** 2026-03-14 (audit pass 15 — ~630 files mapped, backend READ started)
+> **Updated:** 2026-03-17 (audit pass 17 — full recount: 122 backend files, 586 frontend files, 62 migrations)
 
 ---
 
@@ -12,7 +12,7 @@
 |---|---|---|---|
 | BUG-003 | CRITICAL | RLS disabled on content tables | Backend DB |
 | BUG-001 | HIGH | `resolution_tier` vs `max_resolution` Mux webhook | Backend routes-models.ts |
-| BUG-004 | HIGH | **CORS wildcard `"*"` — confirmed in index.ts** | Backend index.ts |
+| BUG-004 | ~~HIGH~~ | ~~**CORS wildcard `"*"`**~~ **FIXED** — restricted to whitelist of allowed origins | Backend index.ts |
 | **BUG-030** | **HIGH** | **Professor + Owner routes use PlaceholderPage despite 16+8 real pages existing** | `professor-routes.ts`, `owner-routes.ts` vs `roles/pages/` |
 | BUG-002 | MEDIUM | JWT no crypto verification locally (non-DB routes at risk) | Backend db.ts |
 | BUG-006 | MEDIUM | Content tree filters inactives in JS | Backend |
@@ -33,13 +33,14 @@
 - Professor ROUTES = PlaceholderPage, but **16 real page files + 38 CMS components** exist in `roles/pages/professor/` + `components/professor/` → ready to wire up (BUG-030)
 - Owner ROUTES = PlaceholderPage, but **8 real pages** exist in `roles/pages/owner/` (OwnerMembersPage **50KB**, OwnerPlansPage 30KB) → ready to wire up (BUG-030)
 - Frontend total: **~350 component files** (not "~100+")
-- Backend: **~93 files** in `supabase/functions/server/`
+- Backend: **122 TypeScript files** in `supabase/functions/server/`
 - Version mismatch: backend index.ts = **"4.4"**, docs = **"4.5"**
 
 ## Resolved
 
-BUG-005, BUG-008, BUG-009 (by design), BUG-010, BUG-012..014, RT-001..004, AUTH-DUAL, STALE-CHUNK.  
+BUG-005, BUG-008, BUG-009 (by design), BUG-010, BUG-012..014, RT-001..004, AUTH-DUAL, STALE-CHUNK, **VOICE-LEAK**.
 All 25+ gamification bugs resolved 2026-03-13.
+**VOICE-LEAK** (interval+timeout memory leak in useRealtimeVoice.ts WebSocket connect wait) — fixed 2026-03-17.
 
 ## Totals
 

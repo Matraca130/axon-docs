@@ -1,6 +1,6 @@
 # Known Bugs (Summary)
 
-> **Updated:** 2026-03-14 (audit pass 15 — frontend 100% mapped, backend ~93 files LISTED, db.ts+auth-helpers READ)
+> **Updated:** 2026-03-17 (audit pass 17 — full recount: 122 backend files, 62 migrations)
 > **Canonical source:** See root `KNOWN-BUGS.md` for full details with descriptions.
 
 ## Pending
@@ -10,7 +10,7 @@
 | BUG-001 | HIGH | `resolution_tier` vs `max_resolution` in Mux webhook | Pending |
 | BUG-002 | MEDIUM | JWT not cryptographically verified locally | Mitigated (PostgREST validates). db.ts comments explicitly warn about non-DB routes |
 | BUG-003 | CRITICAL | RLS disabled on content tables | Pending (backend enforces scoping via auth-helpers.ts) |
-| BUG-004 | HIGH | **CORS wildcard — reverted to `"*"`** | **NOT FIXED** (confirmed in index.ts line-by-line) |
+| BUG-004 | ~~HIGH~~ | **CORS wildcard** | **FIXED** — restricted to whitelist of allowed origins |
 | BUG-006 | MEDIUM | Content tree filters inactives in JS | Pending |
 | BUG-007 | MEDIUM | Search still uses multiple queries | Partially mitigated (trigram + RPC) |
 | BUG-011 | LOW | ~25 `kv_store_*` junk tables | Pending (safe to drop) |
@@ -40,6 +40,12 @@
 | BUG-014 | ~~LOW~~ | Bundle size 3.2 MB single chunk | Fixed (code splitting) |
 | AUTH-DUAL | ~~HIGH~~ | Dual AuthContext `createContext()` | 2026-03-13 |
 | STALE-CHUNK | ~~MEDIUM~~ | Stale chunk errors post-deploy | 2026-03-14 |
+
+## Voice Bugs (resolved 2026-03-17)
+
+| ID | Severity | Description | When |
+|---|---|---|---|
+| VOICE-LEAK | ~~MEDIUM~~ | interval+timeout memory leak in useRealtimeVoice.ts WebSocket connect wait | 2026-03-17 |
 
 ## Gamification Bugs (all resolved 2026-03-13)
 

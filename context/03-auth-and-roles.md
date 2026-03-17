@@ -65,13 +65,11 @@ scope_id   -> UUID of the accessible entity
 |---|---|---|
 | JWT verification | Mitigated (BUG-002) | PostgREST validates on DB query |
 | RLS disabled | Pending (BUG-003) | Backend enforces scoping + RPCs revoked from authenticated |
-| CORS wildcard | **NOT FIXED — reverted to `"*"`** | Was restricted (commit `33eb56e`) but reverted for MVP development |
+| CORS wildcard | **FIXED** | Restricted to whitelist of allowed origins |
 | Rate limiting | **DONE** (O-8) | 120 req/min sliding window + 20 AI POST/hr |
 | Webhook idempotency | **DONE** (O-7) | Event tracking for Stripe and Mux |
 | Stripe timing-safe | **DONE** (N-10) | Constant-time signature comparison |
 
-> **⚠️ CORS WARNING:** `index.ts` has `origin: "*"` with comment:
-> "MVP: Temporarily reverted to '*' for development flexibility."
-> Must be restricted before production launch.
+> **CORS:** `index.ts` now uses a whitelist of allowed origins (BUG-004 FIXED).
 
 See `KNOWN-BUGS.md` for full details.

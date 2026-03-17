@@ -1,6 +1,6 @@
 # RAG Pipeline Phases — Status Tracker
 
-> **Last updated:** 2026-03-14 (audit pass 3 — verified against source)
+> **Last updated:** 2026-03-17 (audit pass 17 — full recount, Claude migration verified)
 
 ## Phase Status
 
@@ -24,7 +24,8 @@
 > **Dimensions:** 1536 (truncated via Matryoshka Representation Learning)
 > **File:** `openai-embeddings.ts` — constants `EMBEDDING_MODEL` and `EMBEDDING_DIMENSIONS`
 > **Previous:** Gemini `gemini-embedding-001` (768d) — `gemini.ts` now throws if called
-> **Text generation:** Still Gemini 2.5 Flash (unchanged)
+> **Text generation:** **Migrated to Claude (Anthropic)** — Gemini retained only for PDF extraction + voice transcription (Telegram/WhatsApp)
+> **Claude models:** claude-opus-4 (complex), claude-sonnet-4 (default), claude-haiku-4.5 (simple)
 
 ### gemini.ts generateEmbedding() is a HARD ERROR
 
@@ -51,7 +52,10 @@ This prevents accidental insertion of 768d vectors into 1536d columns.
 
 ## Phase 6 Details: Advanced Retrieval
 
-- Multi-Query, HyDE, Re-ranking via Gemini-as-Judge
+- Multi-Query, HyDE, Re-ranking — all now via **Claude** (migrated from Gemini)
+- Multi-Query: Claude generates 2 reformulations + original (parallel embeddings)
+- HyDE: Claude generates hypothetical answer → replace query embedding
+- Re-ranking: Claude scores chunk relevance (0.6 × rerank + 0.4 × original score)
 - Strategy selection: summaryId→standard, short→hyde, long→multi_query
 - Observability: `retrieval_strategy` + `rerank_applied` in `rag_query_log`
 
