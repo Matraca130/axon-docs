@@ -2,7 +2,7 @@
 
 > **Canonical list:** [`bugs/known-bugs.md`](bugs/known-bugs.md)  
 > **Security details:** [`bugs/security-audit.md`](bugs/security-audit.md)  
-> **Updated:** 2026-03-14 (audit pass 15 — ~630 files mapped, backend READ started)
+> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram, Claude migration)
 
 ---
 
@@ -38,8 +38,9 @@
 
 ## Resolved
 
-BUG-005, BUG-008, BUG-009 (by design), BUG-010, BUG-012..014, RT-001..004, AUTH-DUAL, STALE-CHUNK.  
+BUG-005, BUG-008, BUG-009 (by design), BUG-010, BUG-012..014, RT-001..004, AUTH-DUAL, STALE-CHUNK, **VOICE-LEAK**.
 All 25+ gamification bugs resolved 2026-03-13.
+**VOICE-LEAK** (interval+timeout memory leak in useRealtimeVoice.ts WebSocket connect wait) — fixed 2026-03-17.
 
 ## Totals
 

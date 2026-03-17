@@ -1,6 +1,6 @@
 # RAG Pipeline Phases — Status Tracker
 
-> **Last updated:** 2026-03-14 (audit pass 3 — verified against source)
+> **Last updated:** 2026-03-17 (audit pass 16 — Claude migration, voice calls)
 
 ## Phase Status
 
@@ -24,7 +24,7 @@
 > **Dimensions:** 1536 (truncated via Matryoshka Representation Learning)
 > **File:** `openai-embeddings.ts` — constants `EMBEDDING_MODEL` and `EMBEDDING_DIMENSIONS`
 > **Previous:** Gemini `gemini-embedding-001` (768d) — `gemini.ts` now throws if called
-> **Text generation:** Still Gemini 2.5 Flash (unchanged)
+> **Text generation:** **Migrated to Claude (Anthropic)** — Gemini retained only for PDF extraction
 
 ### gemini.ts generateEmbedding() is a HARD ERROR
 

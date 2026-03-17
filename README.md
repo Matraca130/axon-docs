@@ -17,7 +17,7 @@ Designed to be copy-pasted into Figma Make sessions as context.
 |---|---|---|---|
 | `Matraca130/numero1_sseki_2325_55` | Frontend (React 18/Vite/TW4) | Vercel | v4.5 |
 | `Matraca130/axon-backend` | Backend (Hono/Deno) | Supabase Edge Functions | v4.5 |
-| `Matraca130/axon-docs` | Documentation (this repo) | None | Updated 2026-03-14 |
+| `Matraca130/axon-docs` | Documentation (this repo) | None | Updated 2026-03-17 |
 
 ## Supabase
 
@@ -25,6 +25,23 @@ Designed to be copy-pasted into Figma Make sessions as context.
 - ~50+ tables (+ ~25 `kv_store_*` junk)
 - **52+ SQL migrations**
 - Embeddings: **1536d** (OpenAI **text-embedding-3-large**, Matryoshka truncation)
+
+## What Changed (2026-03-15–17)
+
+### Backend
+- **AI migrated from Gemini to Claude** (Anthropic) for all text generation, re-ranking, chat
+- **Voice calls**: `POST /ai/realtime-session` — ephemeral OpenAI Realtime API token
+- **Telegram bot**: Claude-powered chatbot integration + admin config endpoints
+- **Telegram DB**: `telegram_bot_configs`, `telegram_conversations` with RLS + indexes + FK constraints
+- **OpenAI Realtime session validation** hardened
+- **11 split route modules** + 6 flat files (added telegram/)
+
+### Frontend
+- **Voice call mode**: AxonAIAssistant + VoiceCallPanel + `useRealtimeVoice.ts` (OpenAI Realtime WebSocket)
+- **Admin Messaging Integrations**: Telegram & WhatsApp settings page
+- **StudyHub merge**: hero + study paths + progress tracking + A4 layout
+- **Flashcard v4.5.1**: responsive, Spanish locale, keyboard nav, adaptive AI
+- **Voice bug fix**: interval+timeout memory leak in WebSocket connect wait
 
 ## What Changed (2026-03-10–14)
 

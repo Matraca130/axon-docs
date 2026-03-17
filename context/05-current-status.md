@@ -1,13 +1,13 @@
 # 05 -- Current Status
 
-> **Updated: 2026-03-14 (audit pass 15 — ~630 files mapped across 3 repos).**
+> **Updated: 2026-03-17 (audit pass 16 — voice calls, Telegram bot, Claude migration, admin messaging UI).**
 
 ## Build Status
 
 | Repo | Status | Notes |
 |---|---|---|
-| Frontend (Vercel) | Running | v4.5 — responsive, gamification, AI reports, PDF ingest |
-| Backend (Supabase EF) | Running | v4.4 (index.ts) / v4.5 (docs) — ~93 files, 16 route modules |
+| Frontend (Vercel) | Running | v4.5 — responsive, gamification, AI reports, PDF ingest, **voice calls**, **admin messaging** |
+| Backend (Supabase EF) | Running | v4.4 (index.ts) / v4.5 (docs) — ~95+ files, 17 route modules, **Claude AI**, **Telegram bot**, **Realtime voice** |
 | Supabase | Running | 50+ tables, **53 migrations** |
 
 ## Still Pending
@@ -26,9 +26,24 @@
 | kv_store_* cleanup (BUG-011) | LOW |
 | 7 LOW tech debt items (BUG-020..024, 027, 029) | LOW |
 
-## Backend: ~93 files LISTED + 3 READ
+## Recent Changes (2026-03-17)
 
-### Route Modules (10 split + 6 flat = 16 mounted in index.ts)
+### Backend
+- **AI migrated from Gemini to Claude** for all text generation (chat, generate, reports, re-ranking)
+- **Voice calls:** `POST /ai/realtime-session` — returns ephemeral OpenAI Realtime API token
+- **Telegram bot:** Claude-powered chatbot integration with admin config endpoints
+- **Telegram DB:** `telegram_bot_configs`, `telegram_conversations` tables with RLS + indexes + FK constraints
+
+### Frontend
+- **Voice call mode** in AxonAIAssistant — OpenAI Realtime API via WebSocket (`useRealtimeVoice.ts`)
+- **Admin Messaging Integrations page** — Telegram & WhatsApp settings
+- **Voice bug fix:** interval+timeout memory leak in WebSocket connect wait cleaned up
+- **StudyHub merge:** hero + study paths + progress tracking + A4 layout
+- **Flashcard v4.5.1:** UX audit — responsive, Spanish locale, keyboard nav, adaptive AI
+
+## Backend: ~95+ files LISTED + 3 READ
+
+### Route Modules (11 split + 6 flat = 17 mounted in index.ts)
 
 | Module | Files | Key File Size |
 |---|---|---|
@@ -42,6 +57,7 @@
 | members/ | 4 | memberships 11KB, institutions 8KB |
 | search/ | 4 | trash-restore 5KB |
 | settings/ | 2 | algorithm-config 6KB |
+| **telegram/** | NEW | Claude-powered chatbot, admin config |
 | **Flat** | | |
 | routes-billing.ts | — | 16KB |
 | routes-study-queue.ts | — | 16KB |
@@ -105,7 +121,7 @@
 | roles/ (flat) | 4 |
 | student-panel/ | 4 |
 | welcome/ | 3 |
-| ai/ | 2 |
+| ai/ | 3 (+ VoiceCallPanel) |
 | video/ | 2 |
 | summary/ | 2 |
 | flat | 2 |

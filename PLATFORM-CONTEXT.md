@@ -1,7 +1,7 @@
 # Axon v4.5 — Platform Context
 
 > **Paste this at the start of every Figma Make session.**  
-> **Updated:** 2026-03-14 (audit pass 15 — ~630 files mapped across 3 repos)
+> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram bot, Claude migration)
 
 ---
 
@@ -10,7 +10,7 @@
 ```
 Frontend (React 18 + Vite + Tailwind v4) → Vercel
   └─ apiCall() in lib/api.ts → Backend (Hono/Deno) → Supabase Edge Functions
-       └─ PostgreSQL + pgvector | Gemini | OpenAI | Mux | Stripe
+       └─ PostgreSQL + pgvector | Claude | Gemini (PDF) | OpenAI (embed+voice) | Mux | Stripe | Telegram
 ```
 
 ## 2. Auth (Dual Token)
@@ -39,13 +39,13 @@ Auth enforced by `auth-helpers.ts`: fail-closed, role hierarchy (`canAssignRole`
 
 ## 4. Hierarchy: Institution → Course → Semester → Section → Topic → Summary
 
-## 5. Backend: ~93 files (16 route modules + 24 core + 3 lib)
+## 5. Backend: ~95+ files (17 route modules + 24 core + 3 lib)
 
 > index.ts says version "4.4" — docs say "4.5".
 
-**Split modules (routes/):** ai (14 files, generate-smart 30KB), content (10), whatsapp (10), gamification (6), study (6), plans (5), mux (5), members (4), search (4), settings (2)  
-**Flat routes:** auth, billing (16KB), models, storage, student, study-queue (16KB)  
-**Core:** crud-factory (20KB), db, auth-helpers (11KB), gemini, openai-embeddings, xp-engine, xp-hooks (16KB), streak-engine, rate-limit, validate, chunker, semantic-chunker, retrieval-strategies (13KB), auto-ingest, ai-normalizers, summary-hook, timing-safe  
+**Split modules (routes/):** ai (14 files, generate-smart 30KB), content (10), whatsapp (10), telegram (new), gamification (6), study (6), plans (5), mux (5), members (4), search (4), settings (2)
+**Flat routes:** auth, billing (16KB), models, storage, student, study-queue (16KB)
+**Core:** crud-factory (20KB), db, auth-helpers (11KB), claude (migrated from gemini for text gen), gemini (PDF only), openai-embeddings, xp-engine, xp-hooks (16KB), streak-engine, rate-limit, validate, chunker, semantic-chunker, retrieval-strategies (13KB), auto-ingest, ai-normalizers, summary-hook, timing-safe
 **lib/:** fsrs-v4 (8.7KB), bkt-v4, types
 
 ## 6. Frontend: 188 logic READ + ~350 components LISTED
@@ -80,9 +80,12 @@ Full: [`bugs/known-bugs.md`](bugs/known-bugs.md)
 Backend: xp-engine + xp-hooks + streak-engine + 6 gamification route files  
 Frontend: 14 components, 8 React Query hooks, `useSessionXP.ts`
 
-## 9. AI/RAG: Gemini 2.5 Flash + OpenAI text-embedding-3-large (1536d)
+## 9. AI/RAG: Claude (text gen) + OpenAI text-embedding-3-large (1536d) + OpenAI Realtime (voice)
 
 14 AI route files on disk (generate-smart 30KB, chat 18KB, pre-generate 16KB). 11 mounted via index.ts.
+Text generation **migrated from Gemini to Claude** (Anthropic). Gemini retained only for PDF extraction.
+**Voice calls:** `POST /ai/realtime-session` returns ephemeral OpenAI Realtime API token; frontend connects via WebSocket.
+**Telegram bot:** Claude-powered chatbot integration with admin messaging settings.
 
 ## 10. DB: 50+ tables, 53 migrations, pgvector 1536d
 
@@ -90,5 +93,5 @@ Algorithms: FSRS v4 + BKT v4 (in lib/) for spaced repetition scheduling.
 
 ## 11. Tech Stack
 
-**Frontend:** React 18, TypeScript, Vite 6, Tailwind v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, Sonner, date-fns.  
-**Backend:** Hono + Deno, PostgreSQL + pgvector, Gemini 2.5 Flash, OpenAI, Stripe, Mux, WhatsApp Cloud API.
+**Frontend:** React 18, TypeScript, Vite 6, Tailwind v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, Sonner, date-fns.
+**Backend:** Hono + Deno, PostgreSQL + pgvector, Claude (Anthropic), Gemini 2.5 Flash (PDF), OpenAI (embeddings + Realtime voice), Stripe, Mux, Telegram Bot API, WhatsApp Cloud API.

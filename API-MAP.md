@@ -1,6 +1,6 @@
 # Axon v4.5 - API Route Map
 
-> Mapa completo de rutas. **Ultima actualizacion:** 2026-03-14 (audit pass 6 — verified via router index files)
+> Mapa completo de rutas. **Ultima actualizacion:** 2026-03-17 (audit pass 16 — voice, Telegram, Claude migration)
 
 ---
 
@@ -14,20 +14,21 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 
 ---
 
-## Modulos (10 split + 6 flat)
+## Modulos (11 split + 6 flat)
 
 | # | Modulo | Archivos | Activos | Tipo |
 |---|---|---|---|---|
 | 1 | `routes/content/` | 11 | 11 | CRUD + connections, search, reorder, tree, batch |
 | 2 | `routes/study/` | 6 | 6 | Sessions, reviews, progress, spaced-rep, batch |
-| 3 | `routes/ai/` | 14 en disco | **11 montados** | AI/RAG + PDF ingest (2 dead: list-models, re-embed-all) |
+| 3 | `routes/ai/` | 15 en disco | **12 montados** | AI/RAG + PDF ingest + **realtime-session** (2 dead: list-models, re-embed-all) |
 | 4 | `routes/members/` | 4 | 4 | Instituciones + memberships |
 | 5 | `routes/mux/` | 5 | 5 | Video (Mux) |
 | 6 | `routes/plans/` | 5 | 5 | Planes + AI tracking |
 | 7 | `routes/search/` | 4 | 4 | Busqueda + trash |
 | 8 | `routes/gamification/` | 6 | 6 | XP, badges, streaks, goals |
 | 9 | `routes/settings/` | 2 | 2 | Algorithm config |
-| 10 | `routes/whatsapp/` | 10 | ~6 routes | WhatsApp bot (feature-flagged) |
+| 10 | `routes/telegram/` | NEW | NEW | **Telegram bot (Claude-powered chatbot)** |
+| 11 | `routes/whatsapp/` | 10 | ~6 routes | WhatsApp bot (feature-flagged) |
 
 | # | Flat | Proposito |
 |---|---|---|
@@ -69,8 +70,11 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 | PATCH `/ai/rag-feedback` | Thumbs |
 | GET `/ai/rag-analytics` | Metrics |
 | GET `/ai/embedding-coverage` | Coverage % |
+| **POST `/ai/realtime-session`** | **Ephemeral OpenAI Realtime API token for voice calls** |
 
 **REMOVED (PHASE-A2):** `list-models.ts`, `re-embed-all.ts` — files exist on disk but NOT mounted in router.
+
+> **AI Model Migration (2026-03-17):** Text generation migrated from Gemini 2.5 Flash to **Claude** (Anthropic). Gemini retained only for PDF extraction. All chat, generate, report, and re-ranking endpoints now use Claude.
 
 ## Gamification (6 archivos, 13 endpoints)
 
@@ -89,6 +93,17 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 | PUT `/gamification/daily-goal` | Set goal |
 | POST `/gamification/goals/complete` | Complete |
 | POST `/gamification/onboarding` | Init |
+
+## Telegram (Claude-powered chatbot)
+
+| Ruta | Descripcion |
+|---|---|
+| POST `/webhooks/telegram` | Incoming Telegram messages → Claude AI response |
+| POST `/telegram/configure` | Admin: set bot token + webhook URL |
+| GET `/telegram/status` | Bot connection status |
+
+Admin UI: Messaging Integrations settings page (Telegram & WhatsApp).
+DB: `telegram_bot_configs`, `telegram_conversations` tables with RLS policies + indexes.
 
 ## WhatsApp (feature-flagged: WHATSAPP_ENABLED=true)
 

@@ -1,6 +1,6 @@
 # Known Bugs (Summary)
 
-> **Updated:** 2026-03-14 (audit pass 15 — frontend 100% mapped, backend ~93 files LISTED, db.ts+auth-helpers READ)
+> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram bot, Claude migration)
 > **Canonical source:** See root `KNOWN-BUGS.md` for full details with descriptions.
 
 ## Pending
@@ -40,6 +40,12 @@
 | BUG-014 | ~~LOW~~ | Bundle size 3.2 MB single chunk | Fixed (code splitting) |
 | AUTH-DUAL | ~~HIGH~~ | Dual AuthContext `createContext()` | 2026-03-13 |
 | STALE-CHUNK | ~~MEDIUM~~ | Stale chunk errors post-deploy | 2026-03-14 |
+
+## Voice Bugs (resolved 2026-03-17)
+
+| ID | Severity | Description | When |
+|---|---|---|---|
+| VOICE-LEAK | ~~MEDIUM~~ | interval+timeout memory leak in useRealtimeVoice.ts WebSocket connect wait | 2026-03-17 |
 
 ## Gamification Bugs (all resolved 2026-03-13)
 

@@ -1,7 +1,7 @@
 # 01 — Architecture
 
 > Paste this in every Figma Make session for base context.
-> **Updated:** 2026-03-14 (audit pass 9 — final cleanup)
+> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram, Claude migration)
 
 ## Stack
 
@@ -11,8 +11,11 @@
 | Backend | Hono (Supabase Edge Functions), Deno runtime | `Matraca130/axon-backend` (Supabase EF via GitHub Actions) |
 | Database | PostgreSQL + pgvector (1536d) | Supabase `xdnciktarvxyhkrokbng` |
 | Auth | Supabase Auth + custom JWT | Double-token system |
-| AI (text) | Gemini 2.5 Flash | Text generation + Re-ranking + PDF extraction |
+| AI (text) | **Claude** (Anthropic) | Text generation + Re-ranking (migrated from Gemini) |
 | AI (embed) | OpenAI **text-embedding-3-large** (1536d Matryoshka) | Embeddings |
+| AI (voice) | OpenAI **Realtime API** | Voice calls (WebSocket, gpt-4o-realtime) |
+| AI (PDF) | Gemini 2.5 Flash | PDF text extraction (multimodal) |
+| Messaging | **Telegram Bot** + WhatsApp Cloud API | Claude-powered chatbot + notifications |
 | Video | Mux | Upload + signed playback |
 | Billing | Stripe | Checkout + portal + webhooks |
 
@@ -23,8 +26,10 @@ Browser
   → Frontend (Vercel)
     → Backend (Hono on Supabase Edge Functions)
       → Supabase PostgreSQL
-      → Gemini API (text generation, re-ranking, PDF extraction)
-      → OpenAI API (embeddings)
+      → Claude API (text generation, re-ranking)
+      → Gemini API (PDF extraction)
+      → OpenAI API (embeddings + Realtime voice)
+      → Telegram Bot API (Claude-powered chatbot)
       → Mux API (Video)
       → Stripe API (Billing)
 ```
@@ -37,7 +42,7 @@ Auth (login/signup) uses Supabase Auth SDK directly from frontend.
 - **Route style:** Flat routes with query params (NOT nested REST)
 - **CRUD Factory:** `crud-factory.ts` auto-generates 5 endpoints per entity
 - **Route modules:** **10 split modules** + 6 flat files, ~200+ total endpoints
-- **Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, whatsapp
+- **Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, telegram, whatsapp
 - **Tests:** **16 Deno-native test files** (~183+ test cases)
 - **Migrations:** **53** SQL files
 
