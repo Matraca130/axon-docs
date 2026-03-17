@@ -37,7 +37,7 @@ Designed to be copy-pasted into Figma Make sessions as context.
 - **Gamification fixes**: xp_transactions.source_id→TEXT, badge criteria column
 - **DB**: 62 migrations total. New tables: telegram_links, telegram_sessions, telegram_message_log, messaging_admin_settings, whatsapp_links, whatsapp_sessions, whatsapp_message_log, whatsapp_jobs
 - **11 split route dirs** + 6 flat files = **122 TypeScript files**
-- CORS: **Still wildcard `"*"`** (must restrict before launch)
+- CORS: **FIXED** — restricted to whitelist of allowed origins
 
 ### Frontend
 - **Voice call mode**: AxonAIAssistant (40KB, 901 lines) + VoiceCallPanel + useRealtimeVoice.ts (OpenAI Realtime WebSocket)

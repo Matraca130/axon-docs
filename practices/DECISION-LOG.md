@@ -46,7 +46,7 @@ Cada decision sigue este formato:
 **Decision:** `authenticate()` decodifica el JWT payload localmente (~0.1ms) sin verificar firma.  
 **Consecuencias:**  
 - (+) Zero latency en auth  
-- (-) CRITICO: Con RLS deshabilitado, el JWT es forgeable  
+- (-) CRÍTICO: Con RLS deshabilitado, el JWT es forgeable  
 - (-) Rutas que llaman APIs externas sin DB query son vulnerables  
 - **Accion requerida:** Implementar verificacion antes de launch  
 

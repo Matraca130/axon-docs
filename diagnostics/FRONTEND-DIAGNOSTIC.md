@@ -36,13 +36,13 @@ El frontend tiene una **arquitectura ambiciosa y bien intencionada** — code sp
 
 ## Hallazgos Detallados
 
-### CRITICOS (Bloquean escalabilidad)
+### CRÍTICOS (Bloquean escalabilidad)
 
 ---
 
 #### F-001: Directorios duplicados `context/` vs `contexts/`
 
-**Severidad:** CRITICA  
+**Severidad:** CRÍTICA  
 **Archivos:**
 ```
 src/app/context/AuthContext.tsx      <- 495 bytes, STUB (re-export?)
@@ -65,7 +65,7 @@ src/app/context/StudentDataContext.tsx <- 7.3KB
 
 #### F-002: Triple capa de API redundante
 
-**Severidad:** CRITICA  
+**Severidad:** CRÍTICA  
 **Archivos:**
 ```
 src/app/lib/api.ts           <- apiCall() + ANON_KEY + token management
@@ -95,7 +95,7 @@ Ademas, `getAdminStudents()` en platformApi.ts **bypassa ambas** y hace su propi
 
 #### F-003: ANON_KEY hardcodeado en codigo fuente
 
-**Severidad:** CRITICA (seguridad)  
+**Severidad:** CRÍTICA (seguridad)  
 **Archivo:** `src/app/lib/api.ts:3`
 
 ```typescript
@@ -115,7 +115,7 @@ export const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
 
 #### F-004: 95KB de datos mock en `data/` coexistiendo con API real
 
-**Severidad:** CRITICA (bundle + confusión)  
+**Severidad:** CRÍTICA (bundle + confusión)  
 **Directorio:** `src/app/data/`
 
 ```
@@ -147,7 +147,7 @@ Esto significa que el AppContext depende de datos mock hardcodeados.
 
 #### F-005: Archivos de documentacion como `.tsx` (62KB muertos)
 
-**Severidad:** CRITICA (bundle)  
+**Severidad:** CRÍTICA (bundle)  
 **Archivos:**
 ```
 src/app/DEVELOPER_CONTRACT.tsx       13,644 bytes
@@ -168,7 +168,7 @@ src/app/STUDENT_VIEW_CONTRACT.tsx    18,333 bytes
 
 #### F-006: Sin ErrorBoundary
 
-**Severidad:** CRITICA  
+**Severidad:** CRÍTICA  
 
 **Problema:** No hay ningun `ErrorBoundary` en la aplicacion. Con lazy loading y code splitting, si un chunk falla al cargar (red lenta, deploy en curso), toda la aplicacion crashea con pantalla blanca.
 

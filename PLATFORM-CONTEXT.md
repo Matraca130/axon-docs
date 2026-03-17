@@ -67,7 +67,7 @@ Key: React Query v5, central `apiCall()` with dual-token, Vitest test infrastruc
 |---|---|---|
 | BUG-003 | CRIT | RLS disabled on content tables |
 | BUG-001 | HIGH | `resolution_tier` vs `max_resolution` |
-| BUG-004 | HIGH | **CORS wildcard `"*"` — confirmed** |
+| BUG-004 | ~~HIGH~~ | ~~**CORS wildcard `"*"`**~~ **FIXED** — restricted to whitelist of allowed origins |
 | **BUG-030** | **HIGH** | **Professor + Owner routes disconnected from real pages** |
 | BUG-002 | MED | JWT no crypto (PostgREST mitigates; non-DB routes at risk) |
 | BUG-021 | MED | GamificationContext STUB |

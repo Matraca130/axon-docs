@@ -1,6 +1,6 @@
 # Axon v4.5 - API Route Map
 
-> Mapa completo de rutas. **Ultima actualizacion:** 2026-03-17 (audit pass 17 — verified 122 files, 62 migrations)
+> Mapa completo de rutas. **Última actualización:** 2026-03-17 (audit pass 17 — verified 122 files, 62 migrations)
 
 ---
 

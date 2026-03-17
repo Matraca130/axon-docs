@@ -27,7 +27,7 @@ Sin embargo, hay **3 problemas criticos de seguridad** que deben resolverse ante
 
 ## 1. SEGURIDAD
 
-### 1.1 CRITICO — JWT Sin Verificacion Criptografica (BUG-003)
+### 1.1 CRÍTICO — JWT Sin Verificación Criptográfica (BUG-003)
 
 **Archivo:** `db.ts` lineas 85-105 (`decodeJwtPayload`)  
 **Status:** Documentado, DEFERRED  
@@ -51,7 +51,7 @@ if (error) return err(c, "Invalid token", 401);
 Costo: ~50ms adicionales por request (1 network call a Supabase Auth).  
 Alternativa (Phase 2): Verificar localmente con `jose` + `SUPABASE_JWT_SECRET`.
 
-### 1.2 CRITICO — Sin Autorizacion por Roles en Codigo
+### 1.2 CRÍTICO — Sin Autorización por Roles en Código
 
 **Archivos:** `routes-members.tsx`, `routes-content.tsx`, `routes-storage.tsx`  
 
@@ -81,7 +81,7 @@ async function requireRole(c: Context, db: SupabaseClient, userId: string,
 }
 ```
 
-### 1.3 CRITICO — CORS origin: "*" (BUG-004)
+### 1.3 CRÍTICO — CORS origin: "*" (BUG-004) — FIXED
 
 **Archivo:** `index.ts` linea 32  
 **Status:** Documentado, DEFERRED  
@@ -141,7 +141,7 @@ O-7 solo se implemento en `routes-billing.tsx` (Stripe). El webhook de Mux en `r
 
 ## 2. PERFORMANCE
 
-### 2.1 CRITICO — Content Tree N+1 (N-5 Incompleto)
+### 2.1 CRÍTICO — Content Tree N+1 (N-5 Incompleto)
 
 **Archivo:** `routes-content.tsx` lineas 329-371  
 

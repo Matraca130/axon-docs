@@ -14,7 +14,7 @@
 
 | Item | Priority |
 |---|---|
-| **CORS wildcard (BUG-004)** | **HIGH** |
+| ~~**CORS wildcard (BUG-004)**~~ | ~~**HIGH**~~ **FIXED** — restricted to whitelist of allowed origins |
 | **Professor+Owner routes disconnected (BUG-030)** | **HIGH** — Pages ready, just need router update |
 | RLS policies (BUG-003) | HIGH |
 | `resolution_tier` (BUG-001) | HIGH |

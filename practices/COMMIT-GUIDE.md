@@ -244,7 +244,7 @@ Estos archivos NUNCA deben aparecer en un commit:
 
 ```gitignore
 # Ya en .gitignore (verificar)
-node_modules/          ← CRITICO: actualmente committeado, limpiar
+node_modules/          ← CRÍTICO: actualmente committeado, limpiar
 .env                   ← Variables de entorno
 .env.local
 *.patch                ← Archivos de diff temporal

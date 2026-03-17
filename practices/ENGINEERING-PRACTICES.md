@@ -679,7 +679,7 @@ src/app/
 | Agregar columna nullable | Nulo | No |
 | Agregar columna NOT NULL con default | Bajo | No |
 | Cambiar tipo de columna | ALTO | Posiblemente |
-| Drop column/table | CRITICO | Si, coordinado |
+| Drop column/table | CRÍTICO | Si, coordinado |
 
 ---
 

@@ -49,8 +49,8 @@ Auth (login/signup) uses Supabase Auth SDK directly from frontend.
 
 ## Security Note
 
-> **CORS is currently wildcard `"*"`** (reverted for MVP development).
-> See BUG-004 in KNOWN-BUGS.md. Must be restricted before production.
+> **CORS is now restricted to a whitelist of allowed origins** (BUG-004 FIXED).
+> See BUG-004 in KNOWN-BUGS.md.
 
 ## Deploy
 

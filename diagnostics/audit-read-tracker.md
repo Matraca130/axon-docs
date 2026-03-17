@@ -81,5 +81,5 @@
 - db.ts confirms BUG-002: JWT decoded locally, no crypto verification (PostgREST defers)
 - db.ts WARNING: non-DB routes (AI, Stripe) may not validate JWT at all
 - auth-helpers.ts: SOLID fail-closed implementation, role hierarchy enforced
-- CORS `"*"` confirmed in index.ts (BUG-004)
+- CORS restricted to whitelist of allowed origins (BUG-004 — FIXED)
 - Rate limiting: 120 req/min/user (middleware active)

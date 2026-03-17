@@ -12,7 +12,7 @@
 |---|---|---|---|
 | BUG-003 | CRITICAL | RLS disabled on content tables | Backend DB |
 | BUG-001 | HIGH | `resolution_tier` vs `max_resolution` Mux webhook | Backend routes-models.ts |
-| BUG-004 | HIGH | **CORS wildcard `"*"` — confirmed in index.ts** | Backend index.ts |
+| BUG-004 | ~~HIGH~~ | ~~**CORS wildcard `"*"`**~~ **FIXED** — restricted to whitelist of allowed origins | Backend index.ts |
 | **BUG-030** | **HIGH** | **Professor + Owner routes use PlaceholderPage despite 16+8 real pages existing** | `professor-routes.ts`, `owner-routes.ts` vs `roles/pages/` |
 | BUG-002 | MEDIUM | JWT no crypto verification locally (non-DB routes at risk) | Backend db.ts |
 | BUG-006 | MEDIUM | Content tree filters inactives in JS | Backend |

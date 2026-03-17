@@ -1060,7 +1060,7 @@ Content-Type: application/json       ← Para POST/PUT/PATCH
 X-Request-Id: <UUID>                 ← Para tracing (futuro)
 ```
 
-**REGLA CRITICA:** El user JWT NUNCA va en Authorization. SIEMPRE en X-Access-Token.
+**REGLA CRÍTICA:** El user JWT NUNCA va en Authorization. SIEMPRE en X-Access-Token.
 
 ### 17.3 Error Handling Cross-Stack
 
