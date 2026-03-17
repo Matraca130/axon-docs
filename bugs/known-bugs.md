@@ -1,6 +1,6 @@
 # Known Bugs (Summary)
 
-> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram bot, Claude migration)
+> **Updated:** 2026-03-17 (audit pass 17 — full recount: 122 backend files, 62 migrations)
 > **Canonical source:** See root `KNOWN-BUGS.md` for full details with descriptions.
 
 ## Pending

@@ -2,7 +2,7 @@
 
 > **Canonical list:** [`bugs/known-bugs.md`](bugs/known-bugs.md)  
 > **Security details:** [`bugs/security-audit.md`](bugs/security-audit.md)  
-> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram, Claude migration)
+> **Updated:** 2026-03-17 (audit pass 17 — full recount: 122 backend files, 586 frontend files, 62 migrations)
 
 ---
 
@@ -33,7 +33,7 @@
 - Professor ROUTES = PlaceholderPage, but **16 real page files + 38 CMS components** exist in `roles/pages/professor/` + `components/professor/` → ready to wire up (BUG-030)
 - Owner ROUTES = PlaceholderPage, but **8 real pages** exist in `roles/pages/owner/` (OwnerMembersPage **50KB**, OwnerPlansPage 30KB) → ready to wire up (BUG-030)
 - Frontend total: **~350 component files** (not "~100+")
-- Backend: **~93 files** in `supabase/functions/server/`
+- Backend: **122 TypeScript files** in `supabase/functions/server/`
 - Version mismatch: backend index.ts = **"4.4"**, docs = **"4.5"**
 
 ## Resolved

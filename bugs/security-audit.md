@@ -1,6 +1,6 @@
 # Security Audit
 
-> **Updated:** 2026-03-14 (audit pass 3 — verified against source)
+> **Updated:** 2026-03-17 (audit pass 17 — messaging integrations added)
 
 ## Critical Issues
 
@@ -58,3 +58,7 @@ Constant-time via `timing-safe.ts`.
 | or() injection | FIXED |
 | Password max length | FIXED |
 | Batch size limits | FIXED |
+| RAG function security | FIXED (SECURITY DEFINER + auth.uid() checks) |
+| Telegram webhook auth | OK (secret token verified) |
+| WhatsApp PII protection | OK (SHA-256 + salt phone hashing) |
+| Messaging admin RLS | OK (admin/owner only via memberships check) |

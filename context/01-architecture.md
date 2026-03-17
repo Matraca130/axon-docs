@@ -1,7 +1,7 @@
 # 01 — Architecture
 
 > Paste this in every Figma Make session for base context.
-> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram, Claude migration)
+> **Updated:** 2026-03-17 (audit pass 17 — full recount: 122 backend files, 586 frontend files, 62 migrations)
 
 ## Stack
 
@@ -41,10 +41,11 @@ Auth (login/signup) uses Supabase Auth SDK directly from frontend.
 
 - **Route style:** Flat routes with query params (NOT nested REST)
 - **CRUD Factory:** `crud-factory.ts` auto-generates 5 endpoints per entity
-- **Route modules:** **10 split modules** + 6 flat files, ~200+ total endpoints
-- **Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, telegram, whatsapp
+- **Route modules:** **11 split dirs** + 6 flat files = **122 TypeScript files**, ~200+ total endpoints
+- **Split modules:** ai (15), content (11), telegram (9), whatsapp (10), gamification (6), study (6), plans (5), mux (5), members (4), search (4), settings (3)
+- **Core:** claude-ai.ts (9KB), gemini.ts (PDF only), openai-embeddings.ts, retrieval-strategies.ts (14KB), crud-factory (20KB), auth-helpers (12KB)
 - **Tests:** **16 Deno-native test files** (~183+ test cases)
-- **Migrations:** **53** SQL files
+- **Migrations:** **62** SQL files
 
 ## Security Note
 

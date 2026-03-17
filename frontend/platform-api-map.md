@@ -1,7 +1,7 @@
 # Frontend -> Backend API Map
 
 > Maps frontend function calls to backend endpoints.
-> **Updated:** 2026-03-17 (audit pass 16 — voice calls, Telegram, Claude migration)
+> **Updated:** 2026-03-17 (audit pass 17 — full recount: 586 frontend files, 122 backend files)
 >
 > **All paths relative to:** `src/app/` (NOT `src/`)
 
@@ -186,7 +186,22 @@
 | `apiConfig.ts` | API configuration | 5.4KB |
 | `quizConstants.ts` | Quiz type/difficulty constants | 5.7KB |
 | `quizDesignTokens.ts` | Quiz UI design tokens | 6.3KB |
-| **Subdirs:** | `__tests__/`, `ai-service/`, `platform-api/`, `student-api/` |
+| **Subdirs:** | `__tests__/`, `ai-service/` (9 files), `platform-api/` (9 files), `student-api/` |
+
+## New Service Files (2026-03-14–17)
+
+| File | Endpoints | Size |
+|---|---|---|
+| `ai-service/as-realtime.ts` | POST /ai/realtime-session (ephemeral token) | 8KB |
+| `platform-api/pa-messaging.ts` | GET/PUT /settings/messaging/:channel, POST test | 4KB |
+| `aiService.ts` (barrel) | Re-exports all ai-service/ modules incl. realtime | 79 lines |
+
+## New Hooks (2026-03-14–17)
+
+| Hook | Purpose |
+|---|---|
+| `useRealtimeVoice.ts` (12KB) | WebSocket lifecycle, PCM16 audio, mic capture |
+| `queries/useStudyHubProgress.ts` | Study progress tracking for StudyHub |
 
 ## Cross-Check Findings (Audit Pass 12)
 

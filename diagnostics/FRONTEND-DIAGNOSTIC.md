@@ -3,10 +3,10 @@
 > **Fecha:** 2026-02-28 (original) | 2026-03-17 (updated) | **Analista:** Claude (Architect)
 > **Repo:** `Matraca130/numero1_sseki_2325_55`
 > **Commit analizado:** `c4c1a5d` (original), `d0b012e` (latest)
-> **Archivos leidos:** ~80 archivos (todos los archivos de logica, tipos, rutas, contextos, servicios, hooks, y muestreo de componentes)
+> **Total archivos (recount 2026-03-17):** 586 TypeScript/TSX files (346 components, 42 hooks, 35 services, 9 contexts)
 > **Metodo:** Lectura linea por linea de todo archivo < 30KB; listado de directorio para el resto.
 >
-> **Cambios recientes (2026-03-17):** Voice call mode (OpenAI Realtime API), Admin Messaging Integrations (Telegram/WhatsApp), StudyHub merge, Flashcard v4.5.1 UX audit.
+> **Cambios recientes (2026-03-17):** Voice call mode (OpenAI Realtime API, 3 new files), Admin Messaging Integrations (Telegram/WhatsApp, 2 new files), StudyHub merge (2 new files), Flashcard v4.5.1 UX audit, Vitest test infrastructure.
 
 ---
 
