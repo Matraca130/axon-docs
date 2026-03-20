@@ -1,5 +1,5 @@
 # DIAGNOSTICO INTEGRAL QA + UI/UX -- AXON PLATFORM FRONTEND
-**Fecha original**: 2026-03-18 | **Re-auditoria**: 2026-03-18
+**Fecha original**: 2026-03-18 | **Re-auditoria**: 2026-03-18 | **Wave 2 corrections**: 2026-03-20
 **Metodo**: 6 rondas x 5 agentes (30 agentes Opus) + 10 agentes de auditoria cruzada contra main
 **Alcance**: `numero1_sseki_2325_55/src/` -- 374 archivos TSX, 627 archivos TS/TSX total, 50+ hooks, 30+ services
 **Precision auditada**: 130 claims verificados -> **82% confirmados, 10% parciales, 8% falsos/corregidos**
@@ -13,6 +13,18 @@
 - **PR #141** -- Page background unificado a #F0F2F5 en 42 archivos (todas las paginas)
 - **Migracion ai_model** -- Columna faltante en produccion que causaba 500 en /institutions (corregida via SQL)
 
+### Corrections Applied -- Wave 2 (2026-03-20)
+
+| Bug ID | Summary | Resolution |
+|--------|---------|------------|
+| BUG-028 | `architecture.ts` (582 lines, 30KB) stale docs-as-code shipped in bundle | File deleted + stale config references cleaned. PRs #149, #153. |
+| BUG-029 | Sidebar color mismatch between `components.ts` and `colors.ts` | Fixed by PR #139 (design tokens audit). |
+| BUG-030 | Professor + Owner routes all used PlaceholderPage despite 16+8 real pages existing | All 13 routes wired to real page components. PR #150. |
+| BUG-031 | AuthContext swallowed 500 errors from /institutions, causing redirect loop | authError state added, fetchInstitutions throws on error, loadSession returns structured result. PR #155. |
+| BUG-032 | `console.log` statements in production without `import.meta.env.DEV` guard | `console.error` in ContentTreeContext guarded. PR #151. Other files were already guarded. |
+| BUG-022 | apiConfig.ts flagged as duplicate/dead code | Investigated: NOT dead code -- actively imported by `models3dApi.ts`. Kept, reclassified to INFO. |
+| BUG-023 | aiFlashcardGenerator.ts flagged as dead code | Investigated: NOT dead code -- actively imported by `SmartFlashcardGenerator.tsx`. Kept, reclassified to INFO. |
+
 ### En Progreso
 - Limpieza de colores off-palette residuales (#2c3e50 en FlashcardReviewer)
 - Restauracion de Escape key handler en MobileDrawer (accesibilidad)
@@ -20,7 +32,7 @@
 ### Pendiente (del diagnostico original)
 - Revisar claims parcialmente verdaderos del diagnostico (12 items)
 - fontWeight inline (813 instancias -- requiere migracion a tokens de tipografia)
-- console.log en produccion (37 instancias)
+- ~~console.log en produccion (37 instancias)~~ Partially resolved (BUG-032, PR #151)
 - Race condition en QuizSelection.tsx
 - next-themes dependencia muerta
 
@@ -353,13 +365,14 @@ Se identificaron **350+ hallazgos** organizados en **15 categorias**. Tras re-au
 ### 10.0 Cero Flujos de Onboarding -- CRITICO
 - **Verificado**: Grep para onboarding/tutorial/tour/walkthrough = 0 en componentes auth
 
-### 10.1 5/8 Paginas de Profesor Son Placeholders -- CRITICO
+### ~~10.1 5/8 Paginas de Profesor Son Placeholders~~ CORREGIDO
+- **Estado**: **RESUELTO** -- All professor + owner routes wired to real page components. PR #150 (2026-03-20).
 
 ### 10.2 6/6 Paginas de Admin Son Placeholders -- CRITICO PEOR
 - **Dato corregido**: Son **6 de 6** placeholders (no 5/7). Dashboard, Members, Content, Scopes, Reports, Settings -- TODOS `lazyPlaceholder`
 
-### 10.3 8/8 Paginas de Owner Son Placeholders -- CRITICO
-- **Verificado**: Todos los 8 owner routes usan `lazyPlaceholder`. Componentes reales (OwnerMembersPage, OwnerPlansPage, etc.) existen pero NO estan wired
+### ~~10.3 8/8 Paginas de Owner Son Placeholders~~ CORREGIDO
+- **Estado**: **RESUELTO** -- All 8 owner routes wired to real page components. PR #150 (2026-03-20).
 
 ### 10.4 Sin Discovery de Features AI
 
@@ -580,9 +593,9 @@ Se identificaron **350+ hallazgos** organizados en **15 categorias**. Tras re-au
 | Rutas sin ErrorBoundary | 21+ | 21+ (confirmado) | 0 |
 | Deps no usadas | 7 paquetes | **1** (next-themes) | 0 |
 | Virtualizacion | 0 | **1** (AxonAIAssistant) | 5+ listas |
-| console.log produccion | No medido | **37 en 14 archivos** | 0 |
-| Owner routes funcionales | ? | **0/8** (todos placeholder) | 8/8 |
-| Professor routes funcionales | ? | **3/8** | 8/8 |
+| console.log produccion | No medido | **37 en 14 archivos** (partially fixed PR #151) | 0 |
+| Owner routes funcionales | ? | **8/8** (wired PR #150) | 8/8 |
+| Professor routes funcionales | ? | **8/8** (wired PR #150) | 8/8 |
 | Admin routes funcionales | ? | **0/6** (todos placeholder) | 6/6 |
 | Supabase Realtime channels | 0 | 0 (confirmado) | 3-5 |
 | Design system adoption | ~16% | ~16% (confirmado) | >80% |
