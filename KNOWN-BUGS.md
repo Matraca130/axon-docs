@@ -2,7 +2,7 @@
 
 > **Canonical list:** [`bugs/known-bugs.md`](bugs/known-bugs.md)
 > **Security details:** [`bugs/security-audit.md`](bugs/security-audit.md)
-> **Updated:** 2026-03-20 (resolved BUG-028..032; BUG-022/023 reclassified to INFO; resolved BUG-035, TEST-002, TEST-003)
+> **Updated:** 2026-03-20 (resolved BUG-020/026/033; BUG-025 reclassified to INFO; BUG-034 location corrected; resolved BUG-028..032; BUG-022/023 reclassified to INFO; resolved BUG-035, TEST-002, TEST-003)
 
 ---
 
@@ -13,10 +13,8 @@
 | BUG-001 | HIGH | `resolution_tier` vs `max_resolution` Mux webhook | Backend routes-models.ts |
 | BUG-006 | MEDIUM | Content tree filters inactives in JS | Backend |
 | BUG-021 | MEDIUM | GamificationContext is STUB (no-ops) | `context/GamificationContext.tsx` |
-| BUG-025 | MEDIUM | ANON_KEY hardcoded in 3 files | `supabase.ts`, `config.ts`, `api.ts` |
-| BUG-026 | MEDIUM | `'demo-student-001'` fallback studentId | `hooks/useSummaryPersistence.ts` |
+| BUG-025 | INFO | ANON_KEY hardcoded in 3 files — by design, Supabase ANON_KEY is a public gateway key, not a secret. Standard Supabase pattern. | `supabase.ts`, `config.ts`, `api.ts` |
 | BUG-011 | LOW | ~25 `kv_store_*` junk tables | DB |
-| BUG-020 | LOW | `time_limit_seconds` sent but no DB column | `services/quizzesEntityApi.ts` |
 | BUG-022 | INFO | apiConfig.ts duplicate fetch logic -- NOT dead code, used by `models3dApi.ts` | `services/apiConfig.ts` |
 | BUG-023 | INFO | aiFlashcardGenerator.ts -- NOT dead code, used by `SmartFlashcardGenerator.tsx` | `services/aiFlashcardGenerator.ts` |
 | BUG-024 | LOW | Overlapping types kw-notes in 2 services | `studentNotesApi` vs `studentSummariesApi` |
@@ -25,8 +23,7 @@
 | SEC-S9B | MEDIUM | 6 SQL functions need REVOKE from authenticated (~12 callers must migrate to adminDb) | Backend DB |
 | SEC-S16 | LOW | 13 low/info backlog items (package-lock, redirect validation, image domain allowlist, etc.) | Mixed |
 | TEST-001 | LOW | Frontend tests failing on main (pre-existing) | Frontend test suite |
-| BUG-033 | MEDIUM | `useTopicMastery` calls `GET /flashcards?status=published&limit=500` without required `summary_id` param — backend returns 400, FSRS per-topic aggregation silently fails | `hooks/useTopicMastery.ts` line 161, backend `crud-factory.ts` |
-| BUG-034 | LOW | `GET /reading-states?limit=1000` returns 400 — likely missing required parent param | `context/StudentDataContext` |
+| BUG-034 | LOW | `GET /reading-states?limit=1000` returns 400 — likely missing required parent param | `services/studentSummariesApi.ts` + `hooks/queries/useStudyHubProgress.ts` |
 
 ## Key Corrections (pass 15)
 
@@ -65,6 +62,9 @@
 | BUG-030 | ~~HIGH~~ | Professor + Owner routes use PlaceholderPage despite 16+8 real pages existing | **RESOLVED 2026-03-20** — All 13 routes wired to real page components. PR #150. |
 | BUG-031 | ~~HIGH~~ | AuthContext swallows 500 errors from /institutions — redirect loop to /select-org | **RESOLVED 2026-03-20** — authError state added, fetchInstitutions throws on error, loadSession returns structured result. PR #155. |
 | BUG-032 | ~~LOW~~ | console.log statements in production without `import.meta.env.DEV` guard | **RESOLVED 2026-03-20** — console.error in ContentTreeContext guarded with `import.meta.env.DEV`. PR #151. (Other files were already guarded.) |
+| BUG-020 | ~~LOW~~ | `time_limit_seconds` sent but no DB column | **RESOLVED 2026-03-20** — stripped from API payloads in createQuiz/updateQuiz. PR #158. |
+| BUG-026 | ~~MEDIUM~~ | `'demo-student-001'` fallback studentId | **RESOLVED 2026-03-20** — removed hardcoded fallback, persistence skipped when no user. PR #159. |
+| BUG-033 | ~~MEDIUM~~ | `useTopicMastery` calls `GET /flashcards?status=published&limit=500` without required `summary_id` param — backend returns 400, FSRS per-topic aggregation silently fails | **RESOLVED 2026-03-20** — switched to per-topic endpoint getFlashcardsByTopic. PR #160. |
 | TEST-002 | ~~LOW~~ | chunker.test.ts maxChunkSize assertion wrong (`>` should be `>=` for dense sentences) | **RESOLVED 2026-03-20** — assertion fixed, PR #118 merged |
 | TEST-003 | ~~MEDIUM~~ | Backend CI tests failing — xp_engine_test.ts syntax error, xp_hooks_test.ts leaking ops, chunker.test.ts flaky assertion, missing `--allow-env`/`--allow-net` flags | **RESOLVED 2026-03-20** — PR #118 merged with all fixes + test-gate.yml updated |
 
@@ -79,8 +79,8 @@ All 25+ gamification bugs resolved 2026-03-13.
 |---|---|---|
 | CRITICAL | 0 | 2 |
 | HIGH | **1** | 10 |
-| MEDIUM | **6** | 11 |
-| LOW | **8** | 11 |
-| INFO | 2 | — |
-| **Total Open** | **17** | |
-| **Total Fixed** | | **34+** |
+| MEDIUM | **3** | 13 |
+| LOW | **7** | 12 |
+| INFO | 3 | — |
+| **Total Open** | **14** | |
+| **Total Fixed** | | **37+** |

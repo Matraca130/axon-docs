@@ -1,5 +1,5 @@
 # DIAGNOSTICO INTEGRAL QA + UI/UX -- AXON PLATFORM FRONTEND
-**Fecha original**: 2026-03-18 | **Re-auditoria**: 2026-03-18 | **Wave 2 corrections**: 2026-03-20
+**Fecha original**: 2026-03-18 | **Re-auditoria**: 2026-03-18 | **Wave 2 corrections**: 2026-03-20 | **Wave 3 corrections**: 2026-03-20
 **Metodo**: 6 rondas x 5 agentes (30 agentes Opus) + 10 agentes de auditoria cruzada contra main
 **Alcance**: `numero1_sseki_2325_55/src/` -- 374 archivos TSX, 627 archivos TS/TSX total, 50+ hooks, 30+ services
 **Precision auditada**: 130 claims verificados -> **82% confirmados, 10% parciales, 8% falsos/corregidos**
@@ -24,6 +24,16 @@
 | BUG-032 | `console.log` statements in production without `import.meta.env.DEV` guard | `console.error` in ContentTreeContext guarded. PR #151. Other files were already guarded. |
 | BUG-022 | apiConfig.ts flagged as duplicate/dead code | Investigated: NOT dead code -- actively imported by `models3dApi.ts`. Kept, reclassified to INFO. |
 | BUG-023 | aiFlashcardGenerator.ts flagged as dead code | Investigated: NOT dead code -- actively imported by `SmartFlashcardGenerator.tsx`. Kept, reclassified to INFO. |
+
+### Corrections Applied -- Wave 3 (2026-03-20)
+
+| Bug ID | Summary | Resolution |
+|--------|---------|------------|
+| BUG-020 | `time_limit_seconds` sent but no DB column | Stripped from API payloads in createQuiz/updateQuiz. PR #158. |
+| BUG-026 | `'demo-student-001'` fallback studentId in useSummaryPersistence | Removed hardcoded fallback, persistence skipped when no user. PR #159. |
+| BUG-033 | `useTopicMastery` missing `summary_id` param — backend returns 400 | Switched to per-topic endpoint getFlashcardsByTopic. PR #160. |
+| BUG-025 | ANON_KEY hardcoded in 3 files | Reclassified to INFO — by design, Supabase ANON_KEY is a public gateway key, not a secret. Standard Supabase pattern. |
+| BUG-034 | `GET /reading-states?limit=1000` returns 400 | Location corrected: `services/studentSummariesApi.ts` + `hooks/queries/useStudyHubProgress.ts` (was `context/StudentDataContext`). |
 
 ### En Progreso
 - Limpieza de colores off-palette residuales (#2c3e50 en FlashcardReviewer)
