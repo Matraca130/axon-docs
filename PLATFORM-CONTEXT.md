@@ -1,7 +1,7 @@
 # Axon v4.5 — Platform Context
 
 > **Paste this at the start of every Figma Make session.**  
-> **Updated:** 2026-03-14 (audit pass 15 — ~630 files mapped across 3 repos)
+> **Updated:** 2026-03-19 (post security audit — JWT, RLS, CORS, XSS, CSP all resolved)
 
 ---
 
@@ -20,9 +20,10 @@ Authorization: Bearer <SUPABASE_ANON_KEY>   ← Project key
 X-Access-Token: <USER_JWT>                  ← User session
 ```
 
-Backend: `extractToken()` in db.ts checks X-Access-Token first, then Authorization Bearer.  
-Role NOT in JWT — comes from `GET /institutions` + memberships table lookup.  
-JWT decoded locally (~0.1ms) — crypto verification deferred to PostgREST (BUG-002).
+Backend: `extractToken()` in db.ts checks X-Access-Token first, then Authorization Bearer.
+Role NOT in JWT — comes from `GET /institutions` + memberships table lookup.
+JWT cryptographically verified via jose + ES256 JWKS (fixed 2026-03-19, was BUG-002).
+RLS enabled on 33+ tables with institution-scoped policies (fixed 2026-03-19, was BUG-003).
 
 ## 3. Roles: owner(4), admin(3), professor(2), student(1)
 
@@ -58,37 +59,54 @@ Auth enforced by `auth-helpers.ts`: fail-closed, role hierarchy (`canAssignRole`
 
 Key: React Query v5, central `apiCall()` with dual-token, 15 colocated hooks, 11+ mega-files >25KB.
 
-## 7. Known Open Bugs (17 open, BUG-001..030)
+## 7. Known Open Bugs (19 open, BUG-001..030 + SEC-*)
+
+**Security audit 2026-03-19:** BUG-002 (JWT), BUG-003 (RLS), BUG-004 (CORS) all RESOLVED, plus XSS, CSP, HSTS, AI injection, Telegram hardening, route guards. See [`bugs/security-audit.md`](bugs/security-audit.md).
 
 | ID | Sev | Summary |
 |---|---|---|
-| BUG-003 | CRIT | RLS disabled on content tables |
 | BUG-001 | HIGH | `resolution_tier` vs `max_resolution` |
-| BUG-004 | HIGH | **CORS wildcard `"*"` — confirmed** |
 | **BUG-030** | **HIGH** | **Professor + Owner routes disconnected from real pages** |
-| BUG-002 | MED | JWT no crypto (PostgREST mitigates; non-DB routes at risk) |
 | BUG-021 | MED | GamificationContext STUB |
 | BUG-025 | MED | ANON_KEY hardcoded x3 |
 | BUG-026 | MED | demo-student-001 fallback |
 | BUG-028 | MED | architecture.ts 30KB stale |
-| BUG-020..024, 027, 029 | LOW | Tech debt (7 items) |
+| SEC-S9B | MED | 6 SQL functions need REVOKE (migration pending) |
+| BUG-006, 011, 020..024, 027, 029 | LOW | Tech debt (9 items) |
+| SEC-S7, SEC-S16, TEST-001, TEST-002 | LOW | JWT expiry, backlog, test failures (4 items) |
 
 Full: [`bugs/known-bugs.md`](bugs/known-bugs.md)
 
-## 8. Gamification: 13 endpoints, 39 badges, 11 XP actions, daily cap 500
+## 8. Security Posture (as of 2026-03-19)
+
+| Layer | Protection |
+|---|---|
+| **Auth** | JWT crypto verified (jose + ES256 JWKS), dual-token scheme |
+| **DB** | RLS on 33+ tables, institution-scoped policies, `auth.user_institution_ids()` |
+| **CORS** | Origin-validated, 403 on missing Origin |
+| **Rate limiting** | 120 req/min general, 5 req/min signup, 20 AI/hr, 10 pre-generate/hr |
+| **AI** | `sanitizeForPrompt()` input, `stripHtmlTags` output, on all 6 AI routes |
+| **Webhooks** | Timing-safe (Stripe, Telegram), idempotency table, fail-closed |
+| **Frontend** | DOMPurify (XSS), CSP (no unsafe-eval), HSTS 2yr, RequireRole guards |
+| **Errors** | `safeErr()` strips DB internals from client responses |
+| **Access** | SECURITY DEFINER hardened, bulk_reorder revoked, gamification institution-scoped |
+
+Remaining: JWT expiry 3600s (needs Pro plan), 6 SQL functions pending REVOKE migration, 13 low/info backlog items.
+
+## 9. Gamification: 13 endpoints, 39 badges, 11 XP actions, daily cap 500
 
 Backend: xp-engine + xp-hooks + streak-engine + 6 gamification route files  
 Frontend: 14 components, 8 React Query hooks, `useSessionXP.ts`
 
-## 9. AI/RAG: Gemini 2.5 Flash + OpenAI text-embedding-3-large (1536d)
+## 10. AI/RAG: Gemini 2.5 Flash + OpenAI text-embedding-3-large (1536d)
 
 14 AI route files on disk (generate-smart 30KB, chat 18KB, pre-generate 16KB). 11 mounted via index.ts.
 
-## 10. DB: 50+ tables, 53 migrations, pgvector 1536d
+## 11. DB: 50+ tables, 53 migrations, pgvector 1536d
 
 Algorithms: FSRS v4 + BKT v4 (in lib/) for spaced repetition scheduling.
 
-## 11. Tech Stack
+## 12. Tech Stack
 
 **Frontend:** React 18, TypeScript, Vite 6, Tailwind v4, React Router v7, React Query v5, shadcn/ui, Lucide, Motion, TipTap, Three.js, Mux Player, Sonner, date-fns.  
 **Backend:** Hono + Deno, PostgreSQL + pgvector, Gemini 2.5 Flash, OpenAI, Stripe, Mux, WhatsApp Cloud API.
