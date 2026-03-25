@@ -31,46 +31,68 @@ Puedes leer pero **nunca modificar**:
 - `hooks/useGamification.ts` — hook principal (ownership de DG-03).
 - `lib/xp-constants.ts` — constantes frontend (ownership de DG-03).
 
-## Al iniciar cada sesion
+## Al iniciar cada sesion (OBLIGATORIO)
 
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/dashboard.md` para obtener el estado actual del proyecto, decisiones recientes y tareas pendientes.
 4. Si el archivo no existe, notifica al usuario y continua sin el.
 5. Lee `agent-memory/individual/DG-04-gamification-backend.md` (TU memoria personal — lecciones, patrones, métricas)
-6. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
+6. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
+7. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
 
 ## Reglas de codigo
 
-1. **TypeScript estricto** — sin `any`, sin `// @ts-ignore`.
-2. Los tipos en `types/gamification.ts` son el contrato entre frontend y backend. Cualquier cambio requiere coordinacion con DG-03.
-3. Cada endpoint en `gamificationApi.ts` debe tener tipado de request y response.
-4. Usar `try/catch` con manejo explicito de errores en cada llamada API.
-5. Las constantes de XP del backend (`XP_TABLE`, `LEVEL_THRESHOLDS`) deben ser consistentes con `lib/xp-constants.ts` del frontend.
-6. No exponer logica de negocio en las rutas; toda la logica va en `gamification-service.ts`.
-7. Los endpoints deben validar inputs antes de procesar.
+1. **TypeScript estricto** — sin `any`, sin `// @ts-ignore`, sin `console.log` en produccion.
+2. Los tipos en `types/gamification.ts` son el contrato entre frontend y backend. Cualquier cambio requiere coordinacion con DG-03; nunca modificar unilateralmente.
+3. Cada endpoint en `gamificationApi.ts` debe tener tipado de request y response explícito — no inferir desde `any`.
+4. Usar `try/catch` con manejo explicito de errores en cada llamada API; loggear el error con contexto (endpoint, userId) antes de retornar respuesta de error.
+5. Las constantes de XP del backend (`XP_TABLE`, `LEVEL_THRESHOLDS`) deben ser consistentes con `lib/xp-constants.ts` del frontend — si hay discrepancia, escalar a DG-03 antes de cambiar cualquiera de los dos.
+6. No exponer logica de negocio en las rutas: toda la logica va en `gamification-service.ts`. Las rutas solo validan input, llaman al servicio y formatean la respuesta.
+7. Los endpoints deben validar inputs antes de procesar: `userId` requerido, `source` en enum valido, `amount` numero positivo.
+8. El cap diario de 500 XP se valida en `gamification-service.ts`, nunca en la ruta. Si el usuario ya alcanzo el cap, retornar `{ xpGranted: 0, capReached: true }`.
 
 ## Contexto tecnico
 
-- **13 endpoints** en `gamificationApi.ts` (~377L). Incluyen:
-  - `GET /gamification/profile` — perfil de gamificacion del usuario.
-  - `POST /gamification/xp` — registrar XP ganado.
-  - `GET /gamification/leaderboard` — tabla de clasificacion.
-  - `GET /gamification/badges` — badges del usuario.
-  - `POST /gamification/badges/check` — verificar si se desbloqueo un badge.
-  - `GET /gamification/streak` — racha actual.
-  - `GET /gamification/xp/history` — historial de XP.
-  - `GET /gamification/daily-goal` — estado de meta diaria.
-  - `POST /gamification/daily-goal` — actualizar meta diaria.
-  - `GET /gamification/level` — nivel actual y progreso.
-  - `GET /gamification/stats` — estadisticas generales.
-  - `GET /gamification/combo` — estado de combo actual.
-  - `POST /gamification/session/sync` — sincronizar XP de sesion.
-- **XP_TABLE**: tabla que define cuanto XP otorga cada accion (respuesta correcta, completar quiz, racha diaria, etc.).
-- **LEVEL_THRESHOLDS**: array con el XP necesario para cada uno de los 12 niveles.
-- **types/gamification.ts** (~177L): define interfaces `GamificationProfile`, `Badge`, `LeaderboardEntry`, `XPEvent`, `StreakInfo`, `DailyGoal`, `LevelInfo`, `ComboState`, entre otros.
-- **gamification-service.ts**: servicio del backend que encapsula la logica de negocio — calculo de XP, verificacion de badges, actualizacion de rachas, validacion de cap diario (500 XP).
-- **Triggers de XP**: el servicio escucha eventos de la app (quiz completado, lectura terminada, login diario) y otorga XP segun `XP_TABLE`.
+### Endpoints (13 en `gamificationApi.ts` ~377L)
+- `GET /gamification/profile` — perfil completo: nivel, XP total, badges, racha, combo
+- `POST /gamification/xp` — body: `{ userId, amount, source }` donde `source` es uno de: `quiz_correct`, `quiz_complete`, `flashcard_review`, `daily_login`, `streak_bonus`, `reading_complete`
+- `GET /gamification/leaderboard` — query: `?scope=institution&limit=20`
+- `GET /gamification/badges` — lista de badges desbloqueados y proximos a desbloquear
+- `POST /gamification/badges/check` — body: `{ userId, event }` — verifica y desbloquea badges tras un evento
+- `GET /gamification/streak` — racha actual, dias consecutivos, mejor racha historica
+- `GET /gamification/xp/history` — query: `?limit=50&offset=0` — log de eventos XP
+- `GET /gamification/daily-goal` — XP ganado hoy vs meta diaria configurada
+- `POST /gamification/daily-goal` — body: `{ targetXP }` — actualizar meta diaria del usuario
+- `GET /gamification/level` — nivel actual (1-12), XP en nivel, XP para siguiente nivel
+- `GET /gamification/stats` — estadisticas agregadas: total quizzes, total flashcards revisadas, dias activos
+- `GET /gamification/combo` — multiplicador de combo activo y tiempo restante
+- `POST /gamification/session/sync` — body: `{ sessionXP, events[] }` — sincroniza XP acumulado en sesion de estudio
+
+### Constantes de XP (`XP_TABLE`)
+- `quiz_correct`: 10 XP por respuesta correcta
+- `quiz_complete`: 25 XP por completar un quiz
+- `flashcard_review`: 5 XP por flashcard revisada
+- `daily_login`: 15 XP por primer login del dia
+- `streak_bonus`: 20 XP adicionales si la racha supera 7 dias
+- `reading_complete`: 30 XP por completar una lectura
+- **Cap diario**: 500 XP maximos por dia calendario (UTC)
+
+### Niveles (`LEVEL_THRESHOLDS` — 12 niveles)
+- Nivel 1: 0 XP | Nivel 2: 100 XP | Nivel 3: 250 XP | Nivel 4: 500 XP
+- Nivel 5: 900 XP | Nivel 6: 1400 XP | Nivel 7: 2000 XP | Nivel 8: 2800 XP
+- Nivel 9: 3800 XP | Nivel 10: 5000 XP | Nivel 11: 6500 XP | Nivel 12: 8500 XP
+
+### Triggers de XP (como se conectan los eventos)
+Los triggers de XP se disparan desde los modulos correspondientes via `POST /gamification/xp`:
+- **Quiz module** (`xp-hooks.ts`): dispara `quiz_correct` por cada respuesta correcta y `quiz_complete` al finalizar
+- **Flashcards module** (`batch-review.ts`): dispara `flashcard_review` por cada card revisada en el batch
+- **Auth module**: dispara `daily_login` en el primer login de cada dia
+- **Study sessions**: dispara `reading_complete` al marcar una lectura como terminada
+- El servicio de gamificacion valida el `source` contra el enum y aplica el cap diario antes de persistir
+
+### Tipos principales (`types/gamification.ts` ~177L)
+`GamificationProfile`, `Badge`, `LeaderboardEntry`, `XPEvent`, `StreakInfo`, `DailyGoal`, `LevelInfo`, `ComboState` — estos tipos son el contrato compartido con DG-03 (frontend).
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
