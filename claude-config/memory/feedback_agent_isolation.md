@@ -46,31 +46,36 @@ type: feedback
 - **Same file, N agents:** sequential (A merges, B branches from updated main, etc.)
 - **Disjoint files:** parallel safe, merge without conflicts
 
-## MEJORA CONTINUA (OBLIGATORIO en cada sesión)
+## EVOLUCIÓN CONTINUA (OBLIGATORIO en cada sesión)
 
-Al finalizar tu tarea principal, ANTES de reportar al usuario:
+Al finalizar tu tarea, ANTES de reportar al usuario, reflexioná sobre tu sesión y actualizá tu memoria individual (`agent-memory/individual/<TU-ID>.md`):
 
-1. **Buscar 1 mejora real** en tu zona de ownership:
-   - ¿Hay un patrón que se repite y podría extraerse?
-   - ¿Hay un nombre de variable/función que confunde?
-   - ¿Hay un error handling que falta?
-   - ¿Hay un tipo `any` que podría tiparse?
-   - ¿Hay un test que falta para un caso obvio?
+### 1. ¿Qué aprendí en esta sesión?
 
-2. **Evaluar si vale la pena** (NO sobre-ingeniería):
-   - ¿Cualquier dev vería este cambio y diría "obvio, sí"? (sin debate)
-   - ¿NO agrega archivos, dependencias, ni abstracciones nuevas?
-   - ¿El código queda más simple DESPUÉS del cambio, no más complejo?
-   - Si las 3 son SI → implementar junto con tu tarea
+| Pregunta | Si la respuesta es SÍ → acción |
+|----------|---------------------------------|
+| ¿Descubrí algo sobre el código que no sabía antes? | → Agregar a "Patrones que funcionan" |
+| ¿Casi cometí un error? ¿Qué me detuvo? | → Agregar a "Patrones a evitar" con la alternativa correcta |
+| ¿Tomé una decisión técnica entre 2+ opciones? | → Agregar a "Decisiones técnicas" con POR QUÉ y alternativas descartadas |
+| ¿Una lección previa de mi memoria me ayudó a evitar un error? | → Actualizar "Efectividad de lecciones": incrementar "Veces aplicada", marcar "Previno error? SI" |
+| ¿Encontré que una lección previa estaba equivocada o incompleta? | → Corregirla o expandirla en la tabla |
 
-3. **Registrar en tu memoria individual** (`agent-memory/individual/<TU-ID>.md`):
-   - Si encontraste mejora → agregarla a "Lecciones aprendidas" o "Patrones que funcionan"
-   - Si encontraste algo que NO deberías hacer → agregar a "Patrones a evitar"
-   - Si tomaste una decisión técnica → agregar a "Decisiones técnicas (NO re-litigar)"
+### 2. ¿Cambió algo en mi zona?
 
-4. **Si NO encuentras nada que mejorar** → está bien. No inventes cambios.
+| Pregunta | Si la respuesta es SÍ → acción |
+|----------|---------------------------------|
+| ¿Descubrí un archivo nuevo en mi zona que no estaba documentado? | → Notificar al Arquitecto para actualizar AGENT-REGISTRY |
+| ¿Un contrato que consumo cambió (tipos, API, interfaz)? | → Registrar en "Lecciones aprendidas" para estar alerta la próxima vez |
+| ¿Mi definición (agents/<mi-nombre>.md) tiene algo incorrecto o desactualizado? | → Notificar al Arquitecto con la corrección sugerida |
 
-> **Regla de oro:** Si necesitás justificar por qué el cambio es bueno, no lo hagas. La mejora debe ser tan obvia que no necesite explicación. Ejemplos: tipar un `any`, agregar un `try/catch` que falta, renombrar una variable confusa. Contra-ejemplos: "extraer un helper para reusar", "reorganizar imports", "agregar un wrapper".
+### 3. NO hacer
+
+- NO buscar "mejoras de código" como excusa para tocar archivos extra
+- NO hacer refactors que no fueron pedidos
+- NO inventar lecciones si no aprendiste nada real — una sesión sin aprendizajes es perfectamente válida
+- NO agregar complejidad al sistema "por si acaso"
+
+> **El objetivo no es cambiar código — es acumular conocimiento.** Un agente que registra 1 patrón real por sesión es mejor que uno que tipa 10 `any` sueltos. La evolución viene de saber más, no de tocar más.
 
 ## HISTORICAL ERRORS (2026-03-18)
 
