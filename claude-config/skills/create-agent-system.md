@@ -161,10 +161,54 @@ Template para agregar al CLAUDE.md del repo con instrucciones de cómo usar el s
 4. Verificar que todos los agentes leen su memoria al iniciar
 5. Verificar que el registry es coherente con las definiciones
 
-## Fase 5: Auto-evaluación inicial
+## Fase 5: Auto-evaluación + fix loop (MÍNIMO GOOD para todos)
 
-Lanzar 10+ agentes en paralelo para auto-evaluarse con el protocolo AGENT-SELF-EVAL.md.
-Reportar scores y ajustar si algún agente está por debajo de GOOD (22/31).
+### Ronda 1: Evaluación masiva
+Lanzar todos los agentes en paralelo (batches de 10-20) para auto-evaluarse con AGENT-SELF-EVAL.md.
+Cada agente reporta: `AGENT: [ID] TOTAL: X/31 | A:X B:X C:X D:X E:X F:X | TOP_ISSUE: [1 línea]`
+
+### Ronda 2+: Fix loop (repetir hasta que TODOS ≥ 22/31)
+
+```
+MIENTRAS haya agentes con score < 22 (GOOD):
+    │
+    ├── 1. Identificar agentes < 22 y sus categorías más débiles
+    │
+    ├── 2. Agrupar por tipo de problema:
+    │       - B < 4 → falta CLAUDE.md, isolation, o memoria en "Al iniciar"
+    │       - C < 3 → reglas genéricas → reescribir con reglas del dominio
+    │       - D < 3 → sin memoria individual, sin acceso a QG results
+    │       - E < 3 → sin escalación, sin ownership claro
+    │
+    ├── 3. Aplicar fixes en paralelo (agentes batch por tipo de problema)
+    │
+    ├── 4. Re-evaluar SOLO los agentes que se fixearon
+    │
+    └── 5. Si todos ≥ 22 → FIN. Si no → repetir desde paso 1.
+```
+
+### Criterio de salida
+
+| Nivel | Score | Requerido |
+|-------|-------|-----------|
+| CRITICAL (<16) | 0 agentes | **OBLIGATORIO** — no se puede terminar con CRITICALs |
+| NEEDS ATTN (16-21) | 0 agentes | **OBLIGATORIO** — todos deben ser GOOD mínimo |
+| GOOD (22-27) | cualquier cantidad | Aceptable |
+| EXCELLENT (28+) | deseable | Objetivo aspiracional, no bloqueante |
+
+### Máximo 5 rondas de fix
+
+Si después de 5 rondas un agente sigue < 22, reportar al usuario con diagnóstico:
+- Qué categorías siguen bajas
+- Qué se intentó
+- Qué falta (posiblemente info del codebase que no se tiene)
+
+### Guardar resultados
+
+Después de cada ronda, actualizar `agent-memory/individual/SELF-EVAL-RESULTS.md` con:
+- Fecha, ronda, avg score, distribución
+- Agentes que subieron y por qué
+- Agentes que siguen bajos y qué se intentó
 
 ## Principios
 
