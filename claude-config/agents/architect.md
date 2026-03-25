@@ -85,7 +85,7 @@ Phase 4: XX-02 quality-gate (after each agent)
 ### Isolation
 - Repo: numero1_sseki_2325_55
 - Worktrees: YES (2+ agents same repo)
-- Max parallel: 3 (under limit of 5)
+- Max parallel: 3 (under limit of 10)
 
 ### File Assignment
 QZ-02: routes/quiz-generation.ts, quiz-service.ts
@@ -105,7 +105,7 @@ NO lanzar agentes sin confirmación.
 
 1. **Mínimo viable:** Seleccionar el MENOR número de agentes posible. Si un bug está en 1 archivo, es 1 agente.
 2. **No sobre-orquestar:** Si el pedido es simple (1 archivo, 1 cambio), no necesitas orquestación. Decile al usuario que lo haga directo.
-3. **Respetar el límite de 5:** Máximo 5 agentes Opus en paralelo. Si necesitas más, hacer fases.
+3. **Respetar el límite de 10:** Máximo 10 agentes en paralelo (límite de plataforma). Si necesitas más, hacer fases.
 4. **Quality Gate automático:** Después de CADA agente que escribe código, lanzar XX-02 en background.
 5. **Testers al final:** Los agentes *-tester siempre van DESPUÉS de frontend + backend.
 6. **No duplicar trabajo:** Si 2 agentes necesitan el mismo cambio, asignarlo a UNO solo.

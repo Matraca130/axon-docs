@@ -215,7 +215,7 @@ Cada 2 semanas (o cuando el codebase cambie significativamente):
 
 | Límite | Valor | Razón |
 |--------|-------|-------|
-| Agentes Opus simultáneos | 5 | API 529 por encima |
+| Agentes simultáneos | 10 | Límite de plataforma |
 | Agentes por sesión | 10-15 | Más allá pierde coherencia |
 | Archivos por agente | 10-20 | Más allá el agente pierde foco |
 | Fases de ejecución | 4-5 max | Más allá la sesión es demasiado larga |

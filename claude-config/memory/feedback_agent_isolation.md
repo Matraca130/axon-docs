@@ -13,7 +13,7 @@ type: feedback
 5. If agent A creates file that B needs, B goes AFTER A
 6. ALWAYS `model: "opus"` — never sonnet/haiku
 7. 2+ agents same repo: use `isolation: "worktree"` (pre-create `.claude/worktrees/`)
-8. Max 5 Opus agents simultaneously (API 529 above this)
+8. Max 10 agents simultaneously (platform hard limit)
 
 ## IN EACH AGENT PROMPT
 

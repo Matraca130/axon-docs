@@ -82,7 +82,7 @@ Full rules in `.claude/rules/agent-workflow.md` (auto-loaded every session). Sum
 2. All agents use `model: "opus"`
 3. 2+ agents same repo → `isolation: "worktree"`
 4. Quality-gate audit after every agent that writes code
-5. Max 5 Opus agents simultaneously
+5. Max 10 agents simultaneously (platform limit)
 
 ## Current State
 
