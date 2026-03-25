@@ -1,8 +1,16 @@
 # AXON — Agent Registry (Master Index)
 
 > **Purpose:** Single source of truth for ALL agents. The Architect agent consults this index to select which agents to spawn per session.
-> **Updated:** 2026-03-25
-> **Total agents:** 70 (organized in 12 sections + 3 cross-cutting)
+> **Updated:** 2026-03-25 (v2 — post-audit)
+> **Total agents:** 74 (organized in 12 sections + cross-cutting)
+
+## Implicit Rules
+
+1. **IF-01 is transitive:** ALL agents that use service files (which import `lib/api.ts`) implicitly depend on IF-01. This is NOT listed per-agent to avoid noise — it's assumed.
+2. **AS-02 is transitive:** ALL frontend agents that render authenticated UI implicitly depend on AS-02 (AuthContext). Same rule.
+3. **Protected files:** `App.tsx`, `routes.tsx`, `*Layout.tsx` are owned by NO agent. They are protected and require manual changes.
+4. **shadcn/ui (48 files):** `components/ui/*` are library primitives — no agent owns them. They should never be modified.
+5. **Deprecated agents:** `admin-dev`, `study-dev`, `summaries-frontend` (old), `summaries-backend` (old) are LEGACY. Use the new specialized agents instead.
 
 ---
 
@@ -48,18 +56,18 @@ The **Architect agent** reads this index and selects agents based on:
 
 | ID | Agent Name | Scope | Files Owned | Depends On | Definition |
 |----|-----------|-------|-------------|------------|------------|
-| QZ-01 | quiz-frontend | Quiz UI components (student + professor) | `components/content/Quiz*.tsx`, `components/student/Quiz*.tsx`, `components/professor/Quiz*.tsx`, `routes/quiz-student-routes.ts` | QZ-02 | `agents/quiz-frontend.md` |
+| QZ-01 | quiz-frontend | Quiz UI components (student + professor) | `components/content/Quiz*.tsx`, `components/student/Quiz*.tsx`, `components/professor/Quiz*.tsx`, `routes/quiz-student-routes.ts` | QZ-02, SM-04, DG-04 | `agents/quiz-frontend.md` |
 | QZ-02 | quiz-backend | Quiz API routes + DB queries | `supabase/functions/server/routes/quiz*.ts`, `quiz-service.ts` | AS-01 | `agents/quiz-backend.md` |
 | QZ-03 | quiz-tester | Quiz integration + unit tests | `tests/quiz/**`, `tests/e2e/quiz*` | QZ-01, QZ-02 | `agents/quiz-tester.md` |
 | QZ-04 | quiz-adaptive | Adaptive quiz engine (BKT integration) | `lib/bkt-v4.ts`, `hooks/useAdaptiveQuiz*.ts`, `services/bktApi.ts` | QZ-01 | `agents/quiz-adaptive.md` |
-| QZ-05 | quiz-questions | Question CRUD + renderers | `components/student/renderers/*.tsx`, `hooks/queries/useQuestion*.ts` | QZ-01 | `agents/quiz-questions.md` |
+| QZ-05 | quiz-questions | Question CRUD + renderers | `components/student/renderers/*.tsx`, `hooks/queries/useQuestion*.ts` | QZ-01, AS-02 | `agents/quiz-questions.md` |
 | QZ-06 | quiz-analytics | Quiz analytics & reporting | `components/professor/QuizAnalytics*.tsx`, `services/quizAnalyticsApi.ts` | QZ-02, DG-01 | `agents/quiz-analytics.md` |
 
 ## 2. Flashcards (FC)
 
 | ID | Agent Name | Scope | Files Owned | Depends On | Definition |
 |----|-----------|-------|-------------|------------|------------|
-| FC-01 | flashcards-frontend | Flashcard UI (reviewer, cards) | `components/content/Flashcard*.tsx`, `components/student/Flashcard*.tsx` | FC-02 | `agents/flashcards-frontend.md` |
+| FC-01 | flashcards-frontend | Flashcard UI (reviewer, cards) | `components/content/Flashcard*.tsx`, `components/student/Flashcard*.tsx` | FC-02, SM-04, DG-04 | `agents/flashcards-frontend.md` |
 | FC-02 | flashcards-backend | Flashcard API routes + DB | `routes/flashcard*.ts`, `flashcard-service.ts` | AS-01 | `agents/flashcards-backend.md` |
 | FC-03 | flashcards-tester | Flashcard tests | `tests/flashcard/**` | FC-01, FC-02 | `agents/flashcards-tester.md` |
 | FC-04 | flashcards-fsrs | FSRS v4 spaced repetition engine | `lib/fsrs-engine.ts`, `lib/mastery-helpers.ts`, `hooks/useFlashcardEngine.ts` | FC-01 | `agents/flashcards-fsrs.md` |
@@ -205,10 +213,23 @@ The **Architect agent** reads this index and selects agents based on:
 
 ## Critical Paths (agents that block others)
 
-1. **AS-01** (auth-backend) → blocks ALL backend agents
-2. **IF-01** (infra-plumbing) → blocks ALL frontend agents
-3. **SM-04** (content-tree) → blocks QZ-01, FC-01, ST-01, DG-01
-4. **FC-04** (flashcards-fsrs) → blocks ST-05
+1. **IF-01** (infra-plumbing) → implicit dependency for ALL agents using services (lib/api.ts has 74 importers)
+2. **AS-01** (auth-backend) → blocks ALL backend agents
+3. **AS-02** (auth-frontend) → implicit dependency for ALL frontend agents (AuthContext has 42 importers)
+4. **SM-04** (content-tree) → blocks QZ-01, FC-01, ST-01, DG-01 (ContentTreeContext has 28 importers)
+5. **DG-04** (gamification-backend) → blocks QZ-01, FC-01 (useSessionXP integration)
+6. **FC-04** (flashcards-fsrs) → blocks ST-05
+
+**Longest execution chain:** DG-01 → ST-05 → ST-02 → ST-01 → SM-04 → SM-02 → AS-01 (7 levels)
+
+## Deprecated Agents (DO NOT USE)
+
+| Agent | Replaced By | Reason |
+|-------|------------|--------|
+| admin-dev | AO-01 to AO-04 | Too broad, overlaps 9+ agents |
+| study-dev | ST-01 to ST-05 | Too broad, replaced by specialized agents |
+| summaries-frontend | summaries-frontend-v2 (SM-01) | Updated with real file inventory |
+| summaries-backend | summaries-backend-v2 (SM-02) | Updated with real file inventory |
 
 ---
 
