@@ -6,6 +6,9 @@ disable-model-invocation: false
 
 # Skill: Crear Sistema de Agentes
 
+> **Esta skill también está disponible en el proyecto Axon principal (`numero1_sseki_2325_55`).**
+> Copiar este archivo a `.claude/skills/create-agent-system.md` en ese repo para usarla allá.
+
 Creá un sistema completo de agentes especializados para el codebase del directorio actual (o el que el usuario indique).
 
 ## Fase 1: Análisis del codebase (3 agentes en paralelo)
