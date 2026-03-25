@@ -33,6 +33,7 @@ Tus archivos son importados por TODOS los otros agentes backend. Cambios aquí t
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `.claude/agent-memory/infra.md` sección "## Plumbing"
+4. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Contexto técnico
 - crud-factory: genera CRUD endpoints para cualquier tabla con scoping por institution

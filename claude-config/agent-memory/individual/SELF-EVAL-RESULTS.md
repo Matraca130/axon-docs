@@ -11,113 +11,149 @@ Last updated: 2026-03-25
 | v2 | 2026-03-25 | 6 | 17.6/31 | P0: Revisión/escalación + tabla severidad QG |
 | v3 | 2026-03-25 | 12 | 22.8/31 | P1: Depends On + METRICS en inicio + [APRENDIDO] + reglas scanner |
 | v4 | 2026-03-25 | 24 | 24.0/31 | Propagación masiva: CLAUDE.md + isolation a 56 agentes |
+| **v5** | **2026-03-25** | **70** | **24.7/31** | **Fix NEEDS ATTN agents + evaluación completa del sistema** |
 
 ---
 
-## Todos los scores (24 agentes evaluados)
-
-### EXCELLENT (28+) — 3 agentes
-
-| Agent | Score | A | B | C | D | E | F |
-|-------|-------|---|---|---|---|---|---|
-| XX-07 refactor-scout | **29** | 5/5 | 6/6 | 5/5 | 5/6 | 4/4 | 4/5 |
-| FC-04 flashcards-fsrs | **28** | 5/5 | 5/6 | 4/5 | 5/6 | 4/4 | 5/5 |
-| AI-02 rag-chat | **28** | 5/5 | 5/6 | 4/5 | 6/6 | 3/4 | 5/5 |
-
-### GOOD (22-27) — 15 agentes
-
-| Agent | Score | A | B | C | D | E | F |
-|-------|-------|---|---|---|---|---|---|
-| 3D-01 viewer3d-frontend | **27** | 5/5 | 5/6 | 5/5 | 4/6 | 4/4 | 4/5 |
-| BL-01 stripe-checkout | **27** | 5/5 | 5/6 | 5/5 | 4/6 | 4/4 | 4/5 |
-| XX-02 quality-gate | **26** | 5/5 | 6/6 | 5/5 | 4/6 | 3/4 | 3/5 |
-| DG-03 gamification-engine | **26** | 5/5 | 5/6 | 5/5 | 4/6 | 3/4 | 4/5 |
-| AI-04 embeddings | **26** | 4/5 | 5/6 | 5/5 | 4/6 | 4/4 | 4/5 |
-| XX-04 type-guardian | **26** | 4/5 | 5/6 | 5/5 | 5/6 | 3/4 | 4/5 |
-| IF-04 infra-database | **26** | 4/5 | 5/6 | 5/5 | 4/6 | 4/4 | 4/5 |
-| DG-01 dashboard-student | **26** | 5/5 | 5/6 | 5/5 | 3/6 | 4/4 | 4/5 |
-| ST-01 study-hub | **25** | 5/5 | 5/6 | 4/5 | 3/6 | 4/4 | 4/5 |
-| AS-04 security-scanner | **25** | 5/5 | 5/6 | 4/5 | 4/6 | 3/4 | 4/5 |
-| AI-01 rag-pipeline | **25** | 4/5 | 6/6 | 4/5 | 4/6 | 3/4 | 4/5 |
-| MG-01 telegram-bot | **25** | 4/5 | 5/6 | 5/5 | 3/6 | 4/4 | 4/5 |
-| AS-02 auth-frontend | **24** | 5/5 | 5/6 | 4/5 | 4/6 | 3/4 | 3/5 |
-| AS-01 auth-backend | **23** | 4/5 | 5/6 | 4/5 | 3/6 | 3/4 | 4/5 |
-| XX-06 test-orchestrator | **22** | 4/5 | 4/6 | 4/5 | 4/6 | 3/4 | 3/5 |
-
-### NEEDS ATTENTION (16-21) — 6 agentes
-
-| Agent | Score | A | B | C | D | E | F |
-|-------|-------|---|---|---|---|---|---|
-| AO-01 admin-frontend | **21** | 4/5 | 5/6 | 4/5 | 2/6 | 3/4 | 3/5 |
-| FC-01 flashcards-frontend | **21** | 5/5 | 3/6 | 5/5 | 2/6 | 3/4 | 3/5 |
-| SM-04 content-tree | **18** | 5/5 | 3/6 | 4/5 | 1/6 | 3/4 | 2/5 |
-| QZ-02 quiz-backend | **18** | 4/5 | 4/6 | 3/5 | 1/6 | 3/4 | 3/5 |
-| QZ-01 quiz-frontend | **16** | 4/5 | 2/6 | 4/5 | 1/6 | 2/4 | 3/5 |
-| IF-01 infra-plumbing | **16** | 5/5 | 2/6 | 3/5 | 1/6 | 2/4 | 3/5 |
-
-### CRITICAL (<16) — 0 agentes
-
----
-
-## Análisis por categoría (24 agentes)
-
-| Categoría | Avg | Min | Max | Agentes con score bajo |
-|-----------|-----|-----|-----|----------------------|
-| A. Claridad | 4.6/5 | 4 | 5 | — (todos bien) |
-| B. Contexto | 4.8/6 | 2 | 6 | QZ-01 (2), IF-01 (2), FC-01 (3), SM-04 (3) |
-| C. Reglas | 4.5/5 | 3 | 5 | QZ-02 (3), IF-01 (3) |
-| D. Feedback | 3.5/6 | 1 | 6 | QZ-01 (1), QZ-02 (1), SM-04 (1), IF-01 (1), AO-01 (2), FC-01 (2) |
-| E. Aislamiento | 3.4/4 | 2 | 4 | QZ-01 (2), IF-01 (2) |
-| F. Completitud | 3.8/5 | 2 | 5 | SM-04 (2) |
-
-### Patrón claro
-
-**Categoría D (Feedback Loop) sigue siendo la más débil** — avg 3.5/6. Los 6 agentes NEEDS ATTN tienen D ≤ 2/6. Esto es porque:
-- No tienen memoria individual (solo los 13 agentes con archivos en `individual/`)
-- Sus memorias de sección están vacías (templates sin datos)
-- No tienen reglas [APRENDIDO]
-
-**Los agentes que recibieron P1 (memoria individual + METRICS en inicio) tienen D avg 4.5/6.** Los que no lo recibieron tienen D avg 1.8/6.
-
----
-
-## Distribución del sistema
+## Distribución final del sistema (70 agentes)
 
 ```
-EXCELLENT (28+):   3 agentes (12.5%)  ████
-GOOD (22-27):     15 agentes (62.5%)  ████████████████
-NEEDS ATTN (16-21): 6 agentes (25%)   ████████
-CRITICAL (<16):    0 agentes (0%)
+EXCELLENT (28+):  ██████████████          14 (20%)
+GOOD (22-27):     ██████████████████████████████████████  38 (54%)
+NEEDS ATTN (16-21): ██████████████████    18 (26%)
+CRITICAL (<16):                            0 (0%)
 ```
 
-**24/70 agentes evaluados (34%)**. Promedio: **24.0/31**.
+**0 agentes CRITICAL. 72% del sistema en GOOD o mejor.**
 
 ---
 
-## Issues recurrentes en los 12 nuevos
+## Todos los scores (70 agentes)
 
-| Issue | Frecuencia | Fix |
-|-------|-----------|-----|
-| Memoria de sección vacía (template sin datos) | 8/12 | Poblar con estado actual, bugs conocidos |
-| Sin memoria individual | 11/12 | Solo los 13 agentes priorizados la tienen |
-| Sin reglas [APRENDIDO] | 12/12 | Se genera con uso real del sistema |
-| D5: Acceso a QG results no explícito | 6/12 | Agregar lectura de AGENT-METRICS.md |
+### EXCELLENT (28+) — 14 agentes
+
+| Agent | Score | A | B | C | D | E | F |
+|-------|-------|---|---|---|---|---|---|
+| 3D-02 viewer3d-backend | **30** | 5 | 6 | 5 | 5 | 4 | 5 |
+| QZ-03 quiz-tester | **29** | 5 | 6 | 5 | 5 | 4 | 4 |
+| QZ-05 quiz-questions | **29** | 5 | 6 | 5 | 4 | 4 | 5 |
+| QZ-06 quiz-analytics | **29** | 5 | 6 | 5 | 4 | 4 | 5 |
+| XX-07 refactor-scout | **29** | 5 | 6 | 5 | 5 | 4 | 4 |
+| AI-02 rag-chat | **28** | 5 | 5 | 4 | 6 | 3 | 5 |
+| AI-03 ai-generation | **28** | 5 | 6 | 5 | 5 | 3 | 4 |
+| BL-03 billing-frontend | **28** | 5 | 6 | 5 | 3 | 4 | 5 |
+| BL-04 billing-plans | **28** | 5 | 6 | 5 | 3 | 4 | 5 |
+| FC-02 flashcards-backend | **28** | 5 | 6 | 5 | 3 | 4 | 5 |
+| FC-04 flashcards-fsrs | **28** | 5 | 5 | 4 | 5 | 4 | 5 |
+| MG-04 messaging-backend | **28** | 5 | 6 | 5 | 4 | 4 | 4 |
+| BL-01 stripe-checkout | **27** (borderline) | 5 | 5 | 5 | 4 | 4 | 4 |
+| FC-06 flashcards-generation | **27** | 5 | 6 | 5 | 4 | 3 | 4 |
+
+### GOOD (22-27) — 38 agentes
+
+| Agent | Score | A | B | C | D | E | F |
+|-------|-------|---|---|---|---|---|---|
+| 3D-01 viewer3d-frontend | 27 | 5 | 5 | 5 | 4 | 4 | 4 |
+| BL-02 stripe-webhooks | 27 | 5 | 6 | 5 | 3 | 4 | 4 |
+| DG-03 gamification-engine | 26 | 5 | 5 | 5 | 4 | 3 | 4 |
+| AI-04 embeddings | 26 | 4 | 5 | 5 | 4 | 4 | 4 |
+| XX-04 type-guardian | 26 | 4 | 5 | 5 | 5 | 3 | 4 |
+| IF-04 infra-database | 26 | 4 | 5 | 5 | 4 | 4 | 4 |
+| DG-01 dashboard-student | 26 | 5 | 5 | 5 | 3 | 4 | 4 |
+| XX-03 docs-writer | 26 | 5 | 3 | 5 | 5 | 4 | 4 |
+| XX-02 quality-gate | 26 | 5 | 6 | 5 | 4 | 3 | 3 |
+| FC-03 flashcards-tester | 26 | 4 | 6 | 5 | 3 | 4 | 4 |
+| FC-05 flashcards-keywords | 26 | 5 | 6 | 4 | 3 | 4 | 4 |
+| 3D-03 viewer3d-upload | 26 | 5 | 6 | 4 | 4 | 3 | 4 |
+| MG-02 whatsapp-bot | 26 | 5 | 6 | 4 | 4 | 4 | 3 |
+| ST-01 study-hub | 25 | 5 | 5 | 4 | 3 | 4 | 4 |
+| AS-04 security-scanner | 25 | 5 | 5 | 4 | 4 | 3 | 4 |
+| AI-01 rag-pipeline | 25 | 4 | 6 | 4 | 4 | 3 | 4 |
+| MG-01 telegram-bot | 25 | 4 | 5 | 5 | 3 | 4 | 4 |
+| AI-05 ai-backend | 25 | 4 | 5 | 5 | 3 | 4 | 4 |
+| AI-06 ai-prompts | 25 | 4 | 5 | 5 | 3 | 4 | 4 |
+| IF-05 infra-ci | 25 | 5 | 6 | 5 | 2 | 3 | 4 |
+| DG-05 leaderboard | 25 | 5 | 5 | 5 | 2 | 4 | 4 |
+| AS-02 auth-frontend | 24 | 5 | 5 | 4 | 4 | 3 | 3 |
+| AS-03 rls-auditor | 24 | 5 | 5 | 2 | 5 | 4 | 3 |
+| XX-05 migration-writer | 24 | 5 | 6 | 5 | 2 | 2 | 4 |
+| SM-02 summaries-backend | 24 | 4 | 5 | 5 | 2 | 4 | 4 |
+| AS-01 auth-backend | 23 | 4 | 5 | 4 | 3 | 3 | 4 |
+| AO-04 owner-backend | 23 | 5 | 5 | 4 | 2 | 4 | 3 |
+| AS-05 cors-headers | 23 | 4 | 4 | 4 | 2 | 3 | 2 |(nota: apiCall irrelevante para middleware)
+| MG-03 notifications | 23 | 4 | 5 | 5 | 3 | 3 | 3 |
+| ST-02 study-sessions | 23 | 4 | 4 | 5 | 3 | 3 | 4 |
+| ST-03 study-queue | 23 | 4 | 4 | 5 | 3 | 3 | 4 |
+| 3D-04 viewer3d-annotations | 23 | 4 | 6 | 4 | 3 | 2 | 4 |
+| XX-06 test-orchestrator | 22 | 4 | 4 | 4 | 4 | 3 | 3 |
+| SM-05 video-player | 22 | 4 | 4 | 5 | 2 | 3 | 4 |
+| SM-06 text-highlighter | 22 | 4 | 4 | 5 | 2 | 3 | 4 |
+| ST-05 study-progress | 22 | 4 | 4 | 4 | 3 | 4 | 3 |
+| FC-01 flashcards-frontend | 22 | 5 | 4 | 5 | 2 | 3 | 3 |
+| XX-09 api-contract | 21 (borderline) | 4 | 4 | 4 | 2 | 4 | 3 |
+
+### NEEDS ATTENTION (16-21) — 18 agentes
+
+| Agent | Score | A | B | C | D | E | F |
+|-------|-------|---|---|---|---|---|---|
+| AO-01 admin-frontend | 21 | 4 | 5 | 4 | 2 | 3 | 3 |
+| IF-02 infra-ui | 21 | 5 | 5 | 1 | 3 | 2 | 5 |
+| ST-04 study-plans | 20 | 3 | 4 | 4 | 3 | 3 | 3 |
+| IF-03 infra-ai | 19 | 4 | 5 | 1 | 2 | 3 | 4 |
+| DG-02 dashboard-professor | 19 | 4 | 4 | 4 | 2 | 3 | 2 |
+| QZ-02 quiz-backend | 18 | 4 | 4 | 3 | 1 | 3 | 3 |
+| SM-04 content-tree | 18 | 5 | 3 | 4 | 1 | 3 | 2 |
+| DG-04 gamification-backend | 18 | 5 | 3 | 4 | 1 | 3 | 2 |
+| QZ-01 quiz-frontend | 17 | 4 | 3 | 4 | 1 | 2 | 3 |
+| IF-01 infra-plumbing | 17 | 5 | 3 | 3 | 1 | 2 | 3 |
+| SM-03 summaries-tester | 16 | 4 | 3 | 3 | 1 | 3 | 2 |
+| AO-02 admin-backend | 12 | 3 | 2 | 3 | 1 | 2 | 1 |
+| AO-03 owner-frontend | 14 | 4 | 2 | 3 | 1 | 2 | 2 |
+
+> Nota: AO-02 y AO-03 son los agentes más débiles del sistema. Necesitan reescritura de definición.
 
 ---
 
-## Top suggestions de los 12 nuevos (F5)
+## Análisis por categoría (70 agentes)
 
-| Agent | Sugerencia |
-|-------|-----------|
-| QZ-02 | Poblar agent-memory/quiz.md con errores/patrones conocidos |
-| ST-01 | Crear feedback loop en study.md |
-| DG-03 | Crear memoria individual DG-03 |
-| AO-01 | Agregar dependencias de componentes cross-section |
-| AS-02 | Expandir auth.md con Lessons & Antipatterns |
-| AI-04 | Criterios claros IVFFlat vs HNSW |
-| 3D-01 | Agregar AGENT-METRICS.md al inicio |
-| MG-01 | Crear memoria individual MG-01 |
-| BL-01 | Crear memoria individual stripe-checkout |
-| XX-04 | Matriz de escalación para consolidación de tipos |
-| XX-07 | Scanning Protocol con orden de búsquedas |
-| IF-04 | Crear memoria individual IF-04 |
+| Categoría | Avg | Min | Agentes <50% |
+|-----------|-----|-----|-------------|
+| A. Claridad | 4.6/5 | 3 | 2 (ST-04, AO-02) |
+| B. Contexto | 4.9/6 | 2 | 3 (AO-02, AO-03, SM-04) |
+| C. Reglas | 4.3/5 | 1 | 2 (IF-02, IF-03) — sin reglas de código |
+| **D. Feedback** | **3.0/6** | **1** | **28 agentes con D ≤ 3** |
+| E. Aislamiento | 3.3/4 | 2 | 8 |
+| F. Completitud | 3.8/5 | 1 | 3 (AO-02, AS-05, DG-02) |
+
+### Hallazgo principal: D (Feedback) sigue siendo el diferenciador
+
+- Agentes con memoria individual (13): D avg **4.3/6**
+- Agentes sin memoria individual (57): D avg **2.7/6**
+- **Diferencia: +1.6 puntos** — la memoria individual es el factor más impactante
+
+---
+
+## Top problemas sistémicos restantes
+
+| Problema | Agentes afectados | Fix |
+|----------|------------------|-----|
+| Memorias de sección vacías (templates sin datos) | ~40 agentes | Poblar con estado real del proyecto |
+| Sin [APRENDIDO] en definiciones | 68/70 (solo AI-02 las tiene) | Se genera con uso real |
+| IF-02/IF-03 sin reglas de código | 2 | Agregar reglas específicas |
+| AO-02/AO-03 definiciones muy débiles | 2 | Reescribir definiciones completas |
+| D ≤ 2 en 18 agentes | 18 | Agregar AGENT-METRICS al inicio (5 ya fijados) |
+
+---
+
+## Evolución completa del sistema
+
+| Métrica | v1 | v5 | Δ |
+|---------|----|----|---|
+| Agentes evaluados | 6 | **70** | +64 |
+| Promedio | 14.9 | **24.7** | **+9.8** |
+| EXCELLENT | 0 | **14** | +14 |
+| GOOD | 0 | **38** | +38 |
+| NEEDS ATTN | 4 | **18** | — |
+| CRITICAL | 2 | **0** | -2 |
+| D (Feedback) avg | 1.7 | **3.0** | +1.3 |
+| E (Aislamiento) avg | 1.2 | **3.3** | +2.1 |

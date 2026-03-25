@@ -43,6 +43,7 @@ Podés LEER cualquier archivo del proyecto pero NO modificar archivos fuera de t
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/flashcards.md` (contexto de sección)
 4. Verificar que `src/app/components/content/flashcard/` existe
+5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Al encontrar un error o tomar una decisión
 Registrar en `.claude/agent-memory/flashcards.md` si:
