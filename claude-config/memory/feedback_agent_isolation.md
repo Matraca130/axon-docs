@@ -46,6 +46,32 @@ type: feedback
 - **Same file, N agents:** sequential (A merges, B branches from updated main, etc.)
 - **Disjoint files:** parallel safe, merge without conflicts
 
+## MEJORA CONTINUA (OBLIGATORIO en cada sesión)
+
+Al finalizar tu tarea principal, ANTES de reportar al usuario:
+
+1. **Buscar 1 mejora real** en tu zona de ownership:
+   - ¿Hay un patrón que se repite y podría extraerse?
+   - ¿Hay un nombre de variable/función que confunde?
+   - ¿Hay un error handling que falta?
+   - ¿Hay un tipo `any` que podría tiparse?
+   - ¿Hay un test que falta para un caso obvio?
+
+2. **Evaluar si vale la pena** (NO sobre-ingeniería):
+   - ¿El cambio es < 20 líneas?
+   - ¿Mejora legibilidad, seguridad o correctitud?
+   - ¿NO agrega complejidad innecesaria?
+   - Si las 3 son SI → implementar junto con tu tarea
+
+3. **Registrar en tu memoria individual** (`agent-memory/individual/<TU-ID>.md`):
+   - Si encontraste mejora → agregarla a "Lecciones aprendidas" o "Patrones que funcionan"
+   - Si encontraste algo que NO deberías hacer → agregar a "Patrones a evitar"
+   - Si tomaste una decisión técnica → agregar a "Decisiones técnicas (NO re-litigar)"
+
+4. **Si NO encuentras nada que mejorar** → está bien. No inventes cambios.
+
+> **Regla de oro:** La mejora debe ser OBVIA y PEQUEÑA. Si necesitás pensar más de 2 minutos si vale la pena, no vale la pena. El objetivo es mejora constante incremental, no refactors ambiciosos.
+
 ## HISTORICAL ERRORS (2026-03-18)
 
 | Error | Prevention |
