@@ -223,6 +223,66 @@ Cada 2 semanas (o cuando el codebase cambie significativamente):
 
 ---
 
+## Paso 6: Post-mortem automático (aprender de errores)
+
+Después de CADA sesión multi-agente, el Arquitecto ejecuta un post-mortem:
+
+### Cuándo se activa
+
+- Al finalizar una sesión donde se lanzaron 2+ agentes
+- Cuando un quality-gate falla
+- Cuando hay conflictos de merge o errores inesperados
+
+### Qué analiza
+
+```
+1. ¿Algún agente tocó archivos fuera de su scope? → scope creep
+2. ¿Hubo conflictos de merge? → overlap en file assignment
+3. ¿Quality-gate detectó errores? → regla faltante o agente mal configurado
+4. ¿Algún agente falló o se bloqueó? → dependencia no declarada
+5. ¿El plan original fue correcto? → calibración del Arquitecto
+```
+
+### Dónde se guarda
+
+| Tipo de lección | Destino |
+|----------------|---------|
+| Error de aislamiento/coordinación | `memory/feedback_agent_isolation.md` → tabla HISTORICAL ERRORS |
+| Error específico de sección | `agent-memory/<section>.md` → sección "Bugs conocidos" |
+| Mejora al proceso general | `memory/feedback_*.md` (nuevo archivo si es categoría nueva) |
+| Cambio en ownership de archivos | `AGENT-REGISTRY.md` → actualizar "Files Owned" |
+
+### Formato de entrada en HISTORICAL ERRORS
+
+```markdown
+| Error | Prevention |
+|-------|------------|
+| [Qué pasó, cuántas veces] | [Regla que se agrega para evitarlo] |
+```
+
+### Flujo automático
+
+```
+Sesión termina
+     │
+     ▼
+Arquitecto revisa:
+  - git log de cada branch (¿archivos fuera de scope?)
+  - quality-gate results (¿errores?)
+  - merge results (¿conflictos?)
+     │
+     ▼
+¿Hubo problemas?
+  → SÍ: Escribir lección en feedback correspondiente
+        Mostrar resumen al usuario
+  → NO: Registrar sesión exitosa (fecha, agentes, resultado)
+     │
+     ▼
+Actualizar agent-memory de secciones tocadas
+```
+
+---
+
 ## Ejemplo completo: "Quiero que el student vea un leaderboard con XP"
 
 ```

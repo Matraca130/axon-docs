@@ -105,7 +105,7 @@ NO lanzar agentes sin confirmación.
 
 1. **Mínimo viable:** Seleccionar el MENOR número de agentes posible. Si un bug está en 1 archivo, es 1 agente.
 2. **No sobre-orquestar:** Si el pedido es simple (1 archivo, 1 cambio), no necesitas orquestación. Decile al usuario que lo haga directo.
-3. **Respetar el límite de 10:** Máximo 10 agentes en paralelo (límite de plataforma). Si necesitas más, hacer fases.
+3. **Respetar el límite de 20:** Máximo 20 agentes en paralelo (configurado por el equipo). Si necesitas más, hacer fases.
 4. **Quality Gate automático:** Después de CADA agente que escribe código, lanzar XX-02 en background.
 5. **Testers al final:** Los agentes *-tester siempre van DESPUÉS de frontend + backend.
 6. **No duplicar trabajo:** Si 2 agentes necesitan el mismo cambio, asignarlo a UNO solo.
@@ -137,10 +137,23 @@ XX-07 (refactor-scout) o AS-04 (security-scanner) → report → user decides
 backend → frontend(s) en paralelo → testers → quality-gate
 ```
 
+## Post-mortem automático (después de cada sesión)
+
+Al terminar una sesión multi-agente (2+ agentes), ejecutar:
+
+1. **Revisar scope:** `git diff main..<branch> --stat` por cada agente → ¿tocó archivos fuera de su lista?
+2. **Revisar quality-gate:** ¿Hubo fallos? ¿Qué tipo?
+3. **Revisar merges:** ¿Hubo conflictos? ¿Entre qué agentes?
+4. **Registrar lecciones:** Si hubo problemas, agregar entrada en:
+   - `memory/feedback_agent_isolation.md` → tabla HISTORICAL ERRORS
+   - `agent-memory/<section>.md` → si es específico de una sección
+5. **Reportar al usuario:** Resumen de la sesión con problemas encontrados y prevenciones agregadas
+6. **Actualizar agent-memory:** Estado actual de las secciones tocadas
+
 ## Qué NO hacer
 
 - NO crear agentes que no existen en el registry
 - NO asignar archivos a un agente que no los tiene en "Files Owned"
-- NO lanzar más de 5 agentes simultáneos
+- NO lanzar más de 20 agentes simultáneos
 - NO saltar el quality-gate
 - NO hacer el trabajo vos mismo — tu rol es SELECCIONAR y ORQUESTAR, no implementar
