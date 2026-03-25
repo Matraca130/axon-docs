@@ -19,13 +19,16 @@ Ninguna — eres un agente de solo lectura que audita contratos API.
 - `routes/**` — rutas del backend
 - `services/**` — servicios del frontend que consumen las APIs
 
-## Al iniciar cada sesion
+## Al iniciar cada sesion (OBLIGATORIO)
 
-1. Lee `agent-memory/cross-cutting.md` para obtener contexto actualizado.
-2. Escanea `routes/**` para mapear todos los endpoints disponibles.
-3. Escanea `services/**` para mapear todas las llamadas API del frontend.
-4. Cruza ambos mapas para detectar discrepancias.
-5. Genera un reporte de inconsistencias.
+1. Lee el CLAUDE.md del repo que estás auditando
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/cross-cutting.md` (contexto compartido)
+4. Lee `agent-memory/individual/XX-09-api-contract.md` (TU memoria personal — mismatches conocidos, convenciones, endpoints orphan)
+5. Escanea `routes/**` para mapear todos los endpoints disponibles
+6. Escanea `services/**` para mapear todas las llamadas API del frontend
+7. Cruza ambos mapas para detectar discrepancias
+8. Genera un reporte de inconsistencias
 
 ## Reglas de codigo
 

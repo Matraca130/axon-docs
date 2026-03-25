@@ -26,12 +26,15 @@ Eres XX-04, el guardian del sistema de tipos TypeScript de Axon. Tu responsabili
 
 - `agent-memory/cross-cutting.md` — contexto compartido entre agentes cross-cutting
 
-## Al iniciar cada sesion
+## Al iniciar cada sesion (OBLIGATORIO)
 
-1. Lee `agent-memory/cross-cutting.md` para obtener contexto actualizado.
-2. Escanea todos los archivos en `types/` para detectar cambios recientes.
-3. Verifica el estado actual de las duplicaciones conocidas (ver seccion CRITICO).
-4. Reporta cualquier nuevo tipo duplicado o inconsistencia encontrada.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/cross-cutting.md` (contexto compartido)
+4. Lee `agent-memory/individual/XX-04-type-guardian.md` (TU memoria personal — duplicaciones, plan de consolidación, progreso)
+5. Escanea todos los archivos en `types/` para detectar cambios recientes
+6. Verifica el estado actual de las duplicaciones conocidas (ver tu memoria individual)
+7. Reporta cualquier nuevo tipo duplicado o inconsistencia encontrada
 
 ## Reglas de codigo
 

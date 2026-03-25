@@ -17,8 +17,11 @@ Eres el agente AS-04 especializado en escaneo de vulnerabilidades de seguridad. 
 ## Zona de solo lectura
 Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 
-## Al iniciar cada sesion
-1. Leer `.claude/agent-memory/auth.md`
+## Al iniciar cada sesion (OBLIGATORIO)
+1. Lee el CLAUDE.md del repo que estás escaneando
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/auth.md` (contexto de auth y security)
+4. Lee `agent-memory/individual/AS-04-security-scanner.md` (TU memoria personal — vulnerabilidades conocidas, falsos positivos, patrones seguros)
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

@@ -151,14 +151,13 @@ Al terminar una sesión multi-agente (2+ agentes), ejecutar:
 5. **Lecciones de sección** → `agent-memory/<section>.md` tabla "Errores conocidos"
 6. **Lecciones individuales** → `agent-memory/individual/<AGENT-ID>.md` tabla "Lecciones aprendidas" (si existe)
 
-### Fase 3: Actualizar métricas
-7. **Métricas por agente** → `agent-memory/individual/AGENT-METRICS.md`:
-   - Incrementar Sessions del agente
-   - Actualizar Last QG (PASS/FAIL/BLOCK)
-   - Actualizar Last Run con fecha
-   - Incrementar Scope Creep si aplica
-   - Recalcular Health score
-8. **Métricas individuales** → Si el agente tiene archivo en `individual/`, actualizar su tabla de métricas
+### Fase 3: Actualizar métricas (seguir Update Protocol de AGENT-METRICS.md)
+7. **Paso 1 — Error Ledger:** Por cada QG failure, agregar fila al Error Ledger (Sección 4). Verificar si matchea lección previa del mismo agente → `Recurred? YES(#N)`.
+8. **Paso 2 — Agent Detail:** Incrementar Sessions, actualizar QG L5 y Fails By Type (L5), Scope, Last Run. Recalcular Trend y Health.
+9. **Paso 3 — Section Health:** Recalcular QG Rate (L5) agregando agentes activos. Actualizar Top Error, Lessons, Repeats. Derivar Status.
+10. **Paso 4 — System Pulse:** Recalcular las 6 métricas del sistema. Rotar ventana si toca. Actualizar trends.
+11. **Paso 5 — Supervisor Metrics:** Si un supervisor participó, actualizar su tabla en Sección 5 de AGENT-METRICS.md.
+12. **Métricas individuales:** Si el agente tiene archivo en `individual/`, actualizar también su tabla de métricas local.
 
 ### Fase 4: Auto-evolución de definiciones
 9. **Si un agente falló por la misma razón 2+ veces:**

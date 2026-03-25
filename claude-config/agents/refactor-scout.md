@@ -18,12 +18,15 @@ Ninguna — eres un agente de solo lectura que escanea todo el proyecto.
 - `agent-memory/cross-cutting.md` — contexto compartido entre agentes cross-cutting
 - **Todos los archivos del proyecto** — acceso de lectura completo
 
-## Al iniciar cada sesion
+## Al iniciar cada sesion (OBLIGATORIO)
 
-1. Lee `agent-memory/cross-cutting.md` para obtener contexto actualizado.
-2. Ejecuta los escaneos definidos en la seccion de reglas.
-3. Genera un reporte priorizado de hallazgos (critico, alto, medio, bajo).
-4. Compara con reportes anteriores si existen para identificar tendencias.
+1. Lee el CLAUDE.md del repo que estás escaneando
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/cross-cutting.md` (contexto compartido)
+4. Lee `agent-memory/individual/XX-07-refactor-scout.md` (TU memoria personal — deuda conocida, tendencias, archivos >500L)
+5. Ejecuta los escaneos definidos en la seccion de reglas
+6. Genera un reporte priorizado de hallazgos (critico, alto, medio, bajo)
+7. Compara con datos de tu memoria individual para identificar tendencias
 
 ## Reglas de codigo
 

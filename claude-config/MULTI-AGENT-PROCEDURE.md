@@ -255,15 +255,16 @@ Después de CADA sesión multi-agente, el Arquitecto ejecuta un post-mortem:
 | Mejora al proceso general | `memory/feedback_*.md` (nuevo archivo si es categoría nueva) |
 | Cambio en ownership de archivos | `AGENT-REGISTRY.md` → actualizar "Files Owned" |
 
-### Métricas (actualizar SIEMPRE)
+### Métricas (actualizar SIEMPRE — seguir Update Protocol)
 
-Después de cada sesión, actualizar `agent-memory/individual/AGENT-METRICS.md`:
-- Incrementar `Sessions` de cada agente que participó
-- Actualizar `Last QG` con resultado del quality-gate
-- Actualizar `Last Run` con fecha
-- Recalcular `Health` score
+Después de cada sesión, seguir el **Update Protocol** de `agent-memory/individual/AGENT-METRICS.md`:
 
-Si el agente tiene memoria individual en `agent-memory/individual/<AGENT-ID>.md`, actualizar también su tabla de métricas local.
+1. **Error Ledger** (Sección 4): Agregar fila por cada QG failure. Verificar si recurrió después de lección → `Recurred? YES(#N)`.
+2. **Agent Detail** (Sección 3): Actualizar QG L5 (ventana rodante), Fails By Type, Scope, Last Run, Trend, Health.
+3. **Section Health** (Sección 2): Recalcular QG Rate agregando agentes activos. Actualizar Top Error, Status.
+4. **System Pulse** (Sección 1): Recalcular las 6 métricas del sistema. Rotar ventana si toca.
+5. **Supervisor Metrics** (Sección 5): Si un supervisor participó, actualizar su tabla específica.
+6. **Métricas individuales**: Si el agente tiene archivo en `individual/<AGENT-ID>.md`, actualizar también.
 
 ### Auto-evolución de definiciones de agentes
 
@@ -304,9 +305,12 @@ Fase 2 — Registrar lecciones:
   → Individual: agent-memory/individual/<AGENT-ID>.md
      │
      ▼
-Fase 3 — Actualizar métricas:
-  → AGENT-METRICS.md (tabla global)
-  → Archivo individual del agente (si existe)
+Fase 3 — Actualizar métricas (5 pasos):
+  → Paso 1: Error Ledger (agregar failures, marcar recurrencias)
+  → Paso 2: Agent Detail (QG L5, Fails By Type, Trend, Health)
+  → Paso 3: Section Health (QG Rate, Top Error, Status)
+  → Paso 4: System Pulse (6 métricas del sistema)
+  → Paso 5: Supervisor Metrics + archivos individuales
      │
      ▼
 Fase 4 — Auto-evolución:
@@ -326,6 +330,7 @@ Fase 5 — Reportar al usuario:
 
 Los siguientes agentes tienen archivo propio en `agent-memory/individual/`:
 
+#### Implementadores (7)
 | Agent ID | Archivo | Razón |
 |----------|---------|-------|
 | FC-04 | `FC-04-fsrs.md` | Algoritmo FSRS v4 — parámetros calibrados |
@@ -334,7 +339,19 @@ Los siguientes agentes tienen archivo propio en `agent-memory/individual/`:
 | AI-02 | `AI-02-rag-chat.md` | Chat RAG — streaming, sanitización |
 | AI-04 | `AI-04-embeddings.md` | Vector search — pgvector, índices |
 | AS-01 | `AS-01-auth-backend.md` | Auth — bloquea todos los agentes backend |
+| XX-04 | `XX-04-type-guardian.md` | Tipos duplicados — plan de consolidación |
+
+#### Supervisores (6)
+| Agent ID | Archivo | Razón |
+|----------|---------|-------|
 | XX-02 | `XX-02-quality-gate.md` | Quality gate — falsos positivos/negativos |
+| XX-06 | `XX-06-test-orchestrator.md` | Tests — flaky conocidos, baselines, módulos problemáticos |
+| XX-07 | `XX-07-refactor-scout.md` | Deuda técnica — tendencias, archivos >500L |
+| XX-09 | `XX-09-api-contract.md` | Contratos API — mismatches, convenciones, orphans |
+| AS-04 | `AS-04-security-scanner.md` | Seguridad — vulnerabilidades, falsos positivos, patrones seguros |
+| AS-03 | `AS-03-rls-auditor.md` | RLS — tablas auditadas, brechas, patrones validados |
+
+> **Total: 13 agentes con memoria individual** (7 implementadores + 6 supervisores)
 
 Para agregar memoria individual a otro agente: crear archivo en `agent-memory/individual/<AGENT-ID>-<name>.md` y agregar lectura a su definición en `agents/<agent>.md`.
 
