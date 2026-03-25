@@ -32,7 +32,7 @@ Single unified endpoint using `bulk_reorder()` RPC (atomic):
 
 ## Route Count Summary
 
-The backend has **10 split modules** + 6 flat route files:
+The backend has **11 split modules** + 6 flat route files:
 
 | Source | Count | Subtotal |
 |---|---|---|
@@ -45,4 +45,4 @@ The backend has **10 split modules** + 6 flat route files:
 | Study queue | ~1 | ~1 |
 | **Total** | | **~200+** |
 
-**Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, whatsapp
+**Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, telegram, whatsapp

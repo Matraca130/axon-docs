@@ -7,7 +7,7 @@
 | Repo | Status | Notes |
 |---|---|---|
 | Frontend (Vercel) | Running | v4.5 — responsive, gamification, AI reports, PDF ingest |
-| Backend (Supabase EF) | Running | v4.4 (index.ts) / v4.5 (docs) — ~93 files, 16 route modules |
+| Backend (Supabase EF) | Running | v4.4 (index.ts) / v4.5 (docs) — ~93 files, 16 route modules. **Note:** Backend index.ts reports v4.4; documentation targets v4.5 specification. |
 | Supabase | Running | 50+ tables, **53 migrations** |
 
 ## Still Pending
@@ -28,13 +28,14 @@
 
 ## Backend: ~93 files LISTED + 3 READ
 
-### Route Modules (10 split + 6 flat = 16 mounted in index.ts)
+### Route Modules (11 split + 6 flat = 17 mounted in index.ts)
 
 | Module | Files | Key File Size |
 |---|---|---|
 | ai/ | 14 | generate-smart 30KB, chat 18KB, pre-generate 16KB |
 | content/ | 10 | keyword-connections 10KB |
 | whatsapp/ | 10 | tools 21KB, handler 16KB |
+| telegram/ | 10 | tools, handler, webhook, async-queue |
 | gamification/ | 6 | badges 11KB, helpers 10KB |
 | study/ | 6 | batch-review 22KB, progress 16KB |
 | plans/ | 5 | access, ai-generations, crud, diagnostics |

@@ -40,11 +40,11 @@ Auth enforced by `auth-helpers.ts`: fail-closed, role hierarchy (`canAssignRole`
 
 ## 4. Hierarchy: Institution → Course → Semester → Section → Topic → Summary
 
-## 5. Backend: ~93 files (16 route modules + 24 core + 3 lib)
+## 5. Backend: ~103 files (17 route modules + 24 core + 3 lib)
 
-> index.ts says version "4.4" — docs say "4.5".
+> **Version note:** Backend index.ts reports v4.4; documentation targets v4.5 specification. The discrepancy is intentional — docs track the target spec while the backend version string has not been bumped yet.
 
-**Split modules (routes/):** ai (14 files, generate-smart 30KB), content (10), whatsapp (10), gamification (6), study (6), plans (5), mux (5), members (4), search (4), settings (2)  
+**Split modules (routes/):** ai (14 files, generate-smart 30KB), content (10), whatsapp (10), telegram (10), gamification (6), study (6), plans (5), mux (5), members (4), search (4), settings (2)  
 **Flat routes:** auth, billing (16KB), models, storage, student, study-queue (16KB)  
 **Core:** crud-factory (20KB), db, auth-helpers (11KB), gemini, openai-embeddings, xp-engine, xp-hooks (16KB), streak-engine, rate-limit, validate, chunker, semantic-chunker, retrieval-strategies (13KB), auto-ingest, ai-normalizers, summary-hook, timing-safe  
 **lib/:** fsrs-v4 (8.7KB), bkt-v4, types
@@ -59,9 +59,11 @@ Auth enforced by `auth-helpers.ts`: fail-closed, role hierarchy (`canAssignRole`
 
 Key: React Query v5, central `apiCall()` with dual-token, 15 colocated hooks, 11+ mega-files >25KB.
 
-## 7. Known Open Bugs (19 open, BUG-001..030 + SEC-*)
+## 7. Known Bugs (BUG-001..030 + SEC-*)
 
-**Security audit 2026-03-19:** BUG-002 (JWT), BUG-003 (RLS), BUG-004 (CORS) all RESOLVED, plus XSS, CSP, HSTS, AI injection, Telegram hardening, route guards. See [`bugs/security-audit.md`](bugs/security-audit.md).
+**Resolved (security audit 2026-03-19):** BUG-002 (JWT), BUG-003 (RLS — was CRITICAL, now fixed), BUG-004 (CORS), plus XSS, CSP, HSTS, AI injection, Telegram hardening, route guards. See [`bugs/security-audit.md`](bugs/security-audit.md).
+
+**Open (15 remaining):**
 
 | ID | Sev | Summary |
 |---|---|---|
@@ -100,7 +102,7 @@ Frontend: 14 components, 8 React Query hooks, `useSessionXP.ts`
 
 ## 10. AI/RAG: Gemini 2.5 Flash + OpenAI text-embedding-3-large (1536d)
 
-14 AI route files on disk (generate-smart 30KB, chat 18KB, pre-generate 16KB). 11 mounted via index.ts.
+14 AI route files on disk (generate-smart 30KB, chat 18KB, pre-generate 16KB). 12 files mounted via index.ts (14 endpoints — some files expose multiple routes).
 
 ## 11. DB: 50+ tables, 53 migrations, pgvector 1536d
 
