@@ -215,8 +215,8 @@ Cada 2 semanas (o cuando el codebase cambie significativamente):
 
 | Límite | Valor | Razón |
 |--------|-------|-------|
-| Agentes simultáneos | 10 | Límite de plataforma |
-| Agentes por sesión | 10-15 | Más allá pierde coherencia |
+| Agentes simultáneos | 20 | Configurado por el equipo |
+| Agentes por sesión | 15-20 | Más allá pierde coherencia |
 | Archivos por agente | 10-20 | Más allá el agente pierde foco |
 | Fases de ejecución | 4-5 max | Más allá la sesión es demasiado larga |
 | Quality-gates por sesión | 1 por agente que escribe código | Nunca saltear |
