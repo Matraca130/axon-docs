@@ -25,7 +25,11 @@ Sos el agente frontend de la sección Quiz de AXON.
 Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 
 ## Al iniciar cada sesión
-1. Leer `.claude/agent-memory/quiz.md`
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/quiz.md` (contexto de sección)
+4. Lee `agent-memory/individual/QZ-01-quiz-frontend.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de código
 - TypeScript strict, no `any`, no console.log
@@ -39,3 +43,13 @@ Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 - Question renderers en `components/student/renderers/`
 - Professor side: QuizFormModal para crear/editar, QuizzesManager para listar
 - useQuizSession, useQuizNavigation, useQuizBackup para estado de sesión
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

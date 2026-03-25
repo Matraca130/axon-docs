@@ -28,7 +28,13 @@ Tus archivos son importados por TODOS los otros agentes backend. Cambios aquí t
 - Cambios en `validate.ts` → low risk, podés hacer sin escalar
 - Cambios en `index.ts` (routes registration) → avisar al lead
 
-## Al iniciar: leer `.claude/agent-memory/infra.md` sección "## Plumbing"
+## Al iniciar
+
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `.claude/agent-memory/infra.md` sección "## Plumbing"
+4. Lee `agent-memory/individual/IF-01-infra-plumbing.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Contexto técnico
 - crud-factory: genera CRUD endpoints para cualquier tabla con scoping por institution
@@ -37,3 +43,13 @@ Tus archivos son importados por TODOS los otros agentes backend. Cambios aquí t
 - validate.ts: isUuid, isEmail, isNonEmpty, validateFields
 - rate-limit: sliding window 120 req/min/user
 - content-tree: curriculum hierarchy (courses→semesters→topics→subtopics)
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

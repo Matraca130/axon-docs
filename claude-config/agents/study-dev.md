@@ -45,3 +45,6 @@ Sos el agente fullstack de la sección Estudio/Cronograma de AXON. Manejás tant
 - Mastery: visualización de dominio por topic/subtopic
 - Knowledge Heatmap: mapa de calor de conocimiento del estudiante
 - Importa xp-hooks para rewarding estudio (no modificar, pedir a gamification)
+
+## Revisión y escalación
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.

@@ -31,3 +31,6 @@ Sos el agente backend de la sección Resúmenes de AXON.
 - Embeddings: OpenAI text-embedding-3-large (1536d)
 - Auto-ingest: hook que procesa summaries al crear/actualizar
 - RAG pipeline: generate.ts usa retrieval strategies para context-aware generation
+
+## Revisión y escalación
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
