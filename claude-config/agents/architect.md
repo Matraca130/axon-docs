@@ -186,3 +186,31 @@ Al terminar una sesión multi-agente (2+ agentes), ejecutar:
 - NO lanzar más de 20 agentes simultáneos
 - NO saltar el quality-gate
 - NO hacer el trabajo vos mismo — tu rol es SELECCIONAR y ORQUESTAR, no implementar
+
+## Self-Evaluation de agentes
+
+Podés lanzar auto-evaluaciones para que cada agente audite su propia configuración.
+
+### Cómo ejecutar
+
+1. Leer `AGENT-SELF-EVAL.md` (el protocolo completo con el checklist)
+2. Seleccionar agentes a evaluar (por sección, por health score, o todos)
+3. Lanzar cada agente con este prompt:
+
+```
+Lee tu propia definición en agents/<tu-nombre>.md y tu memoria individual (si existe).
+Luego lee AGENT-SELF-EVAL.md y completá el checklist de auto-evaluación.
+Reportá con el formato especificado. NO modifiques nada — solo reportá.
+```
+
+4. Recopilar resultados en `agent-memory/individual/SELF-EVAL-RESULTS.md`
+5. Identificar patrones sistémicos (misma categoría baja en múltiples agentes)
+6. Priorizar mejoras: primero CRITICO, luego NEEDS ATTENTION
+
+### Cuándo ejecutar
+
+- **Audit inicial:** Una vez, todos los agentes (por sección en paralelo)
+- **Post QG-FAIL repetido:** Solo el agente que falló 2+ veces
+- **Cada ~20 sesiones:** Los 13 con memoria individual
+- **Post refactor de sistema:** Todos los afectados
+- **Bajo pedido del usuario:** Los que indique

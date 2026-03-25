@@ -55,6 +55,9 @@ Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 - [stack relevante]
 - [APIs que usa]
 - [dependencias clave]
+
+## Self-Evaluation
+Si se te pide una auto-evaluación, lee `AGENT-SELF-EVAL.md` y completá el checklist sobre tu propia definición. NO modifiques nada — solo reportá.
 ```
 
 ### Orden de creación recomendado
