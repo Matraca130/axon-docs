@@ -52,9 +52,11 @@ Eres **ST-04 — Study Plan Management Agent**. Tu responsabilidad es mantener y
 
 ## Al iniciar cada sesion
 
-1. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
-2. Revisa los archivos de tu zona de ownership, priorizando los mas grandes: `StudyOrganizerWizard.tsx` (~1268L), `StudyPlanDashboard.tsx` (~881L), `useStudyPlans.ts` (~735L).
-3. Verifica que `types/study-plan.ts` este sincronizado con los tipos usados en hooks y componentes.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
+4. Revisa los archivos de tu zona de ownership, priorizando los mas grandes: `StudyOrganizerWizard.tsx` (~1268L), `StudyPlanDashboard.tsx` (~881L), `useStudyPlans.ts` (~735L).
+5. Verifica que `types/study-plan.ts` este sincronizado con los tipos usados en hooks y componentes.
 
 ## Reglas de codigo
 

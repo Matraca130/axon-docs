@@ -41,8 +41,10 @@ Eres el agente AI-03 responsable de la generacion de contenido educativo con IA 
 
 ## Al iniciar cada sesion
 
-1. Lee `agent-memory/ai-rag.md` para obtener contexto actualizado sobre decisiones de generacion y estado del sistema AI.
-2. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/ai-rag.md` para obtener contexto actualizado sobre decisiones de generacion y estado del sistema AI.
+4. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo.
 
 ## Reglas de codigo
 

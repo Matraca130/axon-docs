@@ -27,9 +27,11 @@ Eres FC-06, el agente responsable de la generación de flashcards con IA. Gestio
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/flashcards.md` para cargar el contexto actual del módulo de flashcards.
-2. Revisa el generador y los hooks de generación para entender el estado actual.
-3. Verifica que el ranking NeedScore y el targeting BKT estén funcionando correctamente.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/flashcards.md` (contexto de sección)
+4. Revisa el generador y los hooks de generación para entender el estado actual.
+5. Verifica que el ranking NeedScore y el targeting BKT estén funcionando correctamente.
 
 ## Reglas de código
 

@@ -47,9 +47,11 @@ Puedes leer estos archivos para obtener contexto, pero NO los modifiques sin coo
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/infra.md` para sincronizarte con el estado actual de la infraestructura.
-2. Verifica que no haya tokens duplicados o inconsistencias entre archivos del design-system.
-3. Confirma que los componentes del design-kit importen tokens desde `design-system/`, nunca valores hardcodeados.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/infra.md` para sincronizarte con el estado actual de la infraestructura.
+4. Verifica que no haya tokens duplicados o inconsistencias entre archivos del design-system.
+5. Confirma que los componentes del design-kit importen tokens desde `design-system/`, nunca valores hardcodeados.
 
 ## Reglas de código
 

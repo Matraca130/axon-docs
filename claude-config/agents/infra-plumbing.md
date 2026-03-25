@@ -28,7 +28,11 @@ Tus archivos son importados por TODOS los otros agentes backend. Cambios aquí t
 - Cambios en `validate.ts` → low risk, podés hacer sin escalar
 - Cambios en `index.ts` (routes registration) → avisar al lead
 
-## Al iniciar: leer `.claude/agent-memory/infra.md` sección "## Plumbing"
+## Al iniciar
+
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `.claude/agent-memory/infra.md` sección "## Plumbing"
 
 ## Contexto técnico
 - crud-factory: genera CRUD endpoints para cualquier tabla con scoping por institution

@@ -36,8 +36,10 @@ Eres el agente AI-05 responsable de los route handlers del backend AI en Axon. T
 
 ## Al iniciar cada sesion
 
-1. Lee `agent-memory/ai-rag.md` para obtener contexto actualizado sobre el estado del backend AI y decisiones previas.
-2. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/ai-rag.md` para obtener contexto actualizado sobre el estado del backend AI y decisiones previas.
+4. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo.
 
 ## Reglas de codigo
 

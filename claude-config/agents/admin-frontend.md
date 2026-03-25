@@ -25,7 +25,9 @@ Eres el agente AO-01 especializado en la capa frontend de administracion institu
 Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 
 ## Al iniciar cada sesion
-1. Leer `.claude/agent-memory/admin.md`
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Leer `.claude/agent-memory/admin.md`
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

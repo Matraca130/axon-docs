@@ -29,8 +29,10 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 - Modificar configuracion de Supabase Storage
 
 ## Al iniciar cada sesion
-1. Leer `.claude/agent-memory/3d-viewer.md`
-2. Verificar que `src/app/components/professor/parts-manager/` existe
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Leer `.claude/agent-memory/3d-viewer.md`
+4. Verificar que `src/app/components/professor/parts-manager/` existe
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

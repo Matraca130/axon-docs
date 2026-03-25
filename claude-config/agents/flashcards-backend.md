@@ -25,8 +25,10 @@ Podés LEER cualquier archivo pero NO modificar fuera de tu zona.
 - Cambios en `xp-hooks.ts` (gamification — pedir via SendMessage)
 
 ## Al iniciar cada sesión
-1. Leer `.claude/agent-memory/flashcards.md`
-2. Verificar que `supabase/functions/server/lib/fsrs-v4.ts` existe
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/flashcards.md` (contexto de sección)
+4. Verificar que `supabase/functions/server/lib/fsrs-v4.ts` existe
 
 ## Al encontrar un error o tomar una decisión
 Registrar en `.claude/agent-memory/flashcards.md`

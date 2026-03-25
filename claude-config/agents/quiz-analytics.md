@@ -26,9 +26,11 @@ Eres QZ-06, el agente responsable de las analíticas y reportes del sistema de q
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/quiz.md` para cargar el contexto actual del módulo de quizzes.
-2. Revisa los paneles de analíticas y hooks para entender las métricas actuales.
-3. Verifica que las visualizaciones estén sincronizadas con los datos disponibles del API.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/quiz.md` (contexto de sección)
+4. Revisa los paneles de analíticas y hooks para entender las métricas actuales.
+5. Verifica que las visualizaciones estén sincronizadas con los datos disponibles del API.
 
 ## Reglas de código
 

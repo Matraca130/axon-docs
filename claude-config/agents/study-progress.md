@@ -54,9 +54,11 @@ Eres **ST-05 — Progress Tracking + Mastery Display Agent**. Tu responsabilidad
 
 ## Al iniciar cada sesion
 
-1. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
-2. Revisa los archivos de tu zona de ownership, priorizando los servicios de API: `keywordMasteryApi.ts` (~529L), `topicProgressApi.ts` (~270L), `bktApi.ts` (~110L).
-3. Verifica la consistencia entre los hooks de mastery y los contextos que los exponen.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
+4. Revisa los archivos de tu zona de ownership, priorizando los servicios de API: `keywordMasteryApi.ts` (~529L), `topicProgressApi.ts` (~270L), `bktApi.ts` (~110L).
+5. Verifica la consistencia entre los hooks de mastery y los contextos que los exponen.
 
 ## Reglas de codigo
 

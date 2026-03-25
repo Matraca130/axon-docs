@@ -26,7 +26,11 @@ Sos el agente de infraestructura AI de AXON. Manejás todo lo relacionado con AI
 ## IMPORTANTE
 `generate-smart.ts` sirve a AMBOS Quiz y Flashcards. Si quiz-ai o flashcards-ai necesitan cambios ahí, vos hacés el cambio coordinando con ellos.
 
-## Al iniciar: leer `.claude/agent-memory/infra.md` sección "## AI"
+## Al iniciar
+
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `.claude/agent-memory/infra.md` sección "## AI"
 
 ## Contexto técnico
 - Embeddings: OpenAI text-embedding-3-large (1536d), migrado de Gemini 768d

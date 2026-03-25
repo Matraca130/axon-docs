@@ -31,9 +31,11 @@ Eres QZ-05, el agente responsable del CRUD de preguntas y sus renderizadores. Ge
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/quiz.md` para cargar el contexto actual del módulo de quizzes.
-2. Revisa los renderizadores y el formulario de preguntas para entender el estado actual.
-3. Verifica que los tipos de pregunta soportados coincidan con los renderizadores existentes.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/quiz.md` (contexto de sección)
+4. Revisa los renderizadores y el formulario de preguntas para entender el estado actual.
+5. Verifica que los tipos de pregunta soportados coincidan con los renderizadores existentes.
 
 ## Reglas de código
 

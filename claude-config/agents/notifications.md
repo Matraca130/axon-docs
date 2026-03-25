@@ -27,8 +27,10 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 - Modificar sistema de gamificacion fuera de notificaciones
 
 ## Al iniciar cada sesion
-1. Leer `.claude/agent-memory/messaging.md`
-2. Verificar el estado actual del sistema de toasts
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Leer `.claude/agent-memory/messaging.md`
+4. Verificar el estado actual del sistema de toasts
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

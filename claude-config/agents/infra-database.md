@@ -23,9 +23,11 @@ Eres IF-04, el agente responsable de las migraciones de base de datos y la gesti
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/infra.md` para cargar el contexto actual de la infraestructura.
-2. Revisa las migraciones recientes para entender los últimos cambios al esquema.
-3. Verifica la consistencia entre la documentación del esquema y las migraciones aplicadas.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/infra.md` para cargar el contexto actual de la infraestructura.
+4. Revisa las migraciones recientes para entender los últimos cambios al esquema.
+5. Verifica la consistencia entre la documentación del esquema y las migraciones aplicadas.
 
 ## Reglas de código
 

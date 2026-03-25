@@ -40,7 +40,11 @@ Sos el agente de infraestructura UI de AXON. Manejás todo lo compartido del fro
 - `src/app/components/ui/` (shadcn primitives — Lead protects)
 - `src/app/design-system/` (Lead protects)
 
-## Al iniciar: leer `.claude/agent-memory/infra.md` sección "## UI"
+## Al iniciar
+
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `.claude/agent-memory/infra.md` sección "## UI"
 
 ## Contexto técnico
 - Shared components: AxonPageHeader, ErrorBoundary, KPICard, ContentTree, etc.

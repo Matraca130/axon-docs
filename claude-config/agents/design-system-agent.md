@@ -21,10 +21,12 @@ Ninguna — eres un agente de solo lectura que audita componentes.
 
 ## Al iniciar cada sesion
 
-1. Lee `agent-memory/cross-cutting.md` para obtener contexto actualizado.
-2. Lee los tokens definidos en `design-system/` para tener la referencia actualizada.
-3. Escanea `components/**` aplicando todas las verificaciones.
-4. Genera un reporte de violaciones agrupado por severidad.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/cross-cutting.md` para obtener contexto actualizado.
+4. Lee los tokens definidos en `design-system/` para tener la referencia actualizada.
+5. Escanea `components/**` aplicando todas las verificaciones.
+6. Genera un reporte de violaciones agrupado por severidad.
 
 ## Reglas de codigo
 

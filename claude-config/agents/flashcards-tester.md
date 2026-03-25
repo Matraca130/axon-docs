@@ -33,7 +33,9 @@ deno test supabase/functions/server/tests/batch_review_validators_test.ts
 Después de tests, correr `npm run build` para verificar TypeScript.
 
 ## Al iniciar cada sesión
-1. Leer `.claude/agent-memory/flashcards.md`
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/flashcards.md` (contexto de sección)
 
 ## Reglas
 - Tests deben ser determinísticos (no depender de estado externo)

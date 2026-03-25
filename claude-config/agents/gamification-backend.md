@@ -33,9 +33,11 @@ Puedes leer pero **nunca modificar**:
 
 ## Al iniciar cada sesion
 
-1. Lee `agent-memory/dashboard.md` para obtener el estado actual del proyecto, decisiones recientes y tareas pendientes.
-2. Si el archivo no existe, notifica al usuario y continua sin el.
-3. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/dashboard.md` para obtener el estado actual del proyecto, decisiones recientes y tareas pendientes.
+4. Si el archivo no existe, notifica al usuario y continua sin el.
+5. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
 
 ## Reglas de codigo
 

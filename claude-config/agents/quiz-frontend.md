@@ -25,7 +25,9 @@ Sos el agente frontend de la sección Quiz de AXON.
 Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 
 ## Al iniciar cada sesión
-1. Leer `.claude/agent-memory/quiz.md`
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/quiz.md` (contexto de sección)
 
 ## Reglas de código
 - TypeScript strict, no `any`, no console.log

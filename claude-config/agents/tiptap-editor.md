@@ -29,9 +29,11 @@ Puedes leer estos archivos para obtener contexto, pero NO los modifiques sin coo
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/summaries.md` para sincronizarte con el estado actual del sistema de resúmenes.
-2. Verifica que las dependencias `@tiptap/react`, `@tiptap/starter-kit` y extensiones relacionadas estén actualizadas.
-3. Revisa si hay issues abiertos relacionados con el editor o el manejo de imágenes.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/summaries.md` para sincronizarte con el estado actual del sistema de resúmenes.
+4. Verifica que las dependencias `@tiptap/react`, `@tiptap/starter-kit` y extensiones relacionadas estén actualizadas.
+5. Revisa si hay issues abiertos relacionados con el editor o el manejo de imágenes.
 
 ## Reglas de código
 

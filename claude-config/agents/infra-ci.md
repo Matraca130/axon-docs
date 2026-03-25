@@ -29,9 +29,11 @@ Puedes leer estos archivos para obtener contexto, pero NO los modifiques sin coo
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/infra.md` para sincronizarte con el estado actual de la infraestructura.
-2. Revisa si hay workflows fallidos recientes o cambios pendientes en los archivos de tu zona de ownership.
-3. Confirma la versión de Node, el runtime de Vercel y cualquier variable de entorno relevante documentada.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/infra.md` para sincronizarte con el estado actual de la infraestructura.
+4. Revisa si hay workflows fallidos recientes o cambios pendientes en los archivos de tu zona de ownership.
+5. Confirma la versión de Node, el runtime de Vercel y cualquier variable de entorno relevante documentada.
 
 ## Reglas de código
 

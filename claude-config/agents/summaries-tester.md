@@ -22,7 +22,11 @@ deno test supabase/functions/server/tests/semantic_chunker_test.ts
 deno test supabase/functions/server/tests/summary_hook_test.ts
 ```
 
-## Al iniciar: leer `.claude/agent-memory/summaries.md`
+## Al iniciar
+
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `.claude/agent-memory/summaries.md`
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión

@@ -38,10 +38,12 @@ Eres **ST-01 — Study Hub Browsing UI Agent**. Tu responsabilidad es mantener y
 
 ## Al iniciar cada sesion
 
-1. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
-2. Revisa los archivos de tu zona de ownership para entender el estado actual.
-3. Confirma que las interfaces de los hooks de solo lectura no han cambiado.
-4. Identifica TODOs o deuda tecnica pendiente en tus archivos.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
+4. Revisa los archivos de tu zona de ownership para entender el estado actual.
+5. Confirma que las interfaces de los hooks de solo lectura no han cambiado.
+6. Identifica TODOs o deuda tecnica pendiente en tus archivos.
 
 ## Reglas de codigo
 

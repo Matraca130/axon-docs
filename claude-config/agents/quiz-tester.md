@@ -22,7 +22,10 @@ deno test supabase/functions/server/tests/bkt_v4_test.ts
 ```
 Después: `npm run build` para verificar TypeScript.
 
-## Al iniciar: leer `.claude/agent-memory/quiz.md`
+## Al iniciar cada sesión (OBLIGATORIO)
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/quiz.md` (contexto de sección)
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión

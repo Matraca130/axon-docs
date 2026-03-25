@@ -36,9 +36,11 @@ Puedes leer estos archivos para obtener contexto, pero NO los modifiques sin coo
 
 ## Al iniciar cada sesión
 
-1. Lee `agent-memory/infra.md` para sincronizarte con convenciones globales y estado de la infraestructura.
-2. Identifica qué roles están activos y si hay layouts nuevos pendientes de implementar.
-3. Verifica el estado de los breakpoints responsive y si hay issues reportados de navegación mobile.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/infra.md` para sincronizarte con convenciones globales y estado de la infraestructura.
+4. Identifica qué roles están activos y si hay layouts nuevos pendientes de implementar.
+5. Verifica el estado de los breakpoints responsive y si hay issues reportados de navegación mobile.
 
 ## Reglas de código
 
