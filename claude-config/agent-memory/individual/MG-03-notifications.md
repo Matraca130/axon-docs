@@ -9,6 +9,17 @@ Agente del sistema de notificaciones in-app de AXON: mantiene el sistema de toas
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Toast system actual: `sonner` para feedback inmediato — usar su API para todos los toasts, no crear wrappers innecesarios.
 - Notificaciones de gamificación como toasts especiales — logros, badges, streaks con diseño diferenciado.

@@ -9,6 +9,17 @@ Desarrollar y mantener la interfaz del dashboard del profesor: pagina principal,
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - `useQuizAnalytics` (~184L) consume la API, transforma datos crudos a estructuras Recharts y maneja carga/error/vacio — mantener esa separacion de responsabilidades.
 - Los datos de `useQuizAnalytics` deben estar memoizados con `useMemo` para evitar re-renders costosos.

@@ -11,11 +11,18 @@ Last updated: 2026-03-25
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado — sin errores registrados aún | — |
 
-## Decisiones específicas de AS-01
-| Fecha | Decisión | Contexto |
-|-------|----------|----------|
-| 2026-03-25 | Dual token es arquitectura definitiva | ANON_KEY para Supabase client, USER_JWT para auth de API |
-| 2026-03-25 | Role via GET /institutions, no JWT claims | Permite cambio de role sin reauth |
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+| 2026-03-25 | Dual token es arquitectura definitiva | ANON_KEY para Supabase client, USER_JWT para auth de API | Token único para ambos propósitos |
+| 2026-03-25 | Role via GET /institutions, no JWT claims | Permite cambio de role sin reauth | Claims de rol en el JWT |
 
 ## Patrones que funcionan
 - middleware/auth.ts como punto único de validación

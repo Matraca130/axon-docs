@@ -9,6 +9,17 @@ Agente del sistema de video de Axon: mantiene el reproductor Mux, el panel de su
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Usar `@mux/mux-player-react` como base del reproductor — nunca reimplementar el player desde cero
 - Usar `@mux/upchunk` para uploads chunked — nunca subir archivos completos en una sola petición

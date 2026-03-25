@@ -9,6 +9,17 @@ Agente especializado en la gestión de planes de suscripción de AXON — mantie
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - `pa-plans.ts` centraliza todas las llamadas a la API de planes — no llamar a endpoints de planes desde otros archivos directamente.
 - Planes globales (default) + planes institucionales personalizados — el sistema soporta ambos niveles.

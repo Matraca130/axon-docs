@@ -11,12 +11,19 @@ Last updated: 2026-03-25
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado — sin errores registrados aún | — |
 
-## Decisiones específicas de AI-01
-| Fecha | Decisión | Contexto |
-|-------|----------|----------|
-| 2026-03-25 | Chunking semántico sobre chunking por tokens | Maximiza relevancia en búsqueda vectorial |
-| 2026-03-25 | Streaming/paginado para PDFs grandes | Nunca cargar PDF completo en memoria |
-| 2026-03-25 | Logs estructurados por etapa del pipeline | Extracción → Chunking → Embedding → Storage |
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+| 2026-03-25 | Chunking semántico sobre chunking por tokens | Maximiza relevancia en búsqueda vectorial | Chunking por tokens fijo |
+| 2026-03-25 | Streaming/paginado para PDFs grandes | Nunca cargar PDF completo en memoria | Carga completa en memoria |
+| 2026-03-25 | Logs estructurados por etapa del pipeline | Extracción → Chunking → Embedding → Storage | Logs planos sin etapas |
 
 ## Patrones que funcionan
 - as-ingest.ts como coordinador del pipeline completo

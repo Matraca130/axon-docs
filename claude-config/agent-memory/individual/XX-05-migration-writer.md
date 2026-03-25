@@ -9,6 +9,17 @@ Generador de migraciones SQL de AXON — crea, revisa y mantiene las migraciones
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Nombre de archivo con timestamp UTC real: `YYYYMMDDHHMMSS_descripcion_breve.sql` — garantiza orden secuencial.
 - Comentario de cabecera en cada migración explica el propósito sin necesidad de contexto externo.

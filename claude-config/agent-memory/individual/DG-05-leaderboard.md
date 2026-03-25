@@ -9,6 +9,17 @@ Desarrollar y mantener la interfaz del leaderboard: pagina completa con podio, t
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Los datos se obtienen exclusivamente via `gamificationApi.getLeaderboard()` — nunca llamar a `fetch` directamente.
 - El podio (top 3) es visualmente diferenciado: 1ro al centro mas alto, 2do a la izquierda, 3ro a la derecha, con avatar, nombre y XP.

@@ -258,26 +258,29 @@ Después de CADA sesión multi-agente, el Arquitecto ejecuta un post-mortem:
 5. ¿El plan original fue correcto? → calibración del Arquitecto
 ```
 
-### Dónde se guarda (4 niveles)
+### Dónde se guarda (4 niveles — AUTOMÁTICO desde v6)
 
-| Tipo de lección | Destino |
-|----------------|---------|
-| Error de aislamiento/coordinación | `memory/feedback_agent_isolation.md` → tabla HISTORICAL ERRORS |
-| Error específico de sección | `agent-memory/<section>.md` → sección "Errores conocidos" |
-| Error específico de un agente | `agent-memory/individual/<AGENT-ID>.md` → tabla "Lecciones aprendidas" |
-| Mejora al proceso general | `memory/feedback_*.md` (nuevo archivo si es categoría nueva) |
-| Cambio en ownership de archivos | `AGENT-REGISTRY.md` → actualizar "Files Owned" |
+> **CAMBIO v6:** El Quality Gate (XX-02) ahora auto-registra lecciones en tiempo real.
+> El Arquitecto solo necesita verificar y actualizar métricas agregadas.
+
+| Tipo de lección | Destino | Quién lo hace |
+|----------------|---------|---------------|
+| Error específico de un agente | `agent-memory/individual/<AGENT-ID>.md` → "Lecciones aprendidas" | **XX-02 (automático)** |
+| Error en Error Ledger | `AGENT-METRICS.md` → Sección 4 | **XX-02 (automático)** |
+| Error de aislamiento/coordinación | `memory/feedback_agent_isolation.md` → HISTORICAL ERRORS | Arquitecto (manual) |
+| Error específico de sección | `agent-memory/<section>.md` → "Errores conocidos" | Arquitecto (manual) |
+| Cambio en ownership de archivos | `AGENT-REGISTRY.md` → actualizar "Files Owned" | Arquitecto (manual) |
 
 ### Métricas (actualizar SIEMPRE — seguir Update Protocol)
 
-Después de cada sesión, seguir el **Update Protocol** de `agent-memory/individual/AGENT-METRICS.md`:
+Después de cada sesión, el Arquitecto sigue el **Update Protocol** de `AGENT-METRICS.md`:
 
-1. **Error Ledger** (Sección 4): Agregar fila por cada QG failure. Verificar si recurrió después de lección → `Recurred? YES(#N)`.
+1. **Verificar Error Ledger** (Sección 4): XX-02 ya insertó las filas. El Arquitecto solo revisa y corrige si hace falta.
 2. **Agent Detail** (Sección 3): Actualizar QG L5 (ventana rodante), Fails By Type, Scope, Last Run, Trend, Health.
-3. **Section Health** (Sección 2): Recalcular QG Rate agregando agentes activos. Actualizar Top Error, Status.
-4. **System Pulse** (Sección 1): Recalcular las 6 métricas del sistema. Rotar ventana si toca.
-5. **Supervisor Metrics** (Sección 5): Si un supervisor participó, actualizar su tabla específica.
-6. **Métricas individuales**: Si el agente tiene archivo en `individual/<AGENT-ID>.md`, actualizar también.
+3. **Section Health** (Sección 2): Recalcular QG Rate. Actualizar Top Error, Status.
+4. **System Pulse** (Sección 1): Recalcular las 6 métricas del sistema.
+5. **Supervisor Metrics** (Sección 5): Si un supervisor participó, actualizar su tabla.
+6. **Efectividad de lecciones**: Si un agente NO repitió un error que tenía lección previa → actualizar "Efectividad de lecciones" en su memoria individual (incrementar "Veces aplicada", marcar "Previno error? SI").
 
 ### Auto-evolución de definiciones de agentes
 

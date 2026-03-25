@@ -9,6 +9,17 @@ Mantener y evolucionar el flujo completo de sesiones de estudio: creación de se
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Mantener separación clara entre tres capas: lógica de sesión (`studySessionApi.ts`), lógica de batch (`useReviewBatch.ts`) y analítica (`sessionAnalytics.ts`).
 - Implementar idempotencia en todo envío de batch: los reintentos por error de red no deben duplicar datos.

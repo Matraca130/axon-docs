@@ -12,12 +12,19 @@ Last updated: 2026-03-25
 |-------|---------|------------|
 | 2026-03-25 | BUG-035 (stream param mismatch) ya resuelto | Siempre enviar ambos: query param Y body field |
 
-## Decisiones específicas de AI-02
-| Fecha | Decisión | Contexto |
-|-------|----------|----------|
-| 2026-03-25 | Dual stream param (query + body) | Backend checks ambos; eliminar uno rompe streaming |
-| 2026-03-25 | DOMPurify obligatorio | Previene XSS en output del LLM |
-| 2026-03-25 | Reconexión automática en SSE | El usuario no debe perder contexto si la conexión se cae |
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+| 2026-03-25 | Dual stream param (query + body) | Backend checks ambos; eliminar uno rompe streaming | Solo query param, solo body param |
+| 2026-03-25 | DOMPurify obligatorio | Previene XSS en output del LLM | Renderizar HTML crudo del LLM |
+| 2026-03-25 | Reconexión automática en SSE | El usuario no debe perder contexto si la conexión se cae | Sin reconexión automática |
 
 ## Patrones que funcionan
 - AxonAIAssistant.tsx (1106L) como componente monolítico — refactors deben ser incrementales

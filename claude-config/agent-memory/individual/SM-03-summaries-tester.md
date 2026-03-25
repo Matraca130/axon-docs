@@ -9,6 +9,17 @@ Agente tester de la sección Resúmenes de AXON: escribe y ejecuta tests para ch
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Ejecutar tests frontend con `npm run test -- --testPathPattern=summary` para filtrar solo los tests relevantes
 - Ejecutar tests backend con `deno test supabase/functions/server/tests/semantic_chunker_test.ts` y `summary_hook_test.ts` por separado

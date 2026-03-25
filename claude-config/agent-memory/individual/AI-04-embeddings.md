@@ -12,12 +12,19 @@ Last updated: 2026-03-25
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado — sin errores registrados aún | — |
 
-## Decisiones específicas de AI-04
-| Fecha | Decisión | Contexto |
-|-------|----------|----------|
-| 2026-03-25 | IVFFlat como índice default | Balance entre velocidad y precisión para volumen actual |
-| 2026-03-25 | Cache local en useRagAnalytics | Evitar llamadas excesivas al backend para stats de cobertura |
-| 2026-03-25 | Nunca eliminar embeddings sin verificar referencias | Conversaciones activas pueden referenciar chunks |
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+| 2026-03-25 | IVFFlat como índice default | Balance entre velocidad y precisión para volumen actual | HNSW (mayor precisión pero más lento para este volumen) |
+| 2026-03-25 | Cache local en useRagAnalytics | Evitar llamadas excesivas al backend para stats de cobertura | Sin cache, polling directo |
+| 2026-03-25 | Nunca eliminar embeddings sin verificar referencias | Conversaciones activas pueden referenciar chunks | DELETE directo sin auditoría |
 
 ## Patrones que funcionan
 - as-analytics.ts para stats de cobertura centralizadas

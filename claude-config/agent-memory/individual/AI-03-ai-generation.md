@@ -9,6 +9,17 @@ Generacion automatizada de contenido educativo (flashcards, quizzes, resumenes) 
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Calcular NeedScore considerando los 4 factores: frecuencia de repaso, dificultad del item, tiempo desde ultimo repaso y rendimiento historico.
 - Separar logica de UI y logica de negocio en `useSmartGeneration.ts` (279L).

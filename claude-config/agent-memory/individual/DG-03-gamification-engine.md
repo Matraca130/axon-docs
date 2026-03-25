@@ -9,6 +9,17 @@ Desarrollar y mantener la capa frontend del sistema de gamificacion: XP, badges,
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Las actualizaciones de XP deben ser **optimistas**: actualizar la UI inmediatamente via `GamificationContext.addXP()` y revertir si la API falla.
 - Todas las constantes de gamificacion (niveles, umbrales, cap diario de XP) viven en `lib/xp-constants.ts` — nunca hardcodear valores en componentes.

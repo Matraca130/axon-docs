@@ -9,6 +9,17 @@ Interfaz de subida y gestion de modelos 3D para profesores: upload GLB, validaci
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
 
+## Efectividad de lecciones
+| Lección | Veces aplicada | Previno error? | Confianza |
+|---------|---------------|----------------|-----------|
+| (se llena cuando una lección se activa en una sesión real) | — | — | — |
+
+> Confianza: ALTA (previno 3+ errores), MEDIA (previno 1-2), BAJA (no previno o recurrió), NUEVA (sin datos)
+
+## Decisiones técnicas (NO re-litigar)
+| Fecha | Decisión | Por qué | Alternativas descartadas |
+|-------|----------|---------|--------------------------|
+
 ## Patrones que funcionan
 - Validar archivos GLB via magic bytes antes de iniciar el upload (confirmar formato real, no solo extension).
 - Respetar el limite de 100MB por modelo; rechazar y notificar antes de intentar subir.

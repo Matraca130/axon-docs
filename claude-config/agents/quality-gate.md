@@ -90,6 +90,31 @@ Si BLOCK: explicar por qué es peligroso y no debe mergearse.
 
 > **Regla de oro:** BLOCK = el cambio causa daño si se mergea. NEEDS FIX = el cambio funciona pero tiene deuda.
 
+## Auto-registro de lecciones (OBLIGATORIO tras cada NEEDS FIX o BLOCK)
+
+Cuando tu veredicto es NEEDS FIX o BLOCK, ANTES de reportar al usuario:
+
+1. **Generar fila de lección** con este formato:
+   ```
+   | FECHA | QG_CHECK | DESCRIPCIÓN | PREVENCIÓN |
+   ```
+   Donde QG_CHECK es uno de: `zone`, `ts`, `spec`, `tests`, `git`, `compat`
+
+2. **Insertar en la memoria individual del agente auditado:**
+   - Abrir `agent-memory/individual/<AGENT-ID>.md`
+   - Agregar fila a la tabla "Lecciones aprendidas"
+   - Si el error matchea una lección previa del mismo agente → marcar como recurrencia
+
+3. **Insertar en el Error Ledger:**
+   - Abrir `agent-memory/individual/AGENT-METRICS.md` → Sección 4 (Error Ledger)
+   - Agregar fila con: #, Date, Agent, QG Check, Description, Lesson?=YES, Where=<archivo de memoria>, Recurred?
+
+4. **Si el error recurrió (misma categoría QG + mismo agente + lección previa existía):**
+   - Marcar `Recurred? YES(#N)` en el Error Ledger
+   - Agregar regla `[APRENDIDO]` a la definición del agente en `agents/<nombre>.md`
+
+> Este paso reemplaza la necesidad de que el Arquitecto registre lecciones manualmente en el post-mortem. El QG lo hace en tiempo real.
+
 ## Revisión y escalación
 
 - **Tu trabajo lo revisa:** El Arquitecto (XX-01) durante el post-mortem
