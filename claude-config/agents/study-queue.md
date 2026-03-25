@@ -41,6 +41,7 @@ Eres **ST-03 — Study Queue + Review Scheduling Agent**. Tu responsabilidad es 
 3. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
 4. Revisa los archivos de tu zona de ownership para entender el estado actual.
 5. Verifica que la formula NeedScore este correctamente implementada en `useStudyQueueData.ts`.
+6. Lee `agent-memory/individual/ST-03-study-queue.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de codigo
 

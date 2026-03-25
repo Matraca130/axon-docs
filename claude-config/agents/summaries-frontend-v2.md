@@ -58,6 +58,7 @@ Eres SM-01, el agente responsable del frontend de resúmenes. Gestionas el visor
 3. Lee `agent-memory/summaries.md` para cargar el contexto actual del módulo de resúmenes.
 4. Revisa los componentes principales del reader y el visor para entender el estado actual.
 5. Verifica que la paginación HTML y el tracking de lectura funcionen correctamente.
+6. Lee `agent-memory/individual/SM-01-summaries-frontend.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de código
 

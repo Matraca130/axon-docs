@@ -31,6 +31,7 @@ Sos el agente de infraestructura AI de AXON. Manejás todo lo relacionado con AI
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `.claude/agent-memory/infra.md` sección "## AI"
+4. Lee `agent-memory/individual/IF-03-infra-ai.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Contexto técnico
 - Embeddings: OpenAI text-embedding-3-large (1536d), migrado de Gemini 768d

@@ -33,6 +33,7 @@ Eres SM-05, el agente del sistema de video de Axon. Tu responsabilidad es manten
 4. Revisa el estado actual de `MuxVideoPlayer.tsx` y `VideoPlayer.tsx`.
 5. Verifica que `muxApi.ts` tenga los endpoints correctos.
 6. Comprueba que las queries de React Query esten alineadas con los endpoints del backend.
+7. Lee `agent-memory/individual/SM-05-video-player.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de codigo
 

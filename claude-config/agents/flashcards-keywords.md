@@ -47,6 +47,7 @@ Eres FC-05, el agente responsable del sistema de keywords. Gestionas los popups 
 3. Lee `agent-memory/flashcards.md` (contexto de sección)
 4. Revisa los componentes de popup y highlighting para entender el estado actual.
 5. Verifica que los tipos de conexión y el sistema de mastery estén consistentes.
+6. Lee `agent-memory/individual/FC-05-flashcards-keywords.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de código
 

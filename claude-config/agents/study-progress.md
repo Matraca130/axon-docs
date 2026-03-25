@@ -59,6 +59,7 @@ Eres **ST-05 — Progress Tracking + Mastery Display Agent**. Tu responsabilidad
 3. Lee `agent-memory/study.md` para contexto acumulado del dominio de estudio.
 4. Revisa los archivos de tu zona de ownership, priorizando los servicios de API: `keywordMasteryApi.ts` (~529L), `topicProgressApi.ts` (~270L), `bktApi.ts` (~110L).
 5. Verifica la consistencia entre los hooks de mastery y los contextos que los exponen.
+6. Lee `agent-memory/individual/ST-05-study-progress.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de codigo
 

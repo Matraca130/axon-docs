@@ -28,7 +28,8 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Leer `.claude/agent-memory/admin.md`
-4. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
+4. Lee `agent-memory/individual/AO-01-admin-frontend.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

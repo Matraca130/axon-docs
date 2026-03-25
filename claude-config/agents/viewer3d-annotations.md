@@ -38,7 +38,8 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Leer `.claude/agent-memory/3d-viewer.md`
-4. Verificar que los archivos de PinSystem existen en `src/app/components/viewer3d/`
+4. Lee `agent-memory/individual/3D-04-viewer3d-annotations.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Verificar que los archivos de PinSystem existen en `src/app/components/viewer3d/`
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

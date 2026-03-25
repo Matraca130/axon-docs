@@ -34,6 +34,7 @@ Puedes leer estos archivos para obtener contexto, pero NO los modifiques sin coo
 3. Lee `agent-memory/summaries.md` para sincronizarte con el modelo de datos y estado actual del sistema de resúmenes.
 4. Revisa las rutas existentes en `routes/summaries*.ts` para tener un mapa mental de los endpoints disponibles.
 5. Verifica si hay endpoints pendientes de implementar o deprecar.
+6. Lee `agent-memory/individual/SM-02-summaries-backend.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de código
 

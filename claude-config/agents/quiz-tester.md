@@ -26,6 +26,7 @@ Después: `npm run build` para verificar TypeScript.
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/quiz.md` (contexto de sección)
+4. Lee `agent-memory/individual/QZ-03-quiz-tester.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión

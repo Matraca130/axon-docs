@@ -31,6 +31,7 @@ Eres QZ-06, el agente responsable de las analíticas y reportes del sistema de q
 3. Lee `agent-memory/quiz.md` (contexto de sección)
 4. Revisa los paneles de analíticas y hooks para entender las métricas actuales.
 5. Verifica que las visualizaciones estén sincronizadas con los datos disponibles del API.
+6. Lee `agent-memory/individual/QZ-06-quiz-analytics.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de código
 

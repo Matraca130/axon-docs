@@ -31,7 +31,8 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Leer `.claude/agent-memory/messaging.md`
-4. Verificar que `lib/messaging/` existe en el backend
+4. Lee `agent-memory/individual/MG-04-messaging-backend.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Verificar que `lib/messaging/` existe en el backend
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

@@ -27,6 +27,7 @@ deno test supabase/functions/server/tests/summary_hook_test.ts
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `.claude/agent-memory/summaries.md`
+4. Lee `agent-memory/individual/SM-03-summaries-tester.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión

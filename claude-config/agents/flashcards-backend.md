@@ -29,6 +29,7 @@ Podés LEER cualquier archivo pero NO modificar fuera de tu zona.
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/flashcards.md` (contexto de sección)
 4. Verificar que `supabase/functions/server/lib/fsrs-v4.ts` existe
+5. Lee `agent-memory/individual/FC-02-flashcards-backend.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Al encontrar un error o tomar una decisión
 Registrar en `.claude/agent-memory/flashcards.md`

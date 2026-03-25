@@ -23,7 +23,8 @@ Sos el agente backend de la sección Quiz de AXON.
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/quiz.md` (contexto de sección)
-4. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
+4. Lee `agent-memory/individual/QZ-02-quiz-backend.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de código
 - TypeScript strict, Hono framework

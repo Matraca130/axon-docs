@@ -32,6 +32,7 @@ Eres FC-06, el agente responsable de la generación de flashcards con IA. Gestio
 3. Lee `agent-memory/flashcards.md` (contexto de sección)
 4. Revisa el generador y los hooks de generación para entender el estado actual.
 5. Verifica que el ranking NeedScore y el targeting BKT estén funcionando correctamente.
+6. Lee `agent-memory/individual/FC-06-flashcards-generation.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de código
 

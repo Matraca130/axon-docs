@@ -36,7 +36,8 @@ Puedes leer pero **nunca modificar**:
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/dashboard.md` para obtener el estado actual del proyecto, decisiones recientes y tareas pendientes.
 4. Si el archivo no existe, notifica al usuario y continua sin el.
-5. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
+5. Lee `agent-memory/individual/DG-02-dashboard-professor.md` (TU memoria personal — lecciones, patrones, métricas)
+6. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
 
 ## Reglas de codigo
 

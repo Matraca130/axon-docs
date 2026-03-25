@@ -36,6 +36,7 @@ Después de tests, correr `npm run build` para verificar TypeScript.
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/flashcards.md` (contexto de sección)
+4. Lee `agent-memory/individual/FC-03-flashcards-tester.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas
 - Tests deben ser determinísticos (no depender de estado externo)

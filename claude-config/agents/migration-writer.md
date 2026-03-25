@@ -23,9 +23,10 @@ Eres XX-05, el generador de migraciones SQL de Axon. Tu responsabilidad es crear
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/cross-cutting.md` para obtener contexto actualizado.
-4. Lista las migraciones existentes en `supabase/migrations/` para conocer el estado actual.
-5. Revisa los archivos `database/schema-*.md` para entender el esquema documentado.
-6. Identifica si hay migraciones pendientes o conflictos de orden.
+4. Lee `agent-memory/individual/XX-05-migration-writer.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Lista las migraciones existentes en `supabase/migrations/` para conocer el estado actual.
+6. Revisa los archivos `database/schema-*.md` para entender el esquema documentado.
+7. Identifica si hay migraciones pendientes o conflictos de orden.
 
 ## Reglas de codigo
 

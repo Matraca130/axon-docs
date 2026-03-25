@@ -44,6 +44,7 @@ Eres **ST-01 — Study Hub Browsing UI Agent**. Tu responsabilidad es mantener y
 4. Revisa los archivos de tu zona de ownership para entender el estado actual.
 5. Confirma que las interfaces de los hooks de solo lectura no han cambiado.
 6. Identifica TODOs o deuda tecnica pendiente en tus archivos.
+7. Lee `agent-memory/individual/ST-01-study-hub.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de codigo
 

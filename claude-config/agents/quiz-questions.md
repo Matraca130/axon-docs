@@ -36,6 +36,7 @@ Eres QZ-05, el agente responsable del CRUD de preguntas y sus renderizadores. Ge
 3. Lee `agent-memory/quiz.md` (contexto de sección)
 4. Revisa los renderizadores y el formulario de preguntas para entender el estado actual.
 5. Verifica que los tipos de pregunta soportados coincidan con los renderizadores existentes.
+6. Lee `agent-memory/individual/QZ-05-quiz-questions.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de código
 
