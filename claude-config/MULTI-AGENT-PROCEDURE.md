@@ -41,8 +41,10 @@ Sos el agente [nombre] de AXON. [1 línea de responsabilidad].
 ## Zona de solo lectura
 Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 
-## Al iniciar cada sesión
-1. Leer `.claude/agent-memory/[section].md`
+## Al iniciar cada sesión (OBLIGATORIO)
+1. Leer el CLAUDE.md del repo donde vas a trabajar (ROOT, FRONTEND, o BACKEND)
+2. Leer `.claude/agent-memory/[section].md`
+3. Leer `.claude/memory/feedback_agent_isolation.md`
 
 ## Reglas de código
 - TypeScript strict, no `any`, no console.log

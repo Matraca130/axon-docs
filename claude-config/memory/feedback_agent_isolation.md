@@ -6,6 +6,7 @@ type: feedback
 
 ## PRE-LAUNCH
 
+0. **MANDATORY: Each agent MUST read the CLAUDE.md of its target repo + `feedback_agent_isolation.md` BEFORE writing any code**
 1. `git pull origin main` in each repo
 2. `git status --short` — working dir CLEAN (stash if dirty)
 3. Assign EXPLICIT file list per agent — zero overlap
@@ -18,6 +19,11 @@ type: feedback
 ## IN EACH AGENT PROMPT
 
 ```
+## MANDATORY READS (before writing any code)
+0. Read the CLAUDE.md of your target repo
+1. Read `.claude/memory/feedback_agent_isolation.md`
+2. Read `.claude/agent-memory/[your-section].md`
+
 ## ISOLATION RULES
 1. You MUST ONLY modify these files: [EXPLICIT LIST]
 2. Do NOT modify ANY other file
@@ -49,4 +55,4 @@ type: feedback
 | Merge accidental | Never amend with open PR |
 | Conflictos merge (3x) | Sequential merge + rebase |
 | Worktree EEXIST | Pre-create `.claude/worktrees/` |
-| API 529 (2x) | Max 5 simultaneous agents |
+| API 529 (2x) | Max 20 simultaneous agents (configured by team) |
