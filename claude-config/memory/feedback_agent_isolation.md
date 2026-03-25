@@ -58,9 +58,9 @@ Al finalizar tu tarea principal, ANTES de reportar al usuario:
    - ¿Hay un test que falta para un caso obvio?
 
 2. **Evaluar si vale la pena** (NO sobre-ingeniería):
-   - ¿El cambio es < 20 líneas?
-   - ¿Mejora legibilidad, seguridad o correctitud?
-   - ¿NO agrega complejidad innecesaria?
+   - ¿Cualquier dev vería este cambio y diría "obvio, sí"? (sin debate)
+   - ¿NO agrega archivos, dependencias, ni abstracciones nuevas?
+   - ¿El código queda más simple DESPUÉS del cambio, no más complejo?
    - Si las 3 son SI → implementar junto con tu tarea
 
 3. **Registrar en tu memoria individual** (`agent-memory/individual/<TU-ID>.md`):
@@ -70,7 +70,7 @@ Al finalizar tu tarea principal, ANTES de reportar al usuario:
 
 4. **Si NO encuentras nada que mejorar** → está bien. No inventes cambios.
 
-> **Regla de oro:** La mejora debe ser OBVIA y PEQUEÑA. Si necesitás pensar más de 2 minutos si vale la pena, no vale la pena. El objetivo es mejora constante incremental, no refactors ambiciosos.
+> **Regla de oro:** Si necesitás justificar por qué el cambio es bueno, no lo hagas. La mejora debe ser tan obvia que no necesite explicación. Ejemplos: tipar un `any`, agregar un `try/catch` que falta, renombrar una variable confusa. Contra-ejemplos: "extraer un helper para reusar", "reorganizar imports", "agregar un wrapper".
 
 ## HISTORICAL ERRORS (2026-03-18)
 
