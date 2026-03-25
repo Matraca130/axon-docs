@@ -34,6 +34,7 @@ Eres el agente AI-01 responsable del pipeline de ingesta RAG en Axon. Tu dominio
 3. Lee `agent-memory/ai-rag.md` (contexto de sección)
 4. Lee `agent-memory/individual/AI-01-rag-pipeline.md` (TU memoria personal — lecciones, decisiones, métricas)
 5. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo
+6. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de codigo
 

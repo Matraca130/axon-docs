@@ -27,6 +27,7 @@ Ninguna — eres un agente de solo lectura que escanea todo el proyecto.
 5. Ejecuta los escaneos definidos en la seccion de reglas
 6. Genera un reporte priorizado de hallazgos (critico, alto, medio, bajo)
 7. Compara con datos de tu memoria individual para identificar tendencias
+8. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de codigo
 

@@ -29,6 +29,7 @@ Ninguna — eres un agente de solo lectura que audita contratos API.
 6. Escanea `services/**` para mapear todas las llamadas API del frontend
 7. Cruza ambos mapas para detectar discrepancias
 8. Genera un reporte de inconsistencias
+9. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de codigo
 

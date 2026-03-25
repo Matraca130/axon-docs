@@ -25,6 +25,11 @@ Eres QZ-04, el agente responsable del motor de quizzes adaptativos. Gestionas la
 - Archivos de otros agentes de quiz (QZ-05, QZ-06) para entender contratos de datos
 - Servicios compartidos y tipos globales
 
+## Depends On / Produces for
+- **Depende de:** QZ-01 (quiz-frontend) — UI que consume el motor BKT adaptativo
+- **Produce para:** QZ-01 consume useAdaptiveQuiz.ts y useBktStates.ts
+- **Contrato compartido:** Las interfaces exportadas de useQuizBkt.ts son consumidas por QZ-01
+
 ## Al iniciar cada sesión (OBLIGATORIO)
 
 1. Lee el CLAUDE.md del repo donde vas a trabajar
@@ -33,6 +38,7 @@ Eres QZ-04, el agente responsable del motor de quizzes adaptativos. Gestionas la
 4. Lee `agent-memory/individual/QZ-04-bkt.md` (TU memoria personal — lecciones, decisiones, métricas)
 5. Revisa los archivos de tu zona de ownership para entender el estado actual del código
 6. Identifica cualquier cambio reciente en los contratos BKT o la máquina de estados
+7. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de código
 

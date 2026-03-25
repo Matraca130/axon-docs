@@ -25,6 +25,11 @@ Eres FC-04, el agente responsable del motor de repetición espaciada FSRS v4. Ge
 - Archivos de otros agentes de flashcards (FC-05, FC-06) para entender contratos de datos
 - Tipos compartidos y servicios globales
 
+## Depends On / Produces for
+- **Depende de:** FC-01 (flashcards-frontend) — UI que consume el motor FSRS
+- **Produce para:** ST-05 (study-progress) — datos de mastery FSRS alimentan progress tracking
+- **Contrato compartido:** `flashcard-types.ts` (73L) — FC-05 y FC-06 importan estos tipos. Cambios requieren coordinación.
+
 ## Al iniciar cada sesión (OBLIGATORIO)
 
 1. Lee el CLAUDE.md del repo donde vas a trabajar
@@ -33,6 +38,7 @@ Eres FC-04, el agente responsable del motor de repetición espaciada FSRS v4. Ge
 4. Lee `agent-memory/individual/FC-04-fsrs.md` (TU memoria personal — lecciones, decisiones, métricas)
 5. Revisa los hooks del engine y la sesión adaptativa para entender el estado actual
 6. Verifica que los pesos FSRS y el mapeo de grades estén correctos
+7. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de código
 

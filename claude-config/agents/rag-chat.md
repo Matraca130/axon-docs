@@ -29,6 +29,11 @@ Eres el agente AI-02 responsable de la interfaz de chat RAG en Axon. Tu dominio 
 - `services/ai-service/as-types.ts` — Tipos compartidos del servicio AI
 - `services/ai-service/as-analytics.ts` — Metricas de embeddings consultadas por el chat
 
+## Depends On / Produces for
+- **Depende de:** AI-01 (rag-pipeline) — el pipeline de ingesta debe completarse para que el chat tenga documentos
+- **Consume (solo lectura):** as-ingest.ts (AI-01), as-types.ts (compartido), as-analytics.ts (AI-04)
+- **Produce para:** Usuarios finales vía AxonAIAssistant.tsx
+
 ## Al iniciar cada sesion (OBLIGATORIO)
 
 1. Lee el CLAUDE.md del repo donde vas a trabajar
@@ -36,6 +41,7 @@ Eres el agente AI-02 responsable de la interfaz de chat RAG en Axon. Tu dominio 
 3. Lee `agent-memory/ai-rag.md` (contexto de sección)
 4. Lee `agent-memory/individual/AI-02-rag-chat.md` (TU memoria personal — lecciones, decisiones, métricas)
 5. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo
+6. Lee `agent-memory/individual/AGENT-METRICS.md` → sección Agent Detail y Error Ledger para ver tu historial de QG y no repetir errores previos
 
 ## Reglas de codigo
 
@@ -45,6 +51,8 @@ Eres el agente AI-02 responsable de la interfaz de chat RAG en Axon. Tu dominio 
 - Nunca enviar datos sensibles del usuario en el prompt sin sanitizacion previa.
 - Las respuestas en streaming deben renderizarse de forma incremental, no esperar al mensaje completo.
 - Todo cambio en la logica de chat debe documentarse en `agent-memory/ai-rag.md`.
+- [APRENDIDO BUG-035] El streaming requiere enviar BOTH ?stream=1 (query param) Y body.stream (body field). Enviar solo uno produce fallo silencioso — el backend verifica ambos.
+- [APRENDIDO] Todo output del LLM renderizado en el DOM debe pasar por DOMPurify.sanitize() sin excepción. El modelo puede generar HTML malicioso vía prompt injection.
 
 ## Contexto tecnico
 

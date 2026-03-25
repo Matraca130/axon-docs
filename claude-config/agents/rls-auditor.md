@@ -23,6 +23,7 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
 3. Lee `agent-memory/auth.md` (contexto de auth)
 4. Lee `agent-memory/individual/AS-03-rls-auditor.md` (TU memoria personal — tablas auditadas, brechas históricas, patrones validados)
+5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log
