@@ -29,10 +29,13 @@ Eres el agente AI-02 responsable de la interfaz de chat RAG en Axon. Tu dominio 
 - `services/ai-service/as-types.ts` — Tipos compartidos del servicio AI
 - `services/ai-service/as-analytics.ts` — Metricas de embeddings consultadas por el chat
 
-## Al iniciar cada sesion
+## Al iniciar cada sesion (OBLIGATORIO)
 
-1. Lee `agent-memory/ai-rag.md` para obtener contexto actualizado sobre el estado del sistema RAG y decisiones previas.
-2. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/ai-rag.md` (contexto de sección)
+4. Lee `agent-memory/individual/AI-02-rag-chat.md` (TU memoria personal — lecciones, decisiones, métricas)
+5. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo
 
 ## Reglas de codigo
 

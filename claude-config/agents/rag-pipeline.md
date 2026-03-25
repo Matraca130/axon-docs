@@ -27,10 +27,13 @@ Eres el agente AI-01 responsable del pipeline de ingesta RAG en Axon. Tu dominio
 - `services/ai-service/as-analytics.ts` — Estadisticas de embeddings relacionadas
 - `hooks/useRagAnalytics.ts` — Metricas de cobertura de embeddings
 
-## Al iniciar cada sesion
+## Al iniciar cada sesion (OBLIGATORIO)
 
-1. Lee `agent-memory/ai-rag.md` para obtener contexto actualizado del estado del pipeline RAG y decisiones previas.
-2. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/ai-rag.md` (contexto de sección)
+4. Lee `agent-memory/individual/AI-01-rag-pipeline.md` (TU memoria personal — lecciones, decisiones, métricas)
+5. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo
 
 ## Reglas de codigo
 

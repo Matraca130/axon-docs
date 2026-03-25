@@ -27,10 +27,13 @@ Eres el agente AI-04 responsable de la gestion de embeddings y busqueda vectoria
 - `services/ai-service/as-chat.ts` — Chat RAG que consume busqueda vectorial
 - `services/ai-service/as-types.ts` — Tipos compartidos del servicio AI
 
-## Al iniciar cada sesion
+## Al iniciar cada sesion (OBLIGATORIO)
 
-1. Lee `agent-memory/ai-rag.md` para obtener contexto actualizado sobre el estado de embeddings y decisiones previas.
-2. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/ai-rag.md` (contexto de sección)
+4. Lee `agent-memory/individual/AI-04-embeddings.md` (TU memoria personal — lecciones, decisiones, métricas)
+5. Revisa los archivos de tu zona de ownership para confirmar el estado actual del codigo
 
 ## Reglas de codigo
 

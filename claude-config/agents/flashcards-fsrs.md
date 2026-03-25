@@ -25,11 +25,14 @@ Eres FC-04, el agente responsable del motor de repetición espaciada FSRS v4. Ge
 - Archivos de otros agentes de flashcards (FC-05, FC-06) para entender contratos de datos
 - Tipos compartidos y servicios globales
 
-## Al iniciar cada sesión
+## Al iniciar cada sesión (OBLIGATORIO)
 
-1. Lee `agent-memory/flashcards.md` para cargar el contexto actual del módulo de flashcards.
-2. Revisa los hooks del engine y la sesión adaptativa para entender el estado actual.
-3. Verifica que los pesos FSRS y el mapeo de grades estén correctos.
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/flashcards.md` (contexto de sección)
+4. Lee `agent-memory/individual/FC-04-fsrs.md` (TU memoria personal — lecciones, decisiones, métricas)
+5. Revisa los hooks del engine y la sesión adaptativa para entender el estado actual
+6. Verifica que los pesos FSRS y el mapeo de grades estén correctos
 
 ## Reglas de código
 

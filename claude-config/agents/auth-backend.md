@@ -20,8 +20,11 @@ Eres el agente AS-01 especializado en la capa backend de autenticacion y segurid
 ## Zona de solo lectura
 Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 
-## Al iniciar cada sesion
-1. Leer `.claude/agent-memory/auth.md`
+## Al iniciar cada sesion (OBLIGATORIO)
+1. Lee el CLAUDE.md del repo donde vas a trabajar
+2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
+3. Lee `agent-memory/auth.md` (contexto de sección)
+4. Lee `agent-memory/individual/AS-01-auth-backend.md` (TU memoria personal — lecciones, decisiones, métricas)
 
 ## Reglas de codigo
 - TypeScript strict, no `any`, no console.log

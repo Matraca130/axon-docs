@@ -141,14 +141,44 @@ backend → frontend(s) en paralelo → testers → quality-gate
 
 Al terminar una sesión multi-agente (2+ agentes), ejecutar:
 
+### Fase 1: Diagnóstico
 1. **Revisar scope:** `git diff main..<branch> --stat` por cada agente → ¿tocó archivos fuera de su lista?
 2. **Revisar quality-gate:** ¿Hubo fallos? ¿Qué tipo?
 3. **Revisar merges:** ¿Hubo conflictos? ¿Entre qué agentes?
-4. **Registrar lecciones:** Si hubo problemas, agregar entrada en:
-   - `memory/feedback_agent_isolation.md` → tabla HISTORICAL ERRORS
-   - `agent-memory/<section>.md` → si es específico de una sección
-5. **Reportar al usuario:** Resumen de la sesión con problemas encontrados y prevenciones agregadas
-6. **Actualizar agent-memory:** Estado actual de las secciones tocadas
+
+### Fase 2: Registrar lecciones
+4. **Lecciones globales** → `memory/feedback_agent_isolation.md` tabla HISTORICAL ERRORS
+5. **Lecciones de sección** → `agent-memory/<section>.md` tabla "Errores conocidos"
+6. **Lecciones individuales** → `agent-memory/individual/<AGENT-ID>.md` tabla "Lecciones aprendidas" (si existe)
+
+### Fase 3: Actualizar métricas
+7. **Métricas por agente** → `agent-memory/individual/AGENT-METRICS.md`:
+   - Incrementar Sessions del agente
+   - Actualizar Last QG (PASS/FAIL/BLOCK)
+   - Actualizar Last Run con fecha
+   - Incrementar Scope Creep si aplica
+   - Recalcular Health score
+8. **Métricas individuales** → Si el agente tiene archivo en `individual/`, actualizar su tabla de métricas
+
+### Fase 4: Auto-evolución de definiciones
+9. **Si un agente falló por la misma razón 2+ veces:**
+   - Agregar regla a su sección "Reglas de código" en `agents/<agent>.md`
+   - Formato: `- [APRENDIDO] <regla nueva basada en error repetido>`
+10. **Si un agente tocó archivos fuera de scope repetidamente:**
+    - Revisar si su "zona de ownership" necesita expandirse o si el prompt necesita refuerzo
+    - Actualizar `agents/<agent>.md` sección "Tu zona de ownership" si es expansión legítima
+    - Agregar warning a "Patrones a evitar" si es scope creep
+11. **Si quality-gate detectó un tipo de error nuevo no cubierto:**
+    - Agregar check a `agents/quality-gate.md` sección "Qué verificar"
+    - Agregar a `agent-memory/individual/XX-02-quality-gate.md` tabla "Falsos negativos"
+
+### Fase 5: Reportar
+12. **Reportar al usuario:** Resumen con:
+    - Agentes ejecutados y sus veredictos QG
+    - Problemas encontrados
+    - Lecciones registradas (dónde)
+    - Definiciones actualizadas (si aplica)
+    - Health score actualizado de cada agente
 
 ## Qué NO hacer
 

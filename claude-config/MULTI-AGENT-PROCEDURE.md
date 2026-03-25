@@ -245,14 +245,38 @@ Después de CADA sesión multi-agente, el Arquitecto ejecuta un post-mortem:
 5. ¿El plan original fue correcto? → calibración del Arquitecto
 ```
 
-### Dónde se guarda
+### Dónde se guarda (4 niveles)
 
 | Tipo de lección | Destino |
 |----------------|---------|
 | Error de aislamiento/coordinación | `memory/feedback_agent_isolation.md` → tabla HISTORICAL ERRORS |
-| Error específico de sección | `agent-memory/<section>.md` → sección "Bugs conocidos" |
+| Error específico de sección | `agent-memory/<section>.md` → sección "Errores conocidos" |
+| Error específico de un agente | `agent-memory/individual/<AGENT-ID>.md` → tabla "Lecciones aprendidas" |
 | Mejora al proceso general | `memory/feedback_*.md` (nuevo archivo si es categoría nueva) |
 | Cambio en ownership de archivos | `AGENT-REGISTRY.md` → actualizar "Files Owned" |
+
+### Métricas (actualizar SIEMPRE)
+
+Después de cada sesión, actualizar `agent-memory/individual/AGENT-METRICS.md`:
+- Incrementar `Sessions` de cada agente que participó
+- Actualizar `Last QG` con resultado del quality-gate
+- Actualizar `Last Run` con fecha
+- Recalcular `Health` score
+
+Si el agente tiene memoria individual en `agent-memory/individual/<AGENT-ID>.md`, actualizar también su tabla de métricas local.
+
+### Auto-evolución de definiciones de agentes
+
+Si un error se repite 2+ veces para el mismo agente:
+
+```
+1. Abrir agents/<agent-name>.md
+2. Agregar regla nueva a "Reglas de código":
+   - [APRENDIDO] <regla basada en error repetido>
+3. Si fue scope creep legítimo → expandir "Tu zona de ownership"
+4. Si fue scope creep ilegítimo → agregar a "Patrones a evitar"
+5. Si quality-gate no detectó el error → agregar check a quality-gate.md
+```
 
 ### Formato de entrada en HISTORICAL ERRORS
 
@@ -262,26 +286,57 @@ Después de CADA sesión multi-agente, el Arquitecto ejecuta un post-mortem:
 | [Qué pasó, cuántas veces] | [Regla que se agrega para evitarlo] |
 ```
 
-### Flujo automático
+### Flujo automático completo
 
 ```
 Sesión termina
      │
      ▼
-Arquitecto revisa:
-  - git log de cada branch (¿archivos fuera de scope?)
+Fase 1 — Diagnóstico:
+  - git diff main..<branch> --stat por agente (¿scope creep?)
   - quality-gate results (¿errores?)
   - merge results (¿conflictos?)
      │
      ▼
-¿Hubo problemas?
-  → SÍ: Escribir lección en feedback correspondiente
-        Mostrar resumen al usuario
-  → NO: Registrar sesión exitosa (fecha, agentes, resultado)
+Fase 2 — Registrar lecciones:
+  → Global: feedback_agent_isolation.md
+  → Sección: agent-memory/<section>.md
+  → Individual: agent-memory/individual/<AGENT-ID>.md
      │
      ▼
-Actualizar agent-memory de secciones tocadas
+Fase 3 — Actualizar métricas:
+  → AGENT-METRICS.md (tabla global)
+  → Archivo individual del agente (si existe)
+     │
+     ▼
+Fase 4 — Auto-evolución:
+  ¿Error repetido 2+ veces?
+    → SÍ: Modificar agents/<agent>.md (reglas, ownership, o patterns)
+    → NO: Solo registrar lección
+     │
+     ▼
+Fase 5 — Reportar al usuario:
+  - Agentes ejecutados + veredictos QG
+  - Lecciones registradas (dónde)
+  - Definiciones actualizadas (cuáles)
+  - Health scores actualizados
 ```
+
+### Agentes con memoria individual
+
+Los siguientes agentes tienen archivo propio en `agent-memory/individual/`:
+
+| Agent ID | Archivo | Razón |
+|----------|---------|-------|
+| FC-04 | `FC-04-fsrs.md` | Algoritmo FSRS v4 — parámetros calibrados |
+| QZ-04 | `QZ-04-bkt.md` | Algoritmo BKT v4 — parámetros calibrados |
+| AI-01 | `AI-01-rag-pipeline.md` | Pipeline de ingesta — chunking, embeddings |
+| AI-02 | `AI-02-rag-chat.md` | Chat RAG — streaming, sanitización |
+| AI-04 | `AI-04-embeddings.md` | Vector search — pgvector, índices |
+| AS-01 | `AS-01-auth-backend.md` | Auth — bloquea todos los agentes backend |
+| XX-02 | `XX-02-quality-gate.md` | Quality gate — falsos positivos/negativos |
+
+Para agregar memoria individual a otro agente: crear archivo en `agent-memory/individual/<AGENT-ID>-<name>.md` y agregar lectura a su definición en `agents/<agent>.md`.
 
 ---
 
