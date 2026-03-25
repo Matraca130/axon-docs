@@ -147,6 +147,7 @@ Al terminar una sesión multi-agente (2+ agentes), ejecutar:
 1. **Revisar scope:** `git diff main..<branch> --stat` por cada agente → ¿tocó archivos fuera de su lista?
 2. **Revisar quality-gate:** ¿Hubo fallos? ¿Qué tipo?
 3. **Revisar merges:** ¿Hubo conflictos? ¿Entre qué agentes?
+4. **Archivos huérfanos:** ¿Se crearon archivos nuevos? ¿Todos tienen dueño en AGENT-REGISTRY? Si no → asignar dueño ahora y actualizar el registry + la definición del agente dueño.
 
 ### Fase 2: Registrar lecciones
 4. **Lecciones globales** → `memory/feedback_agent_isolation.md` tabla HISTORICAL ERRORS

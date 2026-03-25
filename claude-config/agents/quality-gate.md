@@ -27,6 +27,7 @@ Sos el agente Quality Gate de AXON. Tu trabajo es auditar TODO lo que otros agen
 ### 1. Archivos modificados
 - Listar TODOS los archivos que el agente cambió (git diff --name-only)
 - Verificar que están DENTRO de la zona del agente (no tocó archivos de otra zona)
+- **Si el agente CREÓ archivos nuevos:** verificar que encajan en su zona de ownership. Si no encajan en ninguna zona del AGENT-REGISTRY → NEEDS FIX + notificar al Arquitecto para asignar dueño
 
 ### 2. TypeScript
 - Verificar que no hay errores de tipo (correr build si es frontend, revisar tipos si es backend)

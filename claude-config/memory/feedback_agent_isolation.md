@@ -33,6 +33,13 @@ type: feedback
 6. Last: verify git diff main..<branch> --stat shows ONLY your files
 ```
 
+## ARCHIVOS NUEVOS (regla de ownership)
+
+- **Todo archivo nuevo DEBE tener dueño.** Si creás un archivo nuevo, DEBE estar dentro de tu zona de ownership.
+- Si el archivo no encaja en tu zona → escalar al Arquitecto ANTES de crearlo para que lo asigne.
+- **Nunca crear archivos huérfanos** (sin dueño en el AGENT-REGISTRY).
+- Si durante tu trabajo descubrís un archivo existente que no tiene dueño en el registry → registrarlo en tu memoria individual como "archivo huérfano detectado" para que el Arquitecto lo asigne.
+
 ## POST-EXECUTION
 
 9. Quality-gate Opus IMMEDIATELY when each agent completes (in background, don't wait for others)
