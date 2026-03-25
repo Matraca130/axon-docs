@@ -35,22 +35,22 @@ Puedes leer pero **nunca modificar**:
 
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
-3. Lee `agent-memory/dashboard.md` para obtener el estado actual del proyecto, decisiones recientes y tareas pendientes.
-4. Si el archivo no existe, notifica al usuario y continua sin el.
-5. Lee `agent-memory/individual/DG-04-gamification-backend.md` (TU memoria personal — lecciones, patrones, métricas)
-6. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
-7. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
+3. Lee `agent-memory/gamification.md` para obtener el estado actual del dominio de gamificacion, decisiones recientes y tareas pendientes. Si el archivo no existe, notifica al usuario y continua sin el.
+4. Lee `agent-memory/individual/DG-04-gamification-backend.md` (TU memoria personal — lecciones, patrones, métricas)
+5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail para ver historial QG y no repetir errores
+6. Resume brevemente lo que encontraste antes de comenzar cualquier tarea.
 
 ## Reglas de codigo
 
-1. **TypeScript estricto** — sin `any`, sin `// @ts-ignore`, sin `console.log` en produccion.
-2. Los tipos en `types/gamification.ts` son el contrato entre frontend y backend. Cualquier cambio requiere coordinacion con DG-03; nunca modificar unilateralmente.
-3. Cada endpoint en `gamificationApi.ts` debe tener tipado de request y response explícito — no inferir desde `any`.
-4. Usar `try/catch` con manejo explicito de errores en cada llamada API; loggear el error con contexto (endpoint, userId) antes de retornar respuesta de error.
-5. Las constantes de XP del backend (`XP_TABLE`, `LEVEL_THRESHOLDS`) deben ser consistentes con `lib/xp-constants.ts` del frontend — si hay discrepancia, escalar a DG-03 antes de cambiar cualquiera de los dos.
-6. No exponer logica de negocio en las rutas: toda la logica va en `gamification-service.ts`. Las rutas solo validan input, llaman al servicio y formatean la respuesta.
-7. Los endpoints deben validar inputs antes de procesar: `userId` requerido, `source` en enum valido, `amount` numero positivo.
-8. El cap diario de 500 XP se valida en `gamification-service.ts`, nunca en la ruta. Si el usuario ya alcanzo el cap, retornar `{ xpGranted: 0, capReached: true }`.
+1. **TypeScript estricto** — sin `any`, sin `// @ts-ignore`, sin `console.log` en produccion; usar `logger.error({ endpoint, userId, error })` antes de retornar respuesta de error.
+2. Los tipos en `types/gamification.ts` son el contrato entre frontend y backend. Cualquier cambio requiere coordinacion con DG-03; nunca modificar unilateralmente — escalar primero.
+3. Cada endpoint en `gamificationApi.ts` debe tener tipado de request y response explícito con interfaces nombradas — no inferir desde `any`. Ejemplo: `function postXP(body: XPRequest): Promise<XPResponse>`.
+4. Usar `ok()` / `err()` de `db.ts` para formatear respuestas HTTP — nunca `res.json()` o `res.status()` manual en las rutas.
+5. Usar `validateFields()` de `validate.ts` para validar inputs antes de llegar al servicio: `userId` requerido (string uuid), `source` en `XP_SOURCES` enum, `amount` numero positivo entero. Retornar 422 si falla validacion.
+6. Las constantes de XP del backend (`XP_TABLE`, `LEVEL_THRESHOLDS`) deben ser consistentes con `lib/xp-constants.ts` del frontend — si hay discrepancia, escalar a DG-03 antes de cambiar cualquiera de los dos.
+7. No exponer logica de negocio en las rutas: toda la logica va en `gamification-service.ts`. Las rutas solo validan input con `validateFields()`, llaman al servicio y formatean con `ok()`/`err()`.
+8. El cap diario de 500 XP se valida en `gamification-service.ts`, nunca en la ruta. Si el usuario ya alcanzo el cap, retornar `ok({ xpGranted: 0, capReached: true })` con HTTP 200 — no es un error, es un estado valido.
+9. El `source` del trigger debe venir del modulo que dispara el evento, no calcularse en gamification-service. Si el `source` no esta en `XP_SOURCES`, rechazar con 422 — no inferir ni mapear automaticamente.
 
 ## Contexto tecnico
 

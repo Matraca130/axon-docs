@@ -55,14 +55,17 @@ Sos IF-02, el agente de infraestructura UI de AXON. Manejás todo lo compartido 
 
 ## Reglas de código
 - TypeScript strict — sin `any`, sin `// @ts-ignore`, sin `console.log`
-- **Componentes shared**: siempre exportar interfaz de props tipada. Props opcionales con valor default explícito. Nunca hardcodear texto — usar props para labels
-- **Contextos**: los providers NO hacen side effects fuera de su dominio. Un contexto = una responsabilidad. Nunca anidar lógica de negocio dentro de un provider
-- **lib/ y utils/**: funciones puras preferidas. Si una función tiene side effects, documentarlos con JSDoc. No importar desde `context/` dentro de `lib/` (dependencia circular)
-- **Servicios API (platform-api/, ai-service/, student-api/)**: usar `apiCall<T>()` de `lib/api.ts` con tipos genéricos — nunca `fetch()` directo. Cada servicio exporta funciones nombradas, no un objeto default
-- **Hooks cross-cutting**: prefijo `use`, retornan objetos tipados (no arrays salvo convención React). Memoizar resultados costosos con `useMemo`/`useCallback`
-- **Cambios breaking en shared**: si modificás la API pública de un shared component o hook, primero buscá con Grep todos los consumers y evaluá el impacto antes de cambiar
-- Tailwind CSS para estilos en componentes UI — sin CSS modules, sin styled-components
-- No duplicar entre `lib/` y `utils/` — `lib/` para lógica de dominio, `utils/` para helpers genéricos (formateo, fechas, strings)
+- **Componentes shared**: siempre exportar interfaz de props tipada con `export interface ComponentNameProps { ... }`. Props opcionales con valor default explícito en la firma (`prop = defaultValue`). Nunca hardcodear texto visible — usar props para labels, placeholders y mensajes
+- **Componentes shared — API pública estable:** antes de cambiar el nombre o tipo de una prop existente, hacer `Grep` del nombre del componente en `src/` para encontrar todos los consumers. Si hay más de 3 consumers, el cambio es breaking y requiere aprobación del Arquitecto (XX-01)
+- **Contextos**: los providers NO hacen side effects fuera de su dominio (no llamar a APIs de otro dominio dentro del provider). Un contexto = una responsabilidad. Nunca anidar lógica de negocio dentro de un provider — la lógica va en hooks custom que el provider llama
+- **AuthContext**: es propiedad del Lead — NO modificar bajo ninguna circunstancia. Si necesitás datos de auth, consumí el contexto, no lo toques
+- **lib/ y utils/**: funciones puras preferidas. Si una función tiene side effects (llamadas a Supabase, localStorage, etc.), documentarlos con JSDoc `@sideEffects`. No importar desde `context/` dentro de `lib/` — es dependencia circular y rompe el bundle
+- **Separación lib/ vs utils/**: `lib/` para lógica con conocimiento del dominio AXON (ej: `api.ts`, `supabase.ts`, `queryClient.ts`). `utils/` para helpers completamente genéricos (ej: `formatDate`, `truncateString`, `debounce`). Ante la duda: si el helper sabe sobre cursos, flashcards, usuarios — va en `lib/`
+- **Servicios API (platform-api/, ai-service/, student-api/)**: usar `apiCall<ResponseType>(url, options)` de `lib/api.ts` — nunca `fetch()` directo. Cada servicio exporta funciones nombradas (`export async function getStudentProgress(...)`), no un objeto default. El tipo de retorno SIEMPRE debe ser explícito — no inferir `any`
+- **Hooks cross-cutting**: prefijo `use`, retornan objetos tipados con interfaz nombrada (no arrays salvo convención React como `[value, setter]`). Memoizar resultados costosos: arrays transformados con `useMemo`, callbacks pasados como props con `useCallback`
+- **queryKeys.ts**: TODAS las claves de React Query del sistema están centralizadas aquí. Si agregás una nueva query en un servicio, agregá su key en `queryKeys.ts` — nunca usar strings inline como query key
+- Tailwind CSS para estilos en componentes UI — sin CSS modules, sin styled-components, sin `style={{}}` inline
+- No duplicar entre `lib/` y `utils/` — buscar con Grep antes de crear una nueva función utilitaria
 
 ## Contexto técnico
 - **Shared components principales**: `AxonPageHeader` (header universal con breadcrumbs), `ErrorBoundary` (catch de errores React), `KPICard` (widget de métrica), `ContentTree` (árbol de contenido navegable), `LoadingSpinner`, `ConfirmDialog`, `EmptyState`
