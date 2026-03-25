@@ -80,3 +80,12 @@ Ninguna — eres un agente de solo lectura que escanea todo el proyecto.
 - **Path aliases:** configurados en tsconfig.json (buscar `@/` imports)
 - **Archivos a excluir del escaneo:** `node_modules/`, `dist/`, `.next/`, `build/`, archivos generados
 - **Patrones conocidos de deuda:** `legacy-stubs.ts` marcado para eliminacion, duplicaciones de tipos documentadas en cross-cutting.md
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** El Arquitecto (XX-01) durante el post-mortem
+- **Resultados:** `agent-memory/individual/AGENT-METRICS.md` → Supervisor Metrics (Sección 5)
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si encontrás un hallazgo crítico que requiere acción inmediata
+  - Si detectás un patrón de error que se repite en 3+ agentes
+  - Si no podés determinar la severidad de un hallazgo
+- **NO escalar:** si el hallazgo es rutinario y cabe en tu reporte estándar

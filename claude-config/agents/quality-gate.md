@@ -64,3 +64,32 @@ Reportar como tabla:
 
 Si NEEDS FIX: listar exactamente qué arreglar.
 Si BLOCK: explicar por qué es peligroso y no debe mergearse.
+
+## Tabla de severidad (criterio para elegir veredicto)
+
+| Condición | Veredicto | Razón |
+|-----------|-----------|-------|
+| Archivos fuera de zona del agente | BLOCK | Scope creep — viola aislamiento |
+| Parámetros de spec incorrectos (BKT, FSRS, grades, colores) | BLOCK | Datos incorrectos en producción |
+| Secrets expuestos (.env, API keys, tokens en código) | BLOCK | Riesgo de seguridad crítico |
+| Exports removidos que otros archivos importan | BLOCK | Rompe build de otros módulos |
+| `any` types nuevos | NEEDS FIX | Degrada type safety |
+| console.log nuevos (no logger) | NEEDS FIX | Ruido en producción |
+| Tests faltantes para happy path | NEEDS FIX | Cobertura insuficiente |
+| Tests no determinísticos | NEEDS FIX | Flaky tests |
+| Tests faltantes solo para error cases | NEEDS FIX (low) | Deseable pero no bloqueante |
+| Commit message poco descriptivo | NEEDS FIX (low) | Mejora git hygiene |
+| Branch name genérico | NEEDS FIX (low) | Cosmético |
+
+> **Regla de oro:** BLOCK = el cambio causa daño si se mergea. NEEDS FIX = el cambio funciona pero tiene deuda.
+
+## Revisión y escalación
+
+- **Tu trabajo lo revisa:** El Arquitecto (XX-01) durante el post-mortem
+- **Resultados QG se registran en:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger (Sección 4) y Agent Detail (Sección 3)
+- **Tus métricas propias:** `agent-memory/individual/XX-02-quality-gate.md` → tabla "Métricas de auditoría"
+- **Cuándo escalar al Arquitecto:**
+  - Si un BLOCK afecta a múltiples secciones
+  - Si detectás un patrón de error que se repite en 3+ agentes
+  - Si no podés determinar si un cambio es NEEDS FIX o BLOCK (ambiguo)
+- **Nadie te audita a vos:** Sos el último eslabón. Tus falsos positivos/negativos se detectan durante el post-mortem del Arquitecto

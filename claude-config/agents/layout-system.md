@@ -60,3 +60,13 @@ Puedes leer estos archivos para obtener contexto, pero NO los modifiques sin coo
 - **Context providers:** `CourseContext`, `UserContext`, `NavigationContext` se inyectan a nivel de layout. Los componentes hijos consumen via hooks custom.
 - **React Router:** Los layouts funcionan como route wrappers con `<Outlet />` para renderizar rutas hijas.
 - **Responsive strategy:** Mobile-first con breakpoints en `sm` (640px), `md` (768px), `lg` (1024px), `xl` (1280px).
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

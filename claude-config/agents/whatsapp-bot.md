@@ -43,3 +43,13 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 - Feature-flagged: el canal WhatsApp esta detras de un feature flag y no esta activo para todas las instituciones
 - HMAC validation: cada request de webhook incluye firma que debe verificarse con el app secret
 - Variables de entorno requeridas: `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET`
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

@@ -38,3 +38,6 @@ Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 - Annotations: estudiantes pueden anotar/resaltar texto
 - Keywords: popups informativos inline (conectan con keyword system)
 - Professor: TopicDetailPanel + SummaryDetailView para gestión de curriculum
+
+## Revisión y escalación
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.

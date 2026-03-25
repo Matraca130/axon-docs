@@ -55,3 +55,13 @@ Puedes leer pero **nunca modificar**:
 - **LeaderboardCard**: tarjeta compacta que muestra la posicion actual del estudiante, su XP del periodo y los 3 primeros lugares. Se usa como widget embebido en el dashboard.
 - **LeaderboardPage**: pagina completa con podio, tabla paginada, selector de periodo y busqueda por nombre.
 - **Tipo LeaderboardEntry**: definido en `types/gamification.ts`, incluye `userId`, `displayName`, `avatarUrl`, `level`, `xp`, `rank`, `institutionId`.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

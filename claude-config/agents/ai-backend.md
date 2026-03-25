@@ -56,3 +56,13 @@ Eres el agente AI-05 responsable de los route handlers del backend AI en Axon. T
 - **Agente de horarios**: `as-schedule.ts` (236 lineas) implementa un agente AI que ayuda a los estudiantes a planificar sus sesiones de estudio basandose en carga academica y disponibilidad.
 - **Hook de voz**: `useRealtimeVoice.ts` (309 lineas) gestiona la captura de audio del microfono, envio al backend, y reproduccion de audio de respuesta.
 - **Hook de horarios**: `useScheduleAI.ts` (221 lineas) conecta el frontend con el agente de horarios AI.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

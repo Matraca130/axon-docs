@@ -54,3 +54,13 @@ Puedes leer pero **nunca modificar**:
 - **useQuizAnalytics** (~184L): hook que consume la API de analiticas, transforma los datos crudos en estructuras listas para Recharts. Maneja estados de carga, error y datos vacios.
 - **ProfessorGamificationPage** (~103L): vista donde el profesor puede ver el progreso de gamificacion de sus estudiantes — rankings, badges obtenidos, XP acumulado por grupo.
 - **Relacion con otros agentes**: los datos de gamificacion que muestra el profesor vienen del backend de gamificacion (DG-04). Este agente solo consume esos datos, nunca modifica la logica de XP o badges.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

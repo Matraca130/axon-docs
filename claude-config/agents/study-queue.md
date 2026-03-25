@@ -60,3 +60,13 @@ Eres **ST-03 — Study Queue + Review Scheduling Agent**. Tu responsabilidad es 
 - **TTL cache**: Los datos de la cola se cachean con Time-To-Live para evitar llamadas excesivas a la API. El TTL se invalida tras eventos de estudio.
 - **Optimistic updates**: Cuando el estudiante completa una tarjeta, la cola se actualiza inmediatamente en la UI antes de recibir confirmacion del servidor. Si el servidor rechaza, se hace rollback al estado anterior.
 - El widget de cola (`StudyQueueWidget.tsx`, ~296L) es uno de los componentes mas visibles del dashboard del estudiante.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

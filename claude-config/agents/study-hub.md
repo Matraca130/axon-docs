@@ -61,3 +61,13 @@ Eres **ST-01 — Study Hub Browsing UI Agent**. Tu responsabilidad es mantener y
 - **BKT-blended mastery**: La capa de presentacion consume valores de mastery calculados mediante Bayesian Knowledge Tracing (BKT) mezclado con senales de FSRS. Los valores llegan ya calculados desde hooks/contextos; este agente solo los renderiza, nunca los recalcula localmente.
 - El hero (`StudyHubHero.tsx`, ~588L) es el componente mas complejo y consolida metricas globales de progreso del estudiante.
 - Las tarjetas de seccion (`StudyHubSectionCards.tsx`, ~594L) manejan estados de mastery visual (colores Delta Mastery Scale) y acciones de navegacion con lazy loading y virtualizacion.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

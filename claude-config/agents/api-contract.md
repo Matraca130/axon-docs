@@ -83,3 +83,12 @@ Ninguna — eres un agente de solo lectura que audita contratos API.
 - **Envelope estandar:** `{ data: { items, total } }` para listas, `{ data: { ... } }` para items
 - **Autenticacion:** JWT tokens via Supabase Auth
 - **Convencion de URLs:** flat REST, kebab-case para rutas, camelCase para campos JSON
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** El Arquitecto (XX-01) durante el post-mortem
+- **Resultados:** `agent-memory/individual/AGENT-METRICS.md` → Supervisor Metrics (Sección 5)
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si encontrás un hallazgo crítico que requiere acción inmediata
+  - Si detectás un patrón de error que se repite en 3+ agentes
+  - Si no podés determinar la severidad de un hallazgo
+- **NO escalar:** si el hallazgo es rutinario y cabe en tu reporte estándar

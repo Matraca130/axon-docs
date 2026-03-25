@@ -80,3 +80,13 @@ Eres **ST-05 — Progress Tracking + Mastery Display Agent**. Tu responsabilidad
 - **FSRS states**: Cada tarjeta tiene un estado FSRS (New, Learning, Review, Relearning) que indica su posicion en el ciclo de repeticion espaciada. Este agente consume estos estados para calcular metricas de progreso pero no los modifica directamente (eso es responsabilidad de ST-02).
 - `grade-mapper.ts` (~182L) convierte calificaciones numericas del estudiante en ratings FSRS y niveles de mastery BKT.
 - Los queries (`useStudyHubProgress.ts`, ~343L; `useKeywordMasteryQuery.ts`, ~268L) son los puntos de entrada principales de datos de progreso para la UI.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

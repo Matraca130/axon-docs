@@ -60,3 +60,13 @@ Puedes leer estos archivos para obtener contexto, pero NO los modifiques sin coo
 - **Flat API convention:** Todos los endpoints siguen el patrón `/api/summaries/:summaryId/[sub-resource]`. No se anidan más de un nivel. Para acceder a keywords de un chunk: `/api/chunks/:chunkId/keywords`, no `/api/summaries/:id/chunks/:chunkId/keywords`.
 - **Reorder pattern:** El endpoint de reorder recibe `{ items: [{ id: string, order: number }] }` y actualiza el campo `order` de cada item en una transacción.
 - **Auth:** JWT de Supabase Auth. El middleware extrae el usuario del token y lo inyecta en el contexto del request.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

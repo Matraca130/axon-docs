@@ -51,3 +51,13 @@ Eres el agente AI-04 responsable de la gestion de embeddings y busqueda vectoria
 - **Tipos de indice**: IVFFlat para datasets grandes con busqueda aproximada rapida; HNSW para mayor precision con costo de memoria.
 - **Cobertura de embeddings**: Metrica que indica que porcentaje de los documentos del usuario tienen embeddings generados. El hook `useRagAnalytics.ts` (142 lineas) expone estas metricas al frontend.
 - **Busqueda semantica**: Las consultas del usuario se convierten en embeddings y se buscan los chunks mas cercanos usando distancia coseno en pgvector.
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
+- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si necesitás modificar un archivo fuera de tu zona de ownership
+  - Si encontrás un conflicto con el trabajo de otro agente
+  - Si una decisión técnica tiene impacto cross-section
+  - Si no estás seguro de qué hacer
+- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren

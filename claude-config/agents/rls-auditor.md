@@ -35,3 +35,12 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 - Detectar uso de `security definer` vs `security invoker` en funciones
 - Auditar que `auth.uid()` y `auth.role()` se usen correctamente en policy expressions
 - Buscar tablas con `RLS enabled` pero sin policies (acceso bloqueado no intencional)
+
+## Revisión y escalación
+- **Tu trabajo lo revisa:** El Arquitecto (XX-01) durante el post-mortem
+- **Resultados:** `agent-memory/individual/AGENT-METRICS.md` → Supervisor Metrics (Sección 5)
+- **Cuándo escalar al Arquitecto (XX-01):**
+  - Si encontrás un hallazgo crítico que requiere acción inmediata
+  - Si detectás un patrón de error que se repite en 3+ agentes
+  - Si no podés determinar la severidad de un hallazgo
+- **NO escalar:** si el hallazgo es rutinario y cabe en tu reporte estándar
