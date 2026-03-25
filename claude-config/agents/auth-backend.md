@@ -32,11 +32,36 @@ Todo fuera de tu zona. Escalar al lead para modificar logica de otra zona.
 - Usar `apiCall()` de `lib/api.ts`
 
 ## Contexto tecnico
-- Supabase JWT con verificacion via `jsonwebtoken` o Supabase client
-- Sistema de dual token: `ANON_KEY` para inicializar el cliente Supabase + `X-Access-Token` como header custom para autenticacion de API
-- RLS (Row Level Security) policies aplicadas a nivel de base de datos PostgreSQL
-- Middleware valida token antes de pasar al handler de ruta
-- Roles del sistema propagados via claims del JWT
+
+### Endpoints de auth
+| Metodo | Ruta | Descripcion |
+|--------|------|-------------|
+| POST | `/auth/login` | Login con email + password, retorna JWT |
+| POST | `/auth/register` | Registro de nuevo usuario |
+| POST | `/auth/logout` | Invalida sesion activa |
+| GET | `/auth/me` | Retorna datos del usuario autenticado |
+
+### Flujo JWT
+1. Cliente hace POST a `/auth/login`
+2. Supabase genera y firma el token JWT
+3. Middleware de auth intercepta el request entrante y valida el token via `jsonwebtoken` o Supabase client
+4. Si el token es valido, el handler de ruta procesa el request con el usuario autenticado en contexto
+
+### Sistema de dual token
+- **ANON_KEY**: se envia como `Bearer <token>` en el header `Authorization`. Inicializa el cliente Supabase para operaciones publicas.
+- **USER_JWT**: se envia como header custom `X-Access-Token`. Representa la sesion autenticada del usuario para llamadas a la API propia.
+Ambos tokens coexisten en requests autenticados; el middleware valida el USER_JWT, no el ANON_KEY.
+
+### RLS (Row Level Security)
+- Las policies aplican a nivel de base de datos PostgreSQL — no se pueden bypassear desde el backend.
+- Patron comun: `auth.uid() = user_id` para limitar filas al usuario autenticado.
+- Tablas con RLS activo: `profiles`, `institutions_users`, `study_plans`, `summaries`, `annotations` (expandir segun migraciones).
+- Las queries que no incluyen el JWT del usuario en el cliente Supabase fallan con error de permisos si la tabla tiene RLS.
+
+### Roles del sistema
+- Los roles **NO estan embebidos en el JWT**.
+- Para obtener el rol del usuario autenticado se debe llamar a `GET /institutions` — la respuesta incluye el campo `role` para cada institucion a la que pertenece el usuario.
+- No asumir el rol desde el token; siempre derivarlo de la respuesta de `/institutions`.
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión

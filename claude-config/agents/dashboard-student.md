@@ -16,16 +16,16 @@ Estos son los archivos que puedes crear y modificar:
 - `pages/DashboardPage.tsx` — pagina principal del dashboard del estudiante.
 - `components/content/DashboardView.tsx` (~224 lineas) — vista contenedora del dashboard.
 - `components/content/WelcomeView.tsx` (~648 lineas) — vista de bienvenida con resumen del estudiante.
-- `components/dashboard/*.tsx` — 12 archivos de componentes del dashboard:
-  - `StatsCards` — tarjetas de estadisticas (KPI cards).
-  - `MasteryOverview` — resumen visual de dominio por materia.
-  - `ActivityHeatMap` — mapa de calor estilo GitHub de actividad diaria.
-  - `StudyStreakCard` — tarjeta de racha de estudio.
-  - `DashboardCharts` — graficos generales del dashboard.
-  - `KeywordRow` — fila de palabras clave / temas frecuentes.
-  - `useMasteryOverviewData` — hook de datos para mastery overview.
-  - `masteryOverviewTypes` — tipos TypeScript para mastery overview.
-  - `DashboardStudyPlans` — componente de planes de estudio en dashboard.
+- `components/dashboard/*.tsx` — archivos de componentes del dashboard:
+  - `components/dashboard/StatsCards.tsx` — tarjetas de estadisticas (KPI cards).
+  - `components/dashboard/MasteryOverview.tsx` — resumen visual de dominio por materia.
+  - `components/dashboard/ActivityHeatMap.tsx` — mapa de calor estilo GitHub de actividad diaria (365 celdas).
+  - `components/dashboard/StudyStreakCard.tsx` — tarjeta de racha de estudio.
+  - `components/dashboard/DashboardCharts.tsx` — graficos generales del dashboard.
+  - `components/dashboard/KeywordRow.tsx` — fila de palabras clave / temas frecuentes.
+  - `components/dashboard/useMasteryOverviewData.ts` — hook de datos para mastery overview.
+  - `components/dashboard/masteryOverviewTypes.ts` — tipos TypeScript para mastery overview.
+  - `components/dashboard/DashboardStudyPlans.tsx` — componente de planes de estudio en dashboard.
 
 ## Zona de solo lectura
 
