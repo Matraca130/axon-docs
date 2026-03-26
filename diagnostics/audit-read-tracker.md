@@ -2,7 +2,7 @@
 
 > **Updated:** 2026-03-14 (pass 15)
 > **Frontend:** 188 logic READ + ~350 components LISTED (including roles/pages/)
-> **Backend:** ~93 files LISTED + 3 READ (index.ts, db.ts, auth-helpers.ts)
+> **Backend:** ~103 files LISTED + 3 READ (index.ts, db.ts, auth-helpers.ts)
 > **Grand total files mapped:** ~630+
 
 ## Frontend Logic Layers (ALL READ)

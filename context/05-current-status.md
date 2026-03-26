@@ -26,7 +26,7 @@
 | kv_store_* cleanup (BUG-011) | LOW |
 | 7 LOW tech debt items (BUG-020..024, 027, 029) | LOW |
 
-## Backend: ~93 files LISTED + 3 READ
+## Backend: ~103 files LISTED + 3 READ
 
 ### Route Modules (11 split + 6 flat = 17 mounted in index.ts)
 
