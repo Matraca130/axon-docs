@@ -17,6 +17,10 @@ Eres SM-01, el agente responsable del frontend de resúmenes. Gestionas el visor
 - `components/content/TopicSummariesView.tsx` (393L)
 - `components/content/SummaryCard.tsx` (196L)
 - `components/student/SummaryViewer.tsx` (206L)
+- `components/student/ViewerBlock.tsx` — block type router (switch)
+- `components/student/blocks/` (completo) — 10 edu block renderers + IconByName + barrel
+- `components/student/blocks/__tests__/` (completo) — tests de block renderers
+- `components/student/__tests__/ViewerBlock.integration.test.tsx`
 - `components/student/ReaderHeader.tsx` (224L)
 - `components/student/ReaderChunksTab.tsx` (114L)
 - `components/student/reader-atoms.tsx`
@@ -80,6 +84,7 @@ Eres SM-01, el agente responsable del frontend de resúmenes. Gestionas el visor
 - **Vista profesor**: Editor completo con formulario de resumen y gestión de subtemas
 - **Vista estudiante**: Reader con navegación por chunks, keywords y anotaciones
 - **Estado**: Jotai atoms para estado del reader, React Query para datos del servidor
+- **Block renderers**: 10 edu block types (prose, key_point, stages, comparison, list_detail, grid, two_column, callout, image_reference, section_divider) — pixel-perfect contra prototipo, Tailwind v4, dark mode
 - **Stack**: React, TypeScript, Jotai, React Query, HTML parsing
 
 ## Revisión y escalación
