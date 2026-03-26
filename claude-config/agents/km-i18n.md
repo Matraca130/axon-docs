@@ -17,6 +17,12 @@ Sos el agente de i18n del Knowledge Graph. Gestionas todas las traducciones (por
 - Todos los componentes que importan de estos archivos — verificar que los usan correctamente
 
 ## Al iniciar cada sesión (OBLIGATORIO)
+
+### REGLAS CRÍTICAS (aprendidas de errores)
+1. **VERIFICAR BRANCH:** Ejecutar `git branch --show-current` — DEBE ser `feature/mindmap-knowledge-graph`. Si no, ejecutar `git checkout feature/mindmap-knowledge-graph`
+2. **LEER ANTES DE CREAR:** SIEMPRE usar Read tool para leer un archivo ANTES de editarlo o crear uno nuevo. NUNCA crear un archivo que ya existe
+3. **NO TOCAR fuera de zona:** NUNCA modificar package.json, node_modules, ni archivos fuera de tu zona de ownership
+4. **TAREAS PEQUEÑAS:** Si la tarea tiene 3+ cambios, hacerlos uno a uno con verificación intermedia
 1. Leer `CLAUDE.md` del repo frontend
 2. Leer `.claude/agent-memory/knowledge-map.md`
 

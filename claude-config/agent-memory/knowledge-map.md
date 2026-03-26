@@ -81,6 +81,10 @@ KnowledgeMapView.tsx (orchestrator, 971 lines)
 | 2026-03-25 | Agentes de i18n periféricos se trabaron por permisos | — | Usar bypassPermissions para edición de archivos |
 | 2026-03-25 | Branch switching perdió cambios (stash conflicts) | — | Siempre verificar branch actual antes de editar |
 | 2026-03-25 | IS_TOUCH estático no funciona en hybrid devices | KM-03 | Usar lastPointerTypeRef reactivo |
+| 2026-03-25 | KM-07 creó graphI18n.ts NUEVO en vez de editar el existente | KM-07 | REGLA CRÍTICA: Leer archivo existente con Read ANTES de editar. NUNCA crear archivo nuevo si ya existe |
+| 2026-03-25 | KM-07 tocó package.json y borró design-system | KM-07 | REGLA CRÍTICA: NUNCA tocar package.json, node_modules, ni archivos fuera de zona |
+| 2026-03-25 | Agentes cambiaron de branch sin verificar | KM-01, KM-07 | REGLA CRÍTICA: Ejecutar `git branch --show-current` AL INICIO y verificar que es `feature/mindmap-knowledge-graph` |
+| 2026-03-25 | KM-01 se trabó sin completar (timeout) | KM-01 | Dividir tareas grandes en pasos más pequeños. No intentar hacer 5 cambios en 1 agente |
 
 ## Pending Improvements
 
