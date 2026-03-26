@@ -7,7 +7,7 @@
 | Repo | Status | Notes |
 |---|---|---|
 | Frontend (Vercel) | Running | v4.5 — responsive, gamification, AI reports, PDF ingest |
-| Backend (Supabase EF) | Running | v4.4 (index.ts) / v4.5 (docs) — ~93 files, 16 route modules. **Note:** Backend index.ts reports v4.4; documentation targets v4.5 specification. |
+| Backend (Supabase EF) | Running | v4.4 (index.ts) / v4.5 (docs) — ~103 files, 17 route modules. **Note:** Backend index.ts reports v4.4; documentation targets v4.5 specification. |
 | Supabase | Running | 50+ tables, **53 migrations** |
 
 ## Still Pending
