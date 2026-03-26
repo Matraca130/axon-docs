@@ -14,20 +14,21 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 
 ---
 
-## Modulos (10 split + 6 flat)
+## Modulos (11 split + 6 flat)
 
 | # | Modulo | Archivos | Activos | Tipo |
 |---|---|---|---|---|
 | 1 | `routes/content/` | 11 | 11 | CRUD + connections, search, reorder, tree, batch |
 | 2 | `routes/study/` | 6 | 6 | Sessions, reviews, progress, spaced-rep, batch |
-| 3 | `routes/ai/` | 14 en disco | **11 montados** | AI/RAG + PDF ingest (2 dead: list-models, re-embed-all) |
+| 3 | `routes/ai/` | 14 en disco | **14 endpoints (12 files mounted)** | AI/RAG + PDF ingest (2 dead: list-models, re-embed-all) |
 | 4 | `routes/members/` | 4 | 4 | Instituciones + memberships |
 | 5 | `routes/mux/` | 5 | 5 | Video (Mux) |
 | 6 | `routes/plans/` | 5 | 5 | Planes + AI tracking |
 | 7 | `routes/search/` | 4 | 4 | Busqueda + trash |
 | 8 | `routes/gamification/` | 6 | 6 | XP, badges, streaks, goals |
 | 9 | `routes/settings/` | 2 | 2 | Algorithm config |
-| 10 | `routes/whatsapp/` | 10 | ~6 routes | WhatsApp bot (feature-flagged) |
+| 10 | `routes/whatsapp/` | 10 | **5 routes mounted** | WhatsApp bot (feature-flagged) |
+| 11 | `routes/telegram/` | 10 | **7 routes mounted** | Telegram bot (feature-flagged) |
 
 | # | Flat | Proposito |
 |---|---|---|
@@ -51,7 +52,7 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 
 ---
 
-## AI / RAG (11 active routes) — 20 POST/hr rate limit
+## AI / RAG (14 active routes) — 20 POST/hr rate limit
 
 | Ruta | Descripcion |
 |---|---|
@@ -92,6 +93,8 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 
 ## WhatsApp (feature-flagged: WHATSAPP_ENABLED=true)
 
+> **Note:** Module has 10 files on disk but only 5 routes are mounted in the router (shown below). Remaining files are helpers, types, and queue internals.
+
 | Ruta | Descripcion |
 |---|---|
 | GET `/webhooks/whatsapp` | Meta verification |
@@ -99,6 +102,63 @@ Rutas planas: GET /topics?section_id=xxx (NUNCA anidadas)
 | POST `/whatsapp/link-code` | Generate linking code |
 | POST `/whatsapp/unlink` | Unlink phone |
 | POST `/whatsapp/process-queue` | Job processor (service_role only) |
+
+### WhatsApp Job Processor (`async-queue.ts`)
+
+Background job processor for slow tool operations (called by `pg_cron` every minute):
+
+| Property | Value |
+|---|---|
+| **Job types** | `generate_content` (~10s), `generate_weekly_report` (~15s) |
+| **Storage** | `whatsapp_jobs` table (fallback for pgmq) |
+| **Retry policy** | 3 attempts (`MAX_ATTEMPTS = 3`) |
+| **Error handling** | Errors logged; after max retries, job status set to `failed` with truncated error message (500 chars) |
+| **Cleanup** | 7-day retention; completed/failed jobs purged by scheduled task |
+| **Security** | Phone numbers AES-GCM encrypted in job payload (C1 FIX: AUDIT-05 PII protection) |
+| **Auth** | `service_role_key` required (timing-safe comparison) |
+
+## Telegram (feature-flagged: TELEGRAM_ENABLED=true)
+
+> **Note:** Module has 10 files on disk but only 7 routes are mounted in the router (shown below). Remaining files are helpers, formatters, tools, and queue internals. The Telegram bot uses Claude AI with 11 tools (extends WhatsApp's 9 shared tools with `update_agenda`, `get_keywords`, and `get_summary`; WhatsApp has `handle_voice_message` which Telegram does not).
+
+| Ruta | Descripcion |
+|---|---|
+| POST `/webhooks/telegram` | Incoming updates (verified by secret token) |
+| POST `/telegram/link-code` | Generate 6-digit linking code |
+| POST `/telegram/unlink` | Unlink Telegram account |
+| GET `/telegram/link-status` | Check linking status (polling) |
+| POST `/telegram/setup-webhook` | Set Telegram webhook URL (service_role only) |
+| POST `/telegram/delete-webhook` | Remove webhook (service_role only) |
+| POST `/telegram/process-queue` | Async job processor (service_role only) |
+
+### Slash Commands
+
+| Command | Description |
+|---|---|
+| `/start` | Show welcome message and linking instructions |
+| `/help` / `/ayuda` | List all available commands |
+| `/agenda` | Show today's schedule and pending tasks |
+| `/semana` | Show this week's schedule |
+| `/estudiar` | Start a flashcard review session |
+| `/progreso` | Show study progress and mastery levels |
+| `/cursos` | Browse enrolled courses |
+| `/salir` | Exit active flashcard review session |
+
+### Telegram Bot Tools (11 total)
+
+| Tool | Description | Shared with WhatsApp |
+|---|---|---|
+| `get_study_queue` | Flashcards pending review, ordered by FSRS+BKT urgency | Yes |
+| `ask_academic_question` | RAG-powered academic Q&A over course content | Yes |
+| `check_progress` | Mastery per topic, weak areas, overall percentage | Yes |
+| `get_schedule` | Agenda: pending tasks, deadlines, planned sessions | Yes |
+| `submit_review` | Record flashcard rating (1=Fail, 3=Good, 4=Easy) | Yes |
+| `browse_content` | Navigate course tree: courses, sections, topics | Yes |
+| `generate_content` | Generate flashcards or quiz (async, ~10s) | Yes |
+| `generate_weekly_report` | Weekly study analytics report (async, ~15s) | Yes |
+| `update_agenda` | Complete, create, or reschedule tasks | No (Telegram only) |
+| `get_keywords` | Keywords with definitions and connections for a topic | No (Telegram only) |
+| `get_summary` | Retrieve or search summaries by title or ID | No (Telegram only) |
 
 ## Settings
 

@@ -293,7 +293,7 @@
 
 ## 11. MESSAGING — Telegram y WhatsApp
 
-**Qué hace:** Telegram bot linking (code generation, link status, unlink). WhatsApp Cloud API (feature-flagged). Admin messaging settings page.
+**Qué hace:** Telegram bot with Claude AI (11 tools, slash commands, voice transcription, async job queue). WhatsApp Cloud API (9 tools, feature-flagged). Both share 8 common tools; Telegram adds `update_agenda`, `get_keywords`, `get_summary`; WhatsApp has `handle_voice_message`. Admin messaging settings page.
 
 **Archivos:** ~5 files
 - `components/roles/pages/admin/AdminMessagingSettingsPage.tsx` (521L)
