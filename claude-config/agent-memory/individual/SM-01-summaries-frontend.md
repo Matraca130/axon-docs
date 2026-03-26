@@ -8,6 +8,8 @@ Agente frontend de resúmenes: gestiona el visor de estudiantes, el editor de pr
 | Fecha | Lección | Prevención |
 |-------|---------|------------|
 | 2026-03-25 | (inicial) Archivo creado | — |
+| 2026-03-25 | Archivos nuevos (blocks/) deben registrarse en AGENT-REGISTRY inmediatamente | Actualizar ownership en la misma sesión que crea archivos nuevos |
+| 2026-03-25 | Usar Tailwind tokens (`text-teal-900`) en vez de hex hardcodeado (`#1B3B36`) para mantenibilidad, excepto colores sin equivalente Tailwind | Consultar DESIGN_TOKENS.md para conversión |
 
 ## Efectividad de lecciones
 | Lección | Veces aplicada | Previno error? | Confianza |
@@ -27,6 +29,8 @@ Agente frontend de resúmenes: gestiona el visor de estudiantes, el editor de pr
 - Reading time tracker que no cuenta tiempo inactivo (`useSummaryTimer` + `useReadingTimeTracker`)
 - Lightbox de imágenes en chunks funcional para cualquier formato de imagen (`useChunkImageLightbox`)
 - Mutations de anotaciones invalidan correctamente los queries relacionados
+- Block renderers: barrel export (`blocks/index.ts`) + ViewerBlock switch pattern — cada tipo edu es un componente aislado con `{ block: SummaryBlock }` props
+- TDD red→green para renderers UI: fixtures factory (`makeBlock`) + 60 tests → implementación pixel-perfect contra prototipo
 
 ## Patrones a evitar
 | Pattern | Por qué | Alternativa |
@@ -39,7 +43,7 @@ Agente frontend de resúmenes: gestiona el visor de estudiantes, el editor de pr
 ## Métricas
 | Métrica | Valor | Última sesión |
 |---------|-------|---------------|
-| Sesiones ejecutadas | 0 | — |
-| Quality-gate PASS | 0 | — |
+| Sesiones ejecutadas | 1 | 2026-03-25 |
+| Quality-gate PASS | 1 | 2026-03-25 |
 | Quality-gate FAIL | 0 | — |
 | Scope creep incidents | 0 | — |

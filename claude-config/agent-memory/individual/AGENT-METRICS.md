@@ -1,5 +1,5 @@
 # AXON Agent Metrics
-Last updated: 2026-03-25 | Total sessions: 0
+Last updated: 2026-03-25 | Total sessions: 1
 
 > El Arquitecto lee este archivo al inicio de cada sesión y lo actualiza después de cada post-mortem.
 
@@ -9,12 +9,12 @@ Last updated: 2026-03-25 | Total sessions: 0
 
 | Métrica                      | Últimas 5 | Previas 5 | Trend |
 |------------------------------|-----------|-----------|-------|
-| QG first-pass rate           | —         | —         | —     |
+| QG first-pass rate           | 100% (1/1)| —         | —     |
 | Scope creep incidents        | 0         | —         | —     |
 | Repeat errors (post-lesson)  | 0         | —         | —     |
 | Merge conflicts              | 0         | —         | —     |
-| Avg agents per session       | —         | —         | —     |
-| Lessons registered           | 0         | —         | —     |
+| Avg agents per session       | 1         | —         | —     |
+| Lessons registered           | 1         | —         | —     |
 
 > Trend: `+++` mejora fuerte, `++` mejora, `=` estable, `--` declive, `---` declive fuerte
 
@@ -35,7 +35,7 @@ Last updated: 2026-03-25 | Total sessions: 0
 |----------------|--------|--------|--------------|-----------|---------|---------|--------|
 | Quiz (QZ)      | 6      | 0      | —            | —         | 0       | 0       | NEW    |
 | Flashcards (FC)| 6      | 0      | —            | —         | 0       | 0       | NEW    |
-| Summaries (SM) | 6      | 0      | —            | —         | 0       | 0       | NEW    |
+| Summaries (SM) | 6      | 1      | 100% (1/1)   | —         | 1       | 0       | GOOD   |
 | Study (ST)     | 5      | 0      | —            | —         | 0       | 0       | NEW    |
 | Dashboard (DG) | 5      | 0      | —            | —         | 0       | 0       | NEW    |
 | Admin (AO)     | 5      | 0      | —            | —         | 0       | 0       | NEW    |
@@ -77,7 +77,7 @@ Last updated: 2026-03-25 | Total sessions: 0
 ### Summaries (SM)
 | ID    | Sessions | QG L5  | Fails By Type (L5) | Scope | Last Run | Trend | Health |
 |-------|----------|--------|---------------------|-------|----------|-------|--------|
-| SM-01 | 0        | —      | —                   | 0     | —        | —     | NEW    |
+| SM-01 | 1        | 1/1    | —                   | 0     | 2026-03-25 | =   | GOOD   |
 | SM-02 | 0        | —      | —                   | 0     | —        | —     | NEW    |
 | SM-03 | 0        | —      | —                   | 0     | —        | —     | NEW    |
 | SM-04 | 0        | —      | —                   | 0     | —        | —     | NEW    |
