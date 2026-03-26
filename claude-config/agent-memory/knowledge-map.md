@@ -88,6 +88,8 @@ KnowledgeMapView.tsx (orchestrator, 971 lines)
 | 2026-03-25 | KM-01 trabajó en branch incorrecta (feat/sessioncalendario) | KM-01 | REGLA ROOT CAUSE: bash sessions se resetean entre llamadas. SIEMPRE incluir `cd "repo" && git checkout branch` en CADA comando bash |
 | 2026-03-25 | Múltiples agentes en mismo repo sin worktree | KM-01,KM-07 | Pre-crear `.claude/worktrees/` ANTES de lanzar agentes. Usar `isolation: "worktree"` para agentes paralelos |
 | 2026-03-25 | Documentación tenía las reglas pero no se aplicaban | Arquitecto | El Arquitecto DEBE incluir branch guard en CADA prompt de agente. No es opcional |
+| 2026-03-25 | Worktree isolation creó desde HEAD (otra rama), no desde feature branch | KM-01,KM-07 | Worktree copia desde HEAD del main worktree. Si HEAD no es la rama correcta, los cambios no se pueden mergear. SOLUCIÓN: asegurar `git checkout feature-branch` ANTES de lanzar agentes con worktree |
+| 2026-03-25 | Merge de worktrees generó 20+ conflictos por base diferente | KM-01,KM-07 | Para cambios simples (2 archivos), es más rápido y confiable editar directamente que usar worktrees |
 
 ## Pending Improvements
 
