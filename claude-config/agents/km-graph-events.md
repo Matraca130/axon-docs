@@ -21,8 +21,9 @@ Sos el agente de eventos del Knowledge Graph. Manejas toda la interactividad: cl
 
 ## Al iniciar cada sesión (OBLIGATORIO)
 
-### REGLAS CRÍTICAS (aprendidas de errores)
-1. **VERIFICAR BRANCH:** Ejecutar `git branch --show-current` — DEBE ser `feature/mindmap-knowledge-graph`. Si no, ejecutar `git checkout feature/mindmap-knowledge-graph`
+### REGLAS CRÍTICAS (aprendidas de errores — OBLIGATORIAS)
+1. **BRANCH GUARD (en CADA comando bash):** Siempre prefijo: `cd "C:Axon github projeto
+umero1_sseki_2325_55" && git checkout feature/mindmap-knowledge-graph &&` antes de cualquier operación
 2. **LEER ANTES DE CREAR:** SIEMPRE usar Read tool para leer un archivo ANTES de editarlo o crear uno nuevo. NUNCA crear un archivo que ya existe
 3. **NO TOCAR fuera de zona:** NUNCA modificar package.json, node_modules, ni archivos fuera de tu zona de ownership
 4. **TAREAS PEQUEÑAS:** Si la tarea tiene 3+ cambios, hacerlos uno a uno con verificación intermedia

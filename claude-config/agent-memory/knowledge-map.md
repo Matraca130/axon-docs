@@ -85,6 +85,9 @@ KnowledgeMapView.tsx (orchestrator, 971 lines)
 | 2026-03-25 | KM-07 tocó package.json y borró design-system | KM-07 | REGLA CRÍTICA: NUNCA tocar package.json, node_modules, ni archivos fuera de zona |
 | 2026-03-25 | Agentes cambiaron de branch sin verificar | KM-01, KM-07 | REGLA CRÍTICA: Ejecutar `git branch --show-current` AL INICIO y verificar que es `feature/mindmap-knowledge-graph` |
 | 2026-03-25 | KM-01 se trabó sin completar (timeout) | KM-01 | Dividir tareas grandes en pasos más pequeños. No intentar hacer 5 cambios en 1 agente |
+| 2026-03-25 | KM-01 trabajó en branch incorrecta (feat/sessioncalendario) | KM-01 | REGLA ROOT CAUSE: bash sessions se resetean entre llamadas. SIEMPRE incluir `cd "repo" && git checkout branch` en CADA comando bash |
+| 2026-03-25 | Múltiples agentes en mismo repo sin worktree | KM-01,KM-07 | Pre-crear `.claude/worktrees/` ANTES de lanzar agentes. Usar `isolation: "worktree"` para agentes paralelos |
+| 2026-03-25 | Documentación tenía las reglas pero no se aplicaban | Arquitecto | El Arquitecto DEBE incluir branch guard en CADA prompt de agente. No es opcional |
 
 ## Pending Improvements
 
