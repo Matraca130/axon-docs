@@ -33,16 +33,18 @@
 
 > Si algún gate queda `[ ]`, NO arrancar la sesión que lo requiere.
 
-- [ ] **G-01** — `exam_events` existe en DB? (`SELECT * FROM information_schema.tables WHERE table_name = 'exam_events'`)
-  - Resultado: ___________________
+- [x] **G-01** — `exam_events` existe en DB? (`SELECT * FROM information_schema.tables WHERE table_name = 'exam_events'`)
+  - Resultado: **NO EXISTE** — S-0A crea la tabla desde cero ✅
 - [ ] **G-02** — Definición de "día completado" para streak
   - Decisión tomada: `[ ] A: cualquier actividad` `[ ] B: >=1 sesión` `[ ] C: >=30 min`
   - Documentado en CLAUDE.md del repo: `[ ]`
 - [ ] **G-03** — PoC react-day-picker overlay (se hace en S-0B)
   - Resultado: `[ ] PASSED — overlay funciona` `[ ] FAILED — usar fallback border-bottom`
-- [ ] **G-04** — Índices en `fsrs_states` y `study_plan_tasks` verificados
-  - EXPLAIN ANALYZE ejecutado: `[ ]`
-  - ¿Seq Scan? `[ ] SÍ — agregar índice en S-0A` `[ ] NO — ok`
+- [x] **G-04** — Índices en `fsrs_states` y `study_plan_tasks` verificados
+  - EXPLAIN ANALYZE ejecutado: `[x]`
+  - `fsrs_states`: idx_fsrs_states_student_due YA EXISTE ✅ — NO crear en S-0A
+  - `study_plan_tasks`: falta índice (student_id, scheduled_date) — CREAR en S-0A
+  - ⚠️ CORRECCIÓN: columna es `status` (text), NO `completed`. Índice: `WHERE status != 'completed'`
 - [ ] **G-05** — Endpoint confirmado como `GET /calendar/data` (no POST)
   - Confirmado con equipo: `[ ]`
 
@@ -510,8 +512,9 @@ CREATE INDEX IF NOT EXISTS idx_exam_events_student_date
   ON exam_events(student_id, date);
 CREATE INDEX IF NOT EXISTS idx_fsrs_student_due
   ON fsrs_states(student_id, due_at);
+-- ⚠️ CORREGIDO: columna es 'status' (text), no 'completed' (boolean)
 CREATE INDEX IF NOT EXISTS idx_tasks_student_date
-  ON study_plan_tasks(student_id, scheduled_date) WHERE completed = false;
+  ON study_plan_tasks(student_id, scheduled_date) WHERE status != 'completed';
 
 -- RLS Estudiante
 ALTER TABLE exam_events ENABLE ROW LEVEL SECURITY;
