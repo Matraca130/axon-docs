@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aterosclerosis - Resumen Completo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #F0F2F5;
+            color: #333;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb span {
+            display: inline-block;
+        }
+
+        .breadcrumb span:not(:last-child)::after {
+            content: "›";
+            margin-left: 8px;
+            color: #999;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-family: 'Georgia', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #1B3B36;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .pills {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .pill.area {
+            background-color: #e8f5f1;
+            color: #2a8c7a;
+            border-color: #2a8c7a;
+        }
+
+        /* Sections */
+        h2 {
+            font-family: 'Georgia', serif;
+            font-size: 32px;
+            color: #1B3B36;
+            margin-top: 48px;
+            margin-bottom: 24px;
+            font-weight: 600;
+            border-bottom: 2px solid #2a8c7a;
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            font-family: 'Georgia', serif;
+            font-size: 22px;
+            color: #1B3B36;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        /* Paragraphs and text */
+        p {
+            margin-bottom: 16px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Keywords */
+        .kw {
+            background-color: #e8f5f1;
+            color: #2a8c7a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: help;
+            position: relative;
+            display: inline-block;
+        }
+
+        .kw:hover::after {
+            content: attr(data-definition);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1B3B36;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 400;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            pointer-events: none;
+        }
+
+        .kw:hover::before {
+            content: "";
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #1B3B36;
+            z-index: 1000;
+        }
+
+        /* Cards */
+        .card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        /* Key Point Card */
+        .key-point {
+            background: linear-gradient(135deg, #1B3B36 0%, #2a8c7a 100%);
+            color: white;
+            border: none;
+            padding: 28px;
+        }
+
+        .key-point h4 {
+            font-family: 'Georgia', serif;
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .key-point p {
+            color: white;
+            margin-bottom: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Callout boxes */
+        .callout {
+            border-left: 4px solid;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .callout.tip {
+            border-left-color: #2a8c7a;
+            background-color: #f0fdf9;
+        }
+
+        .callout.warning {
+            border-left-color: #f59e0b;
+            background-color: #fefce8;
+        }
+
+        .callout.clinical {
+            border-left-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        .callout.exam {
+            border-left-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .callout.mnemonic {
+            border-left-color: #9333ea;
+            background-color: #f5f3ff;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #1B3B36;
+        }
+
+        .callout p {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .callout p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Stages */
+        .stages {
+            margin-bottom: 24px;
+        }
+
+        .stage-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .stage-item:not(:last-child)::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            width: 2px;
+            height: 40px;
+            background-color: #2a8c7a;
+        }
+
+        .stage-number {
+            position: absolute;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            background-color: #2a8c7a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .stage-content h4 {
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            color: #1B3B36;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stage-content p {
+            margin-bottom: 0;
+            font-size: 15px;
+            color: #555;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .comparison-table th {
+            background-color: #1B3B36;
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-family: 'Georgia', serif;
+            font-size: 15px;
+        }
+
+        .comparison-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 15px;
+        }
+
+        .comparison-table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .two-column .card {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 700px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* List Detail */
+        .list-detail {
+            margin-bottom: 24px;
+        }
+
+        .list-detail-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+        }
+
+        .list-detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .list-detail-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background-color: #e8f5f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a8c7a;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .list-detail-content h4 {
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            color: #1B3B36;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .list-detail-content p {
+            margin-bottom: 0;
+            font-size: 15px;
+            color: #555;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .grid-item {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .grid-item h4 {
+            font-family: 'Georgia', serif;
+            font-size: 15px;
+            color: #1B3B36;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .grid-item p {
+            margin-bottom: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section Divider */
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #2a8c7a, transparent);
+            margin: 48px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .page-title {
+                font-size: 36px;
+            }
+
+            h2 {
+                font-size: 26px;
+            }
+
+            h3 {
+                font-size: 20px;
+            }
+
+            .stage-item {
+                padding-left: 45px;
+            }
+
+            .stage-number {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+        }
+
+        /* Utility classes */
+        .strong {
+            font-weight: 600;
+            color: #1B3B36;
+        }
+
+        .text-muted {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="breadcrumb">
+            <span>Cardiología</span>
+            <span>Patología Vascular</span>
+            <span>Aterosclerosis</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">Aterosclerosis</h1>
+            <div class="pills">
+                <div class="pill area">Cardiología | Patología Vascular</div>
+                <div class="pill">Lectura: 45-50 min</div>
+                <div class="pill">Relevancia ECOE: Alta</div>
+            </div>
+        </div>
+
+        <!-- Section 1: Introducción y Contexto Epidemiológico -->
+        <h2>Introducción y Contexto Epidemiológico</h2>
+
+        <p>La <span class="kw" data-definition="Enfermedad crónica caracterizada por depósitos de lípidos en arterias">aterosclerosis</span> es una enfermedad vascular crónica que representa la causa más importante de morbilidad y mortalidad a nivel mundial, responsable de aproximadamente 17.9 millones de muertes anuales según la OMS. Se trata de un proceso patológico silencioso que comienza décadas antes de que la enfermedad sea clínicamente evidente, lo que hace fundamental su comprensión desde una perspectiva fisiopatológica para los profesionales de la salud.</p>
+
+        <p>La prevalencia de la aterosclerosis ha aumentado dramáticamente en las últimas décadas, especialmente en países de ingreso medio y bajo, donde los factores de riesgo cardiovascular están cada vez más presentes. La enfermedad afecta múltiples territorios vasculares: las arterias coronarias (causando infarto agudo de miocardio), las arterias cerebrales (causando accidente cerebrovascular), las arterias periféricas (enfermedad vascular periférica) y la aorta (aneurismas). Esta distribución territorial implica que los pacientes frecuentemente tienen enfermedad en múltiples territorios simultáneamente, aunque puede manifestarse inicialmente en una sola región.</p>
+
+        <p>Comprender la aterosclerosis en profundidad es esencial para todo médico, ya que no solo permite diagnosticar y tratar la enfermedad establecida, sino también identificar y modificar factores de riesgo en pacientes asintomáticos, realizando prevención primaria efectiva que puede salvar millones de vidas.</p>
+
+        <!-- Section 2: Concepto Central -->
+        <div class="key-point card">
+            <h4>Concepto Central de Aterosclerosis</h4>
+            <p>La aterosclerosis es un proceso inflamatorio crónico de la pared arterial caracterizado por la acumulación progresiva de lípidos (principalmente colesterol) en la íntima arterial, formando placas que estrechan el lumen y alteran la función vascular. Este proceso es dinámico: comienza con disfunción endotelial, progresa a través de múltiples estadios inflamatorios, y puede culminar en eventos trombóticos agudos potencialmente letales.</p>
+        </div>
+
+        <!-- Section 3: Anatomía de la Pared Arterial -->
+        <h2>Anatomía de la Pared Arterial</h2>
+
+        <p>Para comprender cómo se desarrolla la aterosclerosis, es fundamental entender la estructura normal de la pared arterial. Las arterias están compuestas por tres capas concéntricas, cada una con funciones específicas y características histológicas distintas:</p>
+
+        <h3>Túnica Íntima</h3>
+        <p>La capa más interna de la arteria, en contacto directo con la sangre circulante. Está revestida por una monocapa de células endoteliales que forman el <span class="kw" data-definition="Barrera semipermeable de células endoteliales">endotelio</span>, que normalmente es una barrera selectivamente permeable que evita la entrada de moléculas grandes como las lipoproteínas. Bajo este endotelio se encuentra una matriz de tejido conectivo rico en proteoglicanos y colágeno. Es precisamente en esta capa donde comienza el proceso aterosclerótico: cuando el endotelio se daña o disfunciona, pierde su capacidad de barrera y permite la entrada de lipoproteínas de baja densidad (LDL), iniciando la cascada patológica.</p>
+
+        <h3>Túnica Media</h3>
+        <p>La capa muscular intermedia, compuesta principalmente por células de músculo liso dispuestas en espiral alrededor de la arteria, intercaladas con fibras elásticas (láminas elásticas). Las células musculares lisas tienen propiedades contráctiles que permiten a la arteria regular el diámetro de su lumen en respuesta a señales neurales y endoteliales. Estas células también producen matriz extracelular (colágeno, elastina, proteoglicanos) que da a la pared arterial su elasticidad característica. En respuesta a lesión o inflamación, estas células pueden migrar hacia la íntima, fenómeno crucial en la progresión aterosclerótica.</p>
+
+        <h3>Túnica Adventicia</h3>
+        <p>La capa más externa, compuesta por tejido conectivo laxo rico en colágeno y fibroblastos, además de vasos pequeños (vasa vasorum) que suministran nutrientes a las capas más profundas de la pared arterial. También contiene terminaciones nerviosas. Esta capa da estabilidad estructural a la arteria y su inflamación puede contribuir a la inestabilidad de las placas ateroscleróticas.</p>
+
+        <!-- Section 4: Fisiopatología Detallada -->
+        <h2>Fisiopatología Detallada de la Aterosclerosis</h2>
+
+        <p>La fisiopatología de la aterosclerosis es un proceso complejo que ha sido elucidado gradualmente durante décadas de investigación. Hoy entendemos que no es simplemente una "enfermedad de depósito de grasas", sino un proceso inflamatorio multifactorial donde interactúan factores lipídicos, inmunológicos, genéticos y ambientales.</p>
+
+        <h3>Etapas Fisiopatológicas de la Aterosclerosis</h3>
+
+        <div class="stages">
+            <div class="stage-item">
+                <div class="stage-number">1</div>
+                <div class="stage-content">
+                    <h4>Disfunción Endotelial</h4>
+                    <p>Es el evento inicial y fundamental. El endotelio normal produce continuamente óxido nítrico (NO), una molécula que mantiene la arteria en estado vasodilatado, previene la agregación plaquetaria y la adherencia leucocitaria, e inhibe la proliferación de células musculares lisas. Cuando el endotelio se expone a factores de riesgo como hipertensión arterial, hipercolesterolemia, estrés oxidativo o humo de cigarrillo, disminuye la producción de NO y aumenta la producción de especies reactivas de oxígeno (ROS). Esta disfunción endotelial aún es reversible, pero cambia fundamentalmente las propiedades de la pared arterial, haciéndola permeable a las lipoproteínas y promotora de inflamación.</p>
+                </div>
+            </div>
+
+            <div class="stage-item">
+                <div class="stage-number">2</div>
+                <div class="stage-content">
+                    <h4>Retención y Modificación de Lipoproteínas</h4>
+                    <p>Las lipoproteínas de baja densidad (LDL) que circulan normalmente en el plasma comienzan a penetrar en la íntima arterial a través del endotelio disfuncional. Una vez en la íntima, el LDL sufre oxidación (oxLDL) por las ROS locales. Esta modificación oxidativa es crucial: el oxLDL es reconocido como un antígeno extraño por el sistema inmune, activando una respuesta inflamatoria local. El oxLDL se une también a proteoglicanos de la matriz íntima, quedando retenido en la pared arterial.</p>
+                </div>
+            </div>
+
+            <div class="stage-item">
+                <div class="stage-number">3</div>
+                <div class="stage-content">
+                    <h4>Reclutamiento de Células Inmunes y Formación de Células Espumosas</h4>
+                    <p>Las células endoteliales disfuncionales y las células del músculo liso producen citocinas inflamatorias (IL-1, TNF-α, IL-6) y factores quimiotácticos (MCP-1) que reclutan monocitos desde la circulación hacia la íntima. Los monocitos se diferencian en macrófagos y fagocitan el oxLDL mediante receptores scavenger, transformándose en <span class="kw" data-definition="Macrófagos llenos de lípidos que acumulan colesterol">células espumosas</span>. Este proceso es característico de las lesiones tempranas ateroscleróticas y puede ocurrir incluso sin causar estenosis luminal significativa. Las células espumosas liberan más citocinas proinflamatorias, perpetuando el reclutamiento de más células inmunes: es un ciclo autoperpetuante de inflamación.</p>
+                </div>
+            </div>
+
+            <div class="stage-item">
+                <div class="stage-number">4</div>
+                <div class="stage-content">
+                    <h4>Proliferación de Células Musculares Lisas y Formación de Núcleo Lipídico</h4>
+                    <p>Los factores de crecimiento liberados por macrófagos y células endoteliales (PDGF, bFGF) estimulan la migración de células de músculo liso desde la media hacia la íntima, donde proliferan. Estas células producen matriz extracelular (colágeno, proteoglicanos, elastina) que forma el armazón estructural de la placa. Gradualmente, el acúmulo de células espumosas y lípidos forma un <span class="kw" data-definition="Centro de la placa aterosclerótica rico en colesterol">núcleo lipídico</span> irregular, mientras que la capa superficial de la placa (cap fibroso) está compuesta principalmente por células musculares lisas y colágeno denso.</p>
+                </div>
+            </div>
+
+            <div class="stage-item">
+                <div class="stage-number">5</div>
+                <div class="stage-content">
+                    <h4>Calcificación y Remodelado de la Pared Arterial</h4>
+                    <p>A medida que la placa madura, pueden depositarse sales de calcio en su interior, particularmente en el núcleo lipídico. Paralelamente, ocurre remodelado del segmento arterial: las placas pueden causar expansión hacia afuera (remodelado positivo), manteniendo inicialmente el lumen arterial, o remodelado negativo con estenosis luminal. Este remodelado está mediado por metaloproteinasas de matriz y cambios en las fuerzas mecánicas locales. En respuesta a la estenosis, pueden formarse vasos colaterales (angiogénesis) que intentan mantener la perfusión distal.</p>
+                </div>
+            </div>
+
+            <div class="stage-item">
+                <div class="stage-number">6</div>
+                <div class="stage-content">
+                    <h4>Erosión o Ruptura de la Placa y Trombosis Aguda</h4>
+                    <p>Las placas más avanzadas pueden sufrir fisuras en el cap fibroso que recubre el núcleo lipídico trombogénico. Esto puede ocurrir espontáneamente cuando el cap fibroso es delgado y tiene pocas células musculares lisas productoras de colágeno, o por estrés mecánico durante el ejercicio o eventos emocionales. Cuando se expone el núcleo lipídico al flujo sanguíneo, se activa rápidamente la cascada de coagulación, resultando en trombosis intraplacar que puede causar oclusión aguda del vaso. Alternativamente, puede haber erosión endotelial superficial sobre placas sin ruptura del cap fibroso que también lleva a trombosis.</p>
+                </div>
+            </div>
+        </div>
+
+        <p style="margin-top: 24px;">Este proceso de desarrollo aterosclerótico es fundamentalmente dinámico. No todas las lesiones avanzan al mismo ritmo: algunas pueden permanecer estables durante años, otras progresan rápidamente, y algunas pueden incluso regresionar parcialmente si se modifican agresivamente los factores de riesgo. La velocidad de progresión depende de factores genéticos, del nivel de exposición a factores de riesgo, y de la respuesta inmunológica individual.</p>
+
+        <!-- Section 5: La Inflamación como Eje Central -->
+        <div class="key-point card" style="margin-top: 24px;">
+            <h4>Inflamación: El Eje Central de la Aterosclerosis</h4>
+            <p>La aterosclerosis moderna se entiende como una enfermedad inflamatoria vascular. El hallazgo de que altos niveles de proteína C reactiva (PCR) predicen eventos cardiovasculares, independientemente del colesterol, ha revolucionado nuestro entendimiento. No es solo la cantidad de lípidos, sino cómo el sistema inmune responde a ellos lo que determina el riesgo. Esta comprensión ha permitido el desarrollo de nuevos tratamientos antiinflamatorios específicos.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 6: Factores de Riesgo -->
+        <h2>Factores de Riesgo para Aterosclerosis</h2>
+
+        <p>Los factores de riesgo para desarrollar aterosclerosis se dividen clasicamente en modificables (aquellos que pueden cambiar mediante intervención) y no modificables (aquellos determinados genéticamente o por edad). Esta distinción es clínicamente crucial porque guía nuestras estrategias de prevención y tratamiento.</p>
+
+        <div class="two-column">
+            <div class="card">
+                <h3 style="margin-top: 0;">Factores No Modificables</h3>
+                <p><span class="strong">Edad:</span> El riesgo aumenta significativamente después de los 45 años en hombres y 55 años en mujeres. El envejecimiento vascular intrínseco, con disminución de la funcionalidad endotelial y aumento de estrés oxidativo, es un proceso inevitable.</p>
+                <p><span class="strong">Sexo biológico:</span> Los hombres tienen riesgo cardiovascular más elevado en edades más jóvenes, mientras que las mujeres están protegidas por el estrógeno premenopáusico. Después de la menopausia, el riesgo femenino se equipara al masculino rápidamente.</p>
+                <p><span class="strong">Antecedentes familiares:</span> Una historia de enfermedad cardiovascular prematura en familiares de primer grado (infarto en padre <55 años o madre <65 años) multiplica significativamente el riesgo. Esto refleja tanto factores genéticos compartidos como exposición ambiental similar.</p>
+                <p><span class="strong">Predisposición genética:</span> Polimorfismos genéticos en genes relacionados con metabolismo lipídico, presión arterial y respuesta inflamatoria contribuyen al riesgo individual. La hipercolesterolemia familial es el ejemplo más extremo.</p>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top: 0;">Factores Modificables (Principales)</h3>
+                <p><span class="strong">Hipercolesterolemia:</span> Especialmente elevados niveles de LDL (lipoproteína de baja densidad). La relación entre LDL y riesgo aterosclerótico es continua: no existe un "threshold seguro".</p>
+                <p><span class="strong">Hipertensión arterial:</span> Causa disfunción endotelial y aumento de estrés mecánico en la pared arterial. El control estricto reduce significativamente el riesgo.</p>
+                <p><span class="strong">Tabaquismo:</span> Causa estrés oxidativo directo, disfunción endotelial, inflamación y trombosis. Es probablemente el factor de riesgo más potente y prevenible.</p>
+                <p><span class="strong">Diabetes mellitus:</span> Causa hiperglucemia sostenida que daña el endotelio, acelera la modificación oxidativa del LDL, y amplifica la respuesta inflamatoria. Los pacientes diabéticos tienen riesgo aterosclerótico 2-4 veces mayor.</p>
+                <p><span class="strong">Sedentarismo:</span> La falta de actividad física se asocia con disfunción endotelial, aumento de peso y resistencia a la insulina.</p>
+                <p><span class="strong">Obesidad:</span> Especialmente obesidad central (acúmulo abdominal) que se asocia con resistencia a la insulina e inflamación sistémica crónica.</p>
+                <p><span class="strong">Estrés y depresión:</span> El estrés crónico y la depresión se asocian con mayor inflamación sistémica y comportamientos de riesgo.</p>
+            </div>
+        </div>
+
+        <p>Estos factores de riesgo no actúan de manera aislada, sino que interactúan sinérgicamente. Un paciente con múltiples factores de riesgo tiene riesgo multiplicativo, no aditivo. Por eso es fundamental realizar evaluación integral del riesgo cardiovascular total, no solo enfocarse en un factor aislado.</p>
+
+        <div class="callout tip">
+            <div class="callout-title">💡 Tip Clínico: Evaluación del Riesgo Global</div>
+            <p>Utiliza escalas de riesgo cardiovascular (como Framingham, SCORE, o ASCVD) para evaluar el riesgo global de cada paciente. Estas herramientas consideran la interacción de múltiples factores y guían decisiones sobre el nivel de intensidad del tratamiento preventivo.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 7: Clasificación de Placas -->
+        <h2>Clasificación de Placas Ateroscleróticas: Estables versus Vulnerables</h2>
+
+        <p>Una clasificación fundamental en aterosclerosis es la que distingue entre placas estables (quiescentes, crónicas) y placas vulnerables o inestables (propensas a ruptura y eventos agudos). Esta clasificación tiene enorme importancia clínica porque determina el riesgo de eventos agudos y guía las estrategias terapéuticas.</p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Característica</th>
+                    <th>Placa Estable</th>
+                    <th>Placa Vulnerable/Inestable</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Cap Fibroso</strong></td>
+                    <td>Grueso, denso, rico en colágeno, muchas células musculares lisas</td>
+                    <td>Delgado, débil, pocas células musculares lisas, degradado</td>
+                </tr>
+                <tr>
+                    <td><strong>Núcleo Lipídico</strong></td>
+                    <td>Pequeño, contenido</td>
+                    <td>Grande, con gran volumen de tejido necrótico y lípidos</td>
+                </tr>
+                <tr>
+                    <td><strong>Inflamación</strong></td>
+                    <td>Mínima, pocas células inflamatorias</td>
+                    <td>Intensa, infiltración de macrófagos y linfocitos</td>
+                </tr>
+                <tr>
+                    <td><strong>Angiogénesis</strong></td>
+                    <td>Ausente o mínima</td>
+                    <td>Vasos nuevos frágiles, sangrado intraplaca</td>
+                </tr>
+                <tr>
+                    <td><strong>Calcificación</strong></td>
+                    <td>Puede estar presente, bien distribuida</td>
+                    <td>Capa fina de calcio circumferencial</td>
+                </tr>
+                <tr>
+                    <td><strong>Síntomas</strong></td>
+                    <td>Angina estable, esfuerzo predecible</td>
+                    <td>Angina inestable, síntomas en reposo o progresivos</td>
+                </tr>
+                <tr>
+                    <td><strong>Riesgo de Ruptura</strong></td>
+                    <td>Bajo, ruptura requiere estrés mecánico importante</td>
+                    <td>Alto, puede rupturarse espontáneamente</td>
+                </tr>
+                <tr>
+                    <td><strong>Respuesta a Tratamiento</strong></td>
+                    <td>Progresa lentamente pese a tratamiento óptimo</td>
+                    <td>Puede estabilizarse rápidamente con tratamiento intensivo</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>La identificación de placas vulnerables es uno de los grandes desafíos de la medicina actual. En imagen, podemos detectar características de vulnerabilidad mediante angiografía coronaria con OCT (Optical Coherence Tomography), resonancia magnética de alta resolución, o biomarcadores inflamatorios. Sin embargo, hasta el 80% de los infartos de miocardio ocurren por ruptura de placas que causaban estenosis <70%, es decir, placas que por métodos tradicionales se consideraban "insignificantes". Este hallazgo ha transformado nuestra forma de pensar sobre el riesgo coronario.</p>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Advertencia: No subestimes la aterosclerosis leve</div>
+            <p>La ausencia de estenosis significativa en angiografía NO excluye riesgo de infarto agudo. Muchas placas ateroscleróticas tempranas causarán eventos agudos. De ahí la importancia crucial de la prevención primaria y la modificación agresiva de factores de riesgo en todos los pacientes en riesgo, incluso sin enfermedad documentada.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 8: Manifestaciones Clínicas por Territorio -->
+        <h2>Manifestaciones Clínicas por Territorio Vascular</h2>
+
+        <p>Las manifestaciones clínicas de la aterosclerosis varían dramáticamente según qué arterias están afectadas. Un mismo paciente puede tener aterosclerosis "silenciosa" en múltiples territorios. Es fundamental entender las manifestaciones territoriales para diagnóstico oportuno y estratificación del riesgo.</p>
+
+        <h3>Presentaciones Clínicas por Territorio</h3>
+
+        <div class="grid">
+            <div class="grid-item">
+                <h4>Enfermedad Coronaria</h4>
+                <p><strong>Angina de pecho:</strong> Dolor torácico típicamente subesternal, opresivo, irradiado a brazo izquierdo, cuello o mandíbula, precipitado por esfuerzo y aliviado con reposo o nitratos. <strong>Infarto agudo:</strong> Dolor torácico prolongado (>30 min), frecuentemente con diaforesis, náuseas y disnea. <strong>Insuficiencia cardíaca:</strong> Cuando la aterosclerosis coronaria causa daño miocárdico extenso.</p>
+            </div>
+
+            <div class="grid-item">
+                <h4>Enfermedad Cerebrovascular</h4>
+                <p><strong>ACV isquémico:</strong> Déficit neurológico focal súbito (debilidad, afasia, hemianopsia) por oclusión de arteria cerebral, frecuentemente por tromboembolismo desde placa carotídea. <strong>AIT:</strong> Síntomas isquémicos transitorios. <strong>Demencia vascular:</strong> Por múltiples infartos pequeños acumulativos.</p>
+            </div>
+
+            <div class="grid-item">
+                <h4>Enfermedad Vascular Periférica</h4>
+                <p><strong>Claudicación intermitente:</strong> Dolor en extremidades inferiores (pantorrillas típicamente) con el ejercicio, aliviado con reposo. <strong>Isquemia crítica:</strong> Dolor en reposo, úlceras, gangrena. <strong>Disfunción eréctil:</strong> A menudo es manifestación precoz en hombres.</p>
+            </div>
+
+            <div class="grid-item">
+                <h4>Enfermedad de Aorta</h4>
+                <p><strong>Aneurisma de aorta abdominal (AAA):</strong> Frecuentemente asintomático, hallazgo incidental. <strong>Síntomas:</strong> Dolor abdominal o lumbar pulsátil. <strong>Disección:</strong> Dolor agudo insoportable tipo desgarro, diferencial con infarto.</p>
+            </div>
+
+            <div class="grid-item">
+                <h4>Enfermedad Renal</h4>
+                <p><strong>Estenosis arterial renal:</strong> Hipertensión resistente, soplo abdominal, insuficiencia renal progresiva. <strong>Isquemia renal:</strong> Puede llevar a atrofia renal y pérdida de función.</p>
+            </div>
+
+            <div class="grid-item">
+                <h4>Enfermedad Mesentérica</h4>
+                <p><strong>Angina mesentérica:</strong> Dolor abdominal postprandial crónico. <strong>Infarto mesentérico:</strong> Dolor abdominal agudo catastrófico con mala respuesta al tratamiento, alta mortalidad.</p>
+            </div>
+        </div>
+
+        <h3>Formas de Presentación Clínica General</h3>
+
+        <p><span class="strong">Asintomática:</span> La mayoría de los pacientes con aterosclerosis no tienen síntomas. La enfermedad se detecta mediante screening cardiovascular o hallazgos incidentales en imaging.</p>
+
+        <p><span class="strong">Sintomática crónica estable:</span> El paciente presenta síntomas predecibles con esfuerzo o estrés (angina estable, claudicación intermitente) debido a estenosis que limita el flujo sanguíneo durante aumento de demanda. El lumen arterial residual es insuficiente para proporcionar el flujo adicional necesario.</p>
+
+        <p><span class="strong">Síndrome coronario agudo:</span> Presentación aguda con ruptura de placa y trombosis. Puede ser infarto con elevación del ST (STEMI) por oclusión total aguda, o infarto sin elevación del ST (NSTEMI) con oclusión parcial o intermitente. El espectro incluye también la angina inestable.</p>
+
+        <div class="callout clinical">
+            <div class="callout-title">🔍 Correlación Clínica Importante</div>
+            <p>La gravedad de los síntomas NO correlaciona bien con el grado de estenosis angiográfica. Un paciente con estenosis del 90% puede estar asintomático si hay vasos colaterales adecuados. Inversamente, ruptura de una placa causante de solo 50% de estenosis puede producir infarto mortal. Este es el paradoja central de la enfermedad coronaria.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 9: Complicaciones de la Aterosclerosis -->
+        <h2>Complicaciones de la Aterosclerosis</h2>
+
+        <h3>Trombosis Intra-Placa</h3>
+
+        <p>Cuando se produce ruptura del cap fibroso o erosión endotelial superficial, queda expuesto el material trombogénico del núcleo lipídico (factor tisular, fosfolípidos, colágeno). Esto activa inmediatamente la cascada de coagulación, resultando en depósito de plaquetas y fibrina dentro de la placa. Este trombo puede permanecer contenido dentro de la placa (aumentando su volumen) o extenderse hacia el lumen arterial, ocluyen do el flujo. Si el trombo ocluye completamente el vaso sin vasos colaterales, resulta infarto de miocardio. Si hay circulación colateral, puede haber isquemia sin infarto, manifes tado como angina inestable.</p>
+
+        <h3>Embolismo</h3>
+
+        <p>Fragmentos de placa o trombo pueden desprenderse y viajar distalmente por el flujo sanguíneo, obstruyendo arterias más pequeñas. En las arterias coronarias, esto causa infarto miocárdico focal. En arterias cerebrales, causa ACV isquémico focal ("accidente cerebrovascular por fuente cardioembólica"). En extremidades, causa isquemia aguda. El embolismo es particularmente frecuente cuando hay rotura de placa o fibrilación auricular (que puede coexistir con aterosclerosis).</p>
+
+        <h3>Aneurisma de Aorta</h3>
+
+        <p>La aterosclerosis causa inflamación y debilitamiento de la pared aórtica, especialmente en la aorta abdominal (por su menor suministro sanguíneo de vasa vasorum). Esto puede llevar a dilatación aneurismática (diámetro aórtico >3cm en aorta abdominal) con riesgo progresivo de rotura. Los pacientes con AAA tienen riesgo de muerte súbita. El screening de AAA es recomendado en hombres de 65-75 años con tabaquismo previo. La presencia de AAA indica aterosclerosis sistémica grave y requiere evaluación intensiva de otros territorios.</p>
+
+        <h3>Insuficiencia Arterial Crónica</h3>
+
+        <p>El estrechamiento progresivo de una arteria por placa aterosclerótica puede no causar síntomas en reposo (porque el flujo sanguíneo basal es suficiente), pero causa síntomas durante el esfuerzo cuando la demanda de oxígeno excede el flujo disponible. En extremidades inferiores, esto causa claudicación intermitente. Si progresa a oclusión completa, puede desarrollarse isquemia crítica con dolor en reposo y riesgo de gangrena. En coronarias, causa angina de esfuerzo. En arterias renales, causa hipertensión resistente e insuficiencia renal progresiva.</p>
+
+        <h3>Oclusión Aguda Vascular</h3>
+
+        <p>Cuando un vaso aterosclerótico se ocluye abruptamente (ya sea por ruptura de placa con trombosis o por embolismo), el tejido distal sufre isquemia aguda. Si esto afecta el corazón, causa infarto. Si afecta el cerebro, causa ACV. Si afecta el mesentérico, causa infarto mesentérico (catastrófico). Si afecta extremidad, puede requerer amputación. La presentación aguda es médica-quirúrgica de emergencia con alta morbimortalidad.</p>
+
+        <h3>Erosión Articular Superficial</h3>
+
+        <p>Ocasionalmente, la placa aterosclerótica no tiene un cap fibroso protector claro (placarosiva o erosiva). El endotelio puede estar erosionado, exponiendo colágeno y factor tisular sin rotura completa del cap. Esto predispone a trombosis recurrente pero de naturaleza diferente a la ruptura clásica. Las placas erosivas tienen diferente composición y distribución territorial (más frecuentes en ACV que en infarto coronario).</p>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 10: Diagnóstico -->
+        <h2>Diagnóstico de Aterosclerosis</h2>
+
+        <p>El diagnóstico de aterosclerosis requiere evaluación en múltiples niveles: clínico (historia y examen físico), bioquímico (factores de riesgo y marcadores inflamatorios), y de imagen (visualización directa de placas vasculares). No existe un solo test diagnóstico; el diagnóstico es integrador.</p>
+
+        <h3>Evaluación Clínica Inicial</h3>
+
+        <div class="list-detail">
+            <div class="list-detail-item">
+                <div class="list-detail-icon">1</div>
+                <div class="list-detail-content">
+                    <h4>Historia Clínica Detallada</h4>
+                    <p>Documentar presencia de factores de riesgo (edad, sexo, tabaquismo, hipertensión, diabetes, dislipidemia, obesidad, sedentarismo, estrés, antecedentes familiares). Caracterizar síntomas: ¿dolor torácico?, ¿síntomas neurológicos?, ¿claudicación?, ¿disfunción eréctil?. Determinar el patrón temporal: ¿síntomas de esfuerzo estable o síntomas en reposo sugestivos de inestabilidad?. Investigar exposición a contaminación ambiental e infecciones crónicas.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">2</div>
+                <div class="list-detail-content">
+                    <h4>Examen Físico</h4>
+                    <p>Medir presión arterial (regular en ambos brazos para detectar diferencias sugestivas de estenosis). Auscultar para soplos cardíacos y vasculares (soplo carotídeo, abdominal o femoral sugiere estenosis arterial). Evaluar pulsos periféricos (disminución o ausencia de pulsos femorales/poplíteos/dorsales del pie sugiere enfermedad vascular periférica). Palpar abdomen para detectar pulsatilidad aumentada (sugestiva de AAA). Examinar extremidades inferiores para úlceras isquémicas, disminución de pelo, palidez o cambios de coloración con la posición (cambio de color con elevación y enrojecimiento con decúbito sugiere isquemia crítica).</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Pruebas de Laboratorio</h3>
+
+        <div class="list-detail">
+            <div class="list-detail-item">
+                <div class="list-detail-icon">3</div>
+                <div class="list-detail-content">
+                    <h4>Perfil Lipídico Completo</h4>
+                    <p>Colesterol total, LDL (el "malo" que deposita grasas en arterias), HDL (el "bueno" protector), triglicéridos. Cálcular el cociente LDL/HDL. El LDL es el parámetro más importante a modificar en prevención aterosclerótica.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">4</div>
+                <div class="list-detail-content">
+                    <h4>Glucemia en Ayunas e HbA1c</h4>
+                    <p>Para identificar diabetes mellitus o prediabetes, factores de riesgo importantes. La diabetes multiplica significativamente el riesgo aterosclerótico.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">5</div>
+                <div class="list-detail-content">
+                    <h4>Proteína C Reactiva (PCR) de Alta Sensibilidad</h4>
+                    <p>Marcador de inflamación sistémica crónica. Niveles elevados predicen riesgo cardiovascular. Útil para estratificar riesgo en pacientes con lípidos normales y para monitorizar respuesta a tratamiento antiinflamatorio.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">6</div>
+                <div class="list-detail-content">
+                    <h4>Troponinas Cardíacas (en contexto de síntomas agudos)</h4>
+                    <p>Proteínas liberadas por miocardio infartado. Troponinas de alta sensibilidad pueden detectar infartos muy pequeños. Seriadas cada 3 horas aumentan sensibilidad diagnóstica.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">7</div>
+                <div class="list-detail-content">
+                    <h4>Función Renal (creatinina, TFG)</h4>
+                    <p>La insuficiencia renal es tanto una complicación de la aterosclerosis (por estenosis arterial renal) como un factor de riesgo para más aterosclerosis (causa disfunción endotelial). Importante documentar en todos los pacientes.</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Pruebas de Imagen</h3>
+
+        <div class="list-detail">
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Electrocardiograma (ECG)</h4>
+                    <p>En pacientes con síntomas torácicos agudos, el ECG puede mostrar cambios de isquemia aguda (elevación o depresión de ST, cambios en onda T). En aterosclerosis crónica, puede mostrar signos de infarto previo (ondas Q). El ECG es rápido, económico y debe ser el primer test en sospecha de síndrome coronario agudo.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Angiografía Coronaria</h4>
+                    <p>Gold standard para diagnóstico de enfermedad coronaria. Catéter introducido por arteria radial o femoral, inyección de contraste en arterias coronarias con visualización directa de placas y grado de estenosis. Permite no solo diagnóstico sino también intervención terapéutica inmediata (angioplastia, colocación de stents). Es invasiva pero bien tolerada. Indicada en pacientes con síndrome coronario agudo o evidencia de isquemia miocárdica.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Prueba de Esfuerzo</h4>
+                    <p>Paciente camina en banda rodante o pedalea en bicicleta ergométrica mientras se monitoriza ECG y síntomas. Si aparecen cambios isquémicos del ST o síntomas de angina a frecuencia cardíaca reproducible, sugiere estenosis coronaria. Prueba funcional que no visualiza la placa directamente pero detecta isquemia inducible. Contraindicada en síntomas agudos.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Ecocardiografía</h4>
+                    <p>Ultrasonido del corazón. Muestra función ventricular, movimiento de pared (trastornos de movimiento sugieren infarto previo en ese territorio), función valvular. Complicaciones agudas de infarto (ruptura septal, insuficiencia mitral aguda, rotura de pared libre) se visualizan. Es no invasiva y rápida.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Tomografía por Emisión de Positrones (PET) de Miocardio</h4>
+                    <p>Puede detectar viabilidad miocárdica y perfusión. Útil en pacientes con disfunción ventricular para determinar si hay miocardio viable que se beneficiaría de revascularización. Menos disponible que otras modalidades pero muy específica.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Tomografía Computarizada (TAC) de Arterias Coronarias</h4>
+                    <p>Angiografía por TAC (TACAC) puede visualizar arterias coronarias y detectar calcio coronario. Menos invasiva que cateterismo. Especialmente útil en pacientes de riesgo intermedio sin síntomas para estratificar riesgo. Tiene limitaciones en pacientes obesos o con frecuencia cardíaca alta.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Resonancia Magnética (RM) Cardíaca</h4>
+                    <p>Excelente para evaluar viabilidad miocárdica, fibrosis y edema. Excelente resolución espacial. Contraindicada en pacientes con marcapasos o metales. No irradia.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Ultrasonido Carotídeo Doppler</h4>
+                    <p>Evaluación no invasiva de placas ateroscleróticas en arterias carótidas. Puede cuantificar espesor íntima-media (IMT) como marcador de aterosclerosis subclínica, y visualizar placas directamente. Utilizado en screening de riesgo cerebrovascular.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Angiografía por Resonancia Magnética (ARM) o TAC de Arterias</h4>
+                    <p>Para evaluación de enfermedad vascular periférica, estenosis arterial renal, o aneurisma de aorta. No invasivas, buena resolución espacial.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">📍</div>
+                <div class="list-detail-content">
+                    <h4>Índice Tobillo-Brazo (ITB)</h4>
+                    <p>Cociente entre presión arterial sistólica en tobillo versus brazo. ITB <0.9 sugiere enfermedad vascular periférica. Simple, no invasivo, económico, realizable en consultorio. Usado en screening de riesgo vascular periférico.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout exam">
+            <div class="callout-title">📋 Tip de Examen: Estrategia Diagnóstica</div>
+            <p>En examen, frecuentemente te presentarán un caso con síntomas sugestivos de aterosclerosis. El enfoque correcto es: (1) Historia y examen sugieren síndrome coronario agudo? → ECG e inmediato cateterismo. (2) Síntomas estables de angina? → Esfuerzo o imagen de perfusión. (3) Sin síntomas pero alto riesgo? → TACAC, ultrasonido carotídeo para estratificar riesgo. Siempre comenzar con tests no invasivos antes de invasivos, excepto en urgencias.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 11: Tratamiento Farmacológico -->
+        <h2>Tratamiento Farmacológico y No Farmacológico</h2>
+
+        <h3>Modificación de Factores de Riesgo (Piedra Angular)</h3>
+
+        <p>Antes de medicar, es fundamental abordar los factores de riesgo modificables. Un paciente que deja de fumar, pierde 10 kg de peso, comienza ejercicio regular y mejora la dieta puede reducir su riesgo más que cualquier medicamento individual.</p>
+
+        <div class="list-detail">
+            <div class="list-detail-item">
+                <div class="list-detail-icon">✓</div>
+                <div class="list-detail-content">
+                    <h4>Cese del Tabaquismo</h4>
+                    <p>Reducción de riesgo comienza en semanas. Después de 1 año sin fumar, el riesgo de infarto se reduce 50%. Ofrecer terapia de reemplazo nicotínico, vareniclina (Champix) o bupropión. Apoyo conductual. No hay "cigarrillo seguro".</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">✓</div>
+                <div class="list-detail-content">
+                    <h4>Dieta Cardiosaludable</h4>
+                    <p>Dieta mediterránea o DASH: rica en frutas, verduras, granos integrales, aceite de oliva, pescado; baja en grasas saturadas, carbohidratos refinados y sal. Reducción de colesterol LDL plasmático. Aumenta fibra, antioxidantes, ácidos grasos omega-3.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">✓</div>
+                <div class="list-detail-content">
+                    <h4>Ejercicio Físico Regular</h4>
+                    <p>150 minutos semanales de ejercicio aeróbico moderado. Mejora función endotelial, reduce presión arterial, mejora perfil lipídico, reduce peso, mejora sensibilidad a insulina. Puede revertir parcialmente la disfunción endotelial.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">✓</div>
+                <div class="list-detail-content">
+                    <h4>Control de Peso</h4>
+                    <p>En obesos, pérdida de 5-10% del peso corporal ya produce beneficios significativos. Mejora presión arterial, glucemia, inflamación.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">✓</div>
+                <div class="list-detail-content">
+                    <h4>Manejo del Estrés y Sueño</h4>
+                    <p>Estrés crónico aumenta riesgo cardiovascular. Meditación, yoga, apoyo psicológico si hay depresión. Garantizar 7-9 horas de sueño noctambulismo. Apnea obstructiva del sueño aumenta riesgo y debe ser tratada.</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Medicamentos Antiateroscleróticos</h3>
+
+        <h3>Estatinas (Inhibidores de HMG-CoA Reductasa)</h3>
+
+        <p>Las estatinas son los medicamentos más importantes en la prevención aterosclerótica. Inhiben la enzima clave en síntesis de colesterol hepático, reduciendo LDL 20-55% dependiendo de la dosis. Pero sus efectos beneficiosos van más allá de la reducción de colesterol: tienen propiedades antiinflamatorias, estabilizan placas ateroscleróticas, mejoran función endotelial y previenen trombosis. Estudios de imágenes muestran que las estatinas pueden hacer regresionar las placas ateroscleróticas si se usan agresivamente.</p>
+
+        <p><span class="strong">Fármacos:</span> Atorvastatina (20-80 mg), Rosvastatina (10-40 mg), Simvastatina (20-80 mg). Las dosis altas (de intensidad alta) de estatinas reducen LDL 50% o más y son superiores para prevención de eventos.</p>
+
+        <p><span class="strong">Indicaciones:</span> Todo paciente con enfermedad aterosclerótica establecida (infarto previo, ACV, enfermedad vascular periférica). Prevención primaria en pacientes de alto riesgo (diabetes, edad avanzada, múltiples factores de riesgo, especialmente si LDL elevado). Cada vez más evidencia apoya uso preventivo incluso en pacientes de riesgo intermedio.</p>
+
+        <p><span class="strong">Efectos secundarios:</span> Generalmente bien toleradas. Miopatía en 0.1% (riesgo aumentado con ciertos fármacos concomitantes como fibratos). Aumento leve de transaminasas (rara vez clínicamente significativo). Nuevos-diabéticos aumentado ligeramente.</p>
+
+        <h3>Inhibidores de PCSK9</h3>
+
+        <p>Proteína PCSK9 degrada los receptores de LDL en el hígado, reduciendo captación de LDL. Los inhibidores de PCSK9 (evolocumab, alirocumab) bloquean esta degradación, aumentando receptores de LDL disponibles y reduciendo LDL hasta 50-60% adicional al de las estatinas. Son anticuerpos monoclonales muy nuevos y costosos, pero extraordinariamente efectivos en pacientes con enfermedad coronaria establecida o con LDL refractaria a estatinas.</p>
+
+        <h3>Ezetimiba</h3>
+
+        <p>Inhibe absorción intestinal de colesterol. Reduce LDL aproximadamente 15-20%. Frecuentemente añadida a estatinas cuando LDL permanece elevado. Bien tolerada, efectos adversos mínimos.</p>
+
+        <h3>Fármacos que Reducen Triglicéridos</h3>
+
+        <p><span class="strong">Fibratos:</span> Reducen triglicéridos 30-50%, aumentan HDL. Pueden aumentar riesgo de eventos cardiovasculares en algunos subgrupos, por lo que se usan selectivamente. Incrementan riesgo de miopatía con estatinas.</p>
+
+        <p><span class="strong">Ácido nicotínico (niacina):</span> Reduce triglicéridos, aumenta HDL, reduce LDL. Efectos adversos desagradables (flush, gota).</p>
+
+        <p><span class="strong">Omega-3 (ácidos grasos poliinsaturados marinossticos):</span> Baja evidencia de beneficio actualmente. Algunos estudios muestran pequeña reducción de eventos en pacientes con triglicéridos muy elevados.</p>
+
+        <h3>Inhibidores de Enzima Convertidora de Angiotensina (IECA) y Antagonistas de Receptor de Angiotensina II (ARA-II)</h3>
+
+        <p>Reduce presión arterial (efecto mecánico) pero también tiene propiedades antiinflamatorias y antiproliferativas que benefician directamente la pared vascular. Indicados en todo paciente con enfermedad coronaria, especialmente si hay disfunción ventricular. Lisinopril, enalapril (IECA), Losartán, Valsartán (ARA-II) son fármacos comúnmente utilizados.</p>
+
+        <h3>Betabloqueadores</h3>
+
+        <p>Reducen frecuencia cardíaca y contractilidad miocárdica, disminuyendo carga de trabajo cardíaco e isquemia. En angina de pecho, producen alivio sintomático. Después de infarto miocárdico, reducen mortalidad. Son particularmente efectivos en pacientes con infarto anterior o disfunción ventricular.</p>
+
+        <h3>Antagonistas de Calcio</h3>
+
+        <p>Vasodilatadores que reducen presión arterial y pueden aliviar angina. Diltiazem y verapamilo también tienen efectos en frecuencia cardíaca. No todos los antagonistas de calcio tienen beneficio comprobado en prevención de eventos ateroscleróticos; algunos pueden aumentar riesgo si se usan sin betabloqueadores.</p>
+
+        <h3>Nitratos</h3>
+
+        <p>Producen vasodilatación directa, especialmente en arterias coronarias. Alivio rápido de angina aguda (nitroglicerina sublingual). Pueden causar tolerancia con uso crónico. Importante espaciar las dosis con "ventanas libres de nitrato" para evitar tolerancia.</p>
+
+        <h3>Antiagregantes Plaquetarios</h3>
+
+        <p><span class="strong">Ácido Acetilsalicílico (AAS):</span> Irreversiblemente inhibe función plaquetaria reduciendo agregación. Prevención secundaria en pacientes con infarto previo: reduce riesgo de reinfarto 20-25%. Prevención primaria controversial pero generalmente recomendada en hombres >50 años con múltiples factores de riesgo. Aumenta riesgo de sangrado pero protege contra eventos cardiovasculares. Dosis baja (81 mg) es generalmente suficiente.</p>
+
+        <p><span class="strong">Clopidogrel:</span> Antagonista de receptor P2Y12 de plaquetas. Más potente que AAS. Cuando se combina con AAS (terapia dual antiagregante, TDAA), es superior a AAS solo en prevención de trombosis de stent o en síndrome coronario agudo. Se usa típicamente después de angioplastia y colocación de stent durante 12 meses (o más en stents activos).</p>
+
+        <h3>Anticoagulantes</h3>
+
+        <p>En contexto de trombosis aguda (infarto miocárdico, ACV isquémico), se usan anticoagulantes (heparina no fraccionada, enoxaparina) para prevenir extensión del trombo y embolismo. Warfarina o DOACs (apixabán, edoxabán) se usan en prevención secundaria de ACV si hay fibrilación auricular concomitante o si hay trombo intraventricular tras infarto masivo.</p>
+
+        <div class="callout mnemonic">
+            <div class="callout-title">🧠 Mnemotecnia: Drogas para Prevención Secundaria Post-Infarto</div>
+            <p><strong>"ABCDE"</strong> - Antiagregantes (AAS), Betabloqueadores, Colesterol (estatinas), IECA/ARA, Diabetes (control estricto). Estos cinco pilares reducen mortalidad post-infarto significativamente. Memorizar este acrónimo útil para recordar qué medicar en cada paciente post-infarto.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 12: Intervenciones Vasculares -->
+        <h2>Intervenciones Vasculares: Angioplastia y Bypass</h2>
+
+        <h3>Angioplastia Percutánea Transluminal Coronaria (APTC) y Stents</h3>
+
+        <p>Durante angiografía diagnóstica, si se identifica estenosis coronaria importante (>70%, o >50% si hay evidencia de isquemia), puede procederse a angioplastia: un catéter con balón en su punta se introduce en la arteria, se posiciona en la estenosis, se infla el balón comprimiendo la placa contra la pared arterial, dilatan do el lumen. Posteriormente, se coloca un stent (malla metálica) que mantiene la arteria abierta previnie ndo restenosis (re-estrechamiento por proliferación de células musculares lisas). Los stents modernos son "activos" (recubiertos con fármacos antiproliferativos) y tienen restenosis <5% a 1 año.</p>
+
+        <p>APTC es menos invasiva que bypass quirúrgico, tiene recuperación rápida, puede repetirse si es necesario. Sin embargo, trata el síntoma (el estrechamiento) pero no la enfermedad (la aterosclerosis sistémica), por lo que debe acompañarse de manejo óptimo de factores de riesgo con medicamentos.</p>
+
+        <h3>Bypass Coronario Quirúrgico</h3>
+
+        <p>En pacientes con enfermedad multivaso compleja (especialmente con afectación de tronco de coronaria izquierda), diabetes, o disfunción ventricular, el bypass quirúrgico (injertos de vena safena o arteria mamaria interna) puede ser superior a APTC. Requiere cirugía a corazón abierto, recuperación más larga, pero proporciona permeabilidad duradera especialmente con injertos arteriales.</p>
+
+        <h3>Endoprótesis Aórtica</h3>
+
+        <p>En aneurismas de aorta, la intervención quirúrgica abierta tradicional ha sido reemplazada progresivamente por colocación endovascular de estentprótesis (EVAR), menos invasivo. Para aneurismas rotos, es emergencia quirúrgica inmediata.</p>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 13: Prevención Primaria y Secundaria -->
+        <h2>Prevención Primaria y Secundaria</h2>
+
+        <h3>Prevención Primaria: Evitar Primer Evento Cardiovascular</h3>
+
+        <p>Dirigida a pacientes sin enfermedad aterosclerótica establecida pero con factores de riesgo. El objetivo es ralentizar o prevenir el desarrollo de aterosclerosis clínicamente relevante.</p>
+
+        <p><span class="strong">Paso 1: Evaluación de Riesgo.</span> Usar escalas de riesgo (Framingham, SCORE, ASCVD Risk Estimator) para cuantificar riesgo absoluto de evento cardiovascular en 10 años. Esto guía intensidad de intervención.</p>
+
+        <p><span class="strong">Paso 2: Intervenciones del Estilo de Vida.</span> Cese de tabaquismo, dieta cardiosaludable, ejercicio regular, control de peso. Estas intervenciones aplican a TODOS los pacientes independientemente del riesgo.</p>
+
+        <p><span class="strong">Paso 3: Farmacoterapia Preventiva.</span> En pacientes de riesgo moderado a alto (según escala de riesgo), iniciar estatinas incluso si LDL es relativamente bajo. Las directrices actuales favorecen tratamiento más agresivo de factores de riesgo en prevención primaria que hace una década.</p>
+
+        <p><span class="strong">Paso 4: Control Agresivo de Presión Arterial y Glucosa.</span> Target tensional <130/80 en la mayoría de pacientes. En diabéticos, HbA1c <7% (algunos dicen <6.5%).</p>
+
+        <h3>Prevención Secundaria: Después de Evento Aterosclerótico</h3>
+
+        <p>Dirigida a pacientes que ya han sufrido infarto miocárdico, ACV, enfermedad vascular periférica, o aneurisma de aorta. El objetivo es prevenir recurrencia y progresión.</p>
+
+        <p><span class="strong">Más Agresivo que Prevención Primaria.</span> Metas lipídicas más bajas: LDL <70 mg/dL (algunos expertos dicen <55 mg/dL). Use de estatinas de alta intensidad + ezetimiba + potencialmente inhibidor de PCSK9. Presión arterial <130/80.</p>
+
+        <p><span class="strong">Medicamentos Esenciales (Pilares "ABCDE"):</span></p>
+
+        <ul style="margin-left: 20px; margin-bottom: 16px; font-size: 15px;">
+            <li><span class="strong">A - Antiagregantes:</span> AAS + Clopidogrel durante 12 meses post-ACS o post-stent (TDAA), luego AAS indefinido.</li>
+            <li><span class="strong">B - Betabloqueadores:</span> Especialmente en infarto anterior o disfunción ventricular. Mejoran sobrevida.</li>
+            <li><span class="strong">C - Colesterol (Estatinas):</span> Dosis altas, meta LDL agresiva.</li>
+            <li><span class="strong">D - IECA/ARA:</span> Todo paciente post-infarto, especialmente con disfunción ventricular.</li>
+            <li><span class="strong">E - Educación y Estilo de Vida:</span> Rehabilitación cardíaca, educación al paciente, adherencia a medicamentos.</li>
+        </ul>
+
+        <p><span class="strong">Seguimiento Cercano:</span> Evaluación periódica de síntomas, vigilancia de tolerancia a medicamentos, optimización de dosis basada en respuesta clínica y paraclínica (ECG, ecocardiografía, stress testing si está indicado).</p>
+
+        <div class="callout clinical">
+            <div class="callout-title">📊 Evidencia Clínica: Impact de Prevención Secundaria</div>
+            <p>Pacientes que reciben prevención secundaria óptima (todos los pilares ABCDE correctamente aplicados) tienen mortalidad 50% menor a 5 años comparado con pacientes que no reciben tratamiento optimizado post-infarto. Esta es una de las intervenciones más costo-efectivas en medicina.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 14: Correlación Clínica e Integración -->
+        <h2>Correlación Clínica: Caso Integrador</h2>
+
+        <h3>Escenario Clínico: Hombre de 62 años con Dolor Torácico Atípico</h3>
+
+        <p>Paciente varón de 62 años, exfumador (dejó hace 2 años), con hipertensión tratada con lisinopril pero presión no bien controlada (150/95), sobrepeso (IMC 28), sedentario, sin historia personal de eventos cardiovasculares previos pero con padre que tuvo infarto a los 68 años. Presenta hace 2 semanas episodios de molestia torácica atípica - sensación de pesadez retroesternal, no claramente reproducida por esfuerzo, a veces en reposo, sin irradiación clara, dura minutos, aliviada espontáneamente o con respiración profunda. Ha tenido más estrés recientemente (problemas familiares). Refiere ligera disnea de esfuerzo. Niega síncope, palpitaciones. A la exploración: FC 78, PA 148/92 mmHg, auscultación cardíaca normal, sin edemas, sin soplos vasculares.</p>
+
+        <h3>Análisis Clínico</h3>
+
+        <p><span class="strong">¿Qué está pasando fisiopatológicamente?</span> Este paciente tiene múltiples factores de riesgo aterosclerótico: edad 62, exfumador, hipertensión no bien controlada, sobrepeso, sedentarismo, antecedentes familiares positivos, probablemente dislipidemia no diagnosticada (dado el sedentarismo y peso). Ha desarrollado aterosclerosis coronaria subclínica a lo largo de décadas, y ahora presenta síntomas atípicos que PODRÍAN representar angina, aunque el cuadro es poco típico (no es claramente de esfuerzo). El estrés reciente puede haber destabilizado una placa subcrítica.</p>
+
+        <p><span class="strong">¿Cuál es el siguiente paso diagnóstico?</span> Aunque el dolor es atípico, en un paciente de esta edad con múltiples factores de riesgo, NO puedes descartar enfermedad coronaria basado en atipicidad de síntomas. Debes:</p>
+
+        <ol style="margin-left: 20px; margin-bottom: 16px; font-size: 15px;">
+            <li>ECG inmediato (rápido, revela cambios isquémicos si están presentes).</li>
+            <li>Troponinas séricas (si hay infarto, estarán elevadas; seriadas cada 3 horas para sensibilidad).</li>
+            <li>Perfil lipídico (prácticamente seguro que tendrá LDL elevado).</li>
+            <li>Radiografía de tórax (descartar otras causas como neumotórax, insuficiencia cardíaca).</li>
+            <li>Prueba de esfuerzo (si ECG y troponinas normales y clínica sin cambios, para inducir isquemia si está presente).</li>
+        </ol>
+
+        <p><span class="strong">¿Qué encontrarías presumiblemente?</span> ECG probablemente normal en reposo (aterosclerosis sin eventos agudos). Troponinas negativas (no hay necrosis miocárdica acute). Perfil lipídico con LDL>130 mg/dL (hipercolesterolemia sin tratar). Prueba de esfuerzo podría mostrar cambios isquémicos ST si hay estenosis coronaria.</p>
+
+        <p><span class="strong">Plan terapéutico:</span></p>
+
+        <div class="list-detail">
+            <div class="list-detail-item">
+                <div class="list-detail-icon">1</div>
+                <div class="list-detail-content">
+                    <h4>Modificación de Factores de Riesgo</h4>
+                    <p>Mantener cese de tabaquismo (ofrecer apoyo si hay recaída). Dieta DASH o mediterránea. Programa de ejercicio: comenzar con 30 min caminar 5 días/semana, progresivamente aumentar. Pérdida de 3-5 kg de peso. Manejo de estrés (psicólogo si es necesario). Dormir 7-8 horas.</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">2</div>
+                <div class="list-detail-content">
+                    <h4>Farmacoterapia</h4>
+                    <p>Aumentar dosis de lisinopril a 20 mg (o añadir hidroclorotiazida) para alcanzar PA <130/80. INICIAR atorvastatina 40-80 mg diarios (estatina de alta intensidad) para reducir LDL. INICIAR ácido acetilsalicílico 81 mg diarios (prevención primaria dada edad y riesgo).</p>
+                </div>
+            </div>
+
+            <div class="list-detail-item">
+                <div class="list-detail-icon">3</div>
+                <div class="list-detail-content">
+                    <h4>Seguimiento</h4>
+                    <p>Reevaluación en 4-6 semanas: medir presión arterial (debe estar controlada), repetir perfil lipídico (LDL debería caer 40-50% con estatinas; si no, considerar aumentar dosis o añadir ezetimiba). Evaluación de tolerancia a medicamentos. Si persisten síntomas torácicos atípicos, considerar prueba de esfuerzo o TAC de arterias coronarias según evolución.</p>
+                </div>
+            </div>
+        </div>
+
+        <p><span class="strong">Proyección a futuro:</span> Si este paciente recibe prevención primaria óptima (control de PA, LDL agresivo, estilo de vida, medicamentos, control de estrés), su riesgo de infarto miocárdico en los próximos 10 años se reduce significativamente (posiblemente de 30% a 10-15%). Si tiene angina con cambios isquémicos en pruebas, podría requerir cateterismo diagnóstico con angioplastia si hay estenosis importante. Si continúa sin adherencia a prevención (sigue sedentario, PA descontrolada, LDL elevado), corre riesgo significativo de infarto o ACV en los próximos 5-10 años.</p>
+
+        <div class="callout warning">
+            <div class="callall-title">⚠️ Mensajelave sobre Prevención</div>
+            <p>Este caso ilustra por qué la PREVENCIÓN PRIMARIA es tan crítica en atención primaria. Millones de pacientes como este tienen aterosclerosis no diagnosticada y factores de riesgo no tratados. Como médico, tienes oportunidad de cambiar trayectorias completas de enfermedad mediante intervención preventiva en el consultorio. Un paciente bien manejado en prevención primaria evita infartos, ACV, hospitalizaciones y puede ganar décadas de vida funcional.</p>
+        </div>
+
+        <section class="section-divider"></section>
+
+        <!-- Section 15: Resumen Final -->
+        <h2>Conceptos Clave para Recordar</h2>
+
+        <div class="key-point card">
+            <h4>Síntesis: Aterosclerosis en 5 Puntos Fundamentales</h4>
+            <p>1. <span class="strong">Es un proceso inflamatorio crónico,</span> no solo depósito pasivo de grasas. La inflamación, medida por PCR, predice riesgo. 2. <span class="strong">Comienza décadas antes de síntomas:</span> la disfunción endotelial silenciosa es el primer paso. 3. <span class="strong">Múltiples factores de riesgo actúan sinérgicamente:</span> evalúa riesgo global, no solo un factor. 4. <span class="strong">Prevención modificando factores de riesgo es extraordinariamente efectiva:</span> es la intervención más costo-efectiva en medicina. 5. <span class="strong">Una vez establecida la enfermedad, tratamiento agresivo (estatinas, IECA, antiagregantes, betabloqueadores) previene recurrencia:</span> prevención secundaria salva vidas.</p>
+        </div>
+
+        <h3>Puntos Clave de Examen Frecuentes</h3>
+
+        <div class="callout exam">
+            <div class="callout-title">📝 Preguntas de Examen Esperadas</div>
+            <p><strong>Pregunta típica 1:</strong> "¿Cuál es la presión arterial sistólica mínima que se recomienda en un paciente con historia de infarto?" Respuesta: <130 mmHg en la mayoría (antes se aceptaba <140).</p>
+            <p><strong>Pregunta típica 2:</strong> "¿Cuál es la meta de LDL en un paciente con enfermedad coronaria conocida?" Respuesta: <70 mg/dL, algunos dicen <55 mg/dL.</p>
+            <p><strong>Pregunta típica 3:</strong> "¿Qué medicamento debe recibir TODO paciente post-infarto?" Respuesta: Los 5 pilares ABCDE (Antiagregantes, Betabloqueadores, Colesterol/estatinas, IECA/ARA, Educación/estilo de vida).</p>
+            <p><strong>Pregunta típica 4:</strong> "¿Cuál es el factor de riesgo aterosclerótico más prevenible?" Respuesta: Tabaquismo (aunque obesidad, sedentarismo e hipertensión también son altamente prevenibles).</p>
+            <p><strong>Pregunta típica 5:</strong> "¿Por qué algunos pacientes con estenosis coronaria <50% sufren infarto?" Respuesta: Porque lo que importa es ruptura de placa + trombosis, no el grado de estenosis basal. Muchos infartos ocurren por placas que no causaban estenosis significativa.</p>
+        </div>
+
+        <p style="margin-top: 24px; font-size: 15px; color: #666; text-align: center;">---</p>
+
+        <p style="margin-top: 24px; font-size: 14px; color: #666; line-height: 1.8;">Esta es una revisión completa de aterosclerosis para estudiantes de medicina. El tema es vasto y la investigación continúa revelando nuevos mecanismos. Mantente actualizado con directrices cardiovásculares recientes (ESC, ACC/AHA) que se revisan cada 1-2 años con nueva evidencia. La aterosclerosis es probablemente el problema de salud más importante a nivel mundial en este momento, y comprenderla profundamente es esencial para cualquier médico que busque impactar significativamente la salud de sus pacientes.</p>
+
+    </div>
+</body>
+</html>

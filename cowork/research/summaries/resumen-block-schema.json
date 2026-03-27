@@ -1,0 +1,142 @@
+{
+  "$schema": "Axon Summary Block Schema v1.0",
+  "$description": "Schema flexible para resúmenes médicos generados por IA. La IA elige qué bloques usar y en qué orden según el contenido. No hay estructura fija — cada tema se organiza como necesita.",
+
+  "meta": {
+    "topic": "string — título del tema",
+    "subtitle": "string — descripción breve (1 línea)",
+    "area": "string — área médica (Cardiología, Histología, Bioquímica...)",
+    "subarea": "string | null — subárea opcional",
+    "tags": ["array de strings — términos para búsqueda/filtrado"],
+    "difficulty": "basico | intermedio | avanzado",
+    "estimated_read_time_min": "number",
+    "exam_relevance": "baja | media | alta",
+    "source_pages": "number — páginas del material original",
+    "version": "number — versión del resumen",
+    "status": "draft | review | published",
+    "generated_by": "ai",
+    "reviewed_by": "string | null — nombre del profesor que revisó"
+  },
+
+  "keywords": {
+    "$description": "Diccionario de términos clave. La IA marca en el texto con {{keyword_id}}. El frontend renderiza como chip teal con popup al hover. NO todos los términos deben ser keyword — solo los que merecen definición expandida.",
+    "ejemplo_id": {
+      "term": "string — el término como aparece en el texto",
+      "definition": "string — explicación clara de 1-3 oraciones",
+      "related": ["array — términos relacionados para explorar"]
+    }
+  },
+
+  "blocks": [
+    {
+      "$description": "Array ordenado de bloques. La IA decide cuáles usar y cuántos. No hay límite ni mínimo. Cada bloque tiene un type que el frontend renderiza diferente.",
+
+      "TIPOS DISPONIBLES": {
+
+        "prose": {
+          "$description": "Bloque de texto libre. El más usado. Párrafos explicativos con keywords inline. Para contenido narrativo, explicaciones detalladas, contexto, etc. Puede ser tan largo como necesite.",
+          "type": "prose",
+          "title": "string | null — título opcional de la sección",
+          "content": "string — texto con {{keyword_ids}} inline. Soporta múltiples párrafos separados por \\n\\n. Debe ser EXPLICATIVO y COMPLETO, no telegráfico."
+        },
+
+        "key_point": {
+          "$description": "Concepto central o dato importante que el estudiante DEBE recordar. Se renderiza como card oscuro (Dark Teal). Usar con moderación — máx 2-3 por resumen.",
+          "type": "key_point",
+          "title": "string — título del concepto",
+          "content": "string — explicación del concepto central",
+          "importance": "high | critical"
+        },
+
+        "stages": {
+          "$description": "Proceso secuencial con pasos ordenados. Para: patogenia, mecanismos, vías metabólicas, desarrollo embrionario, etc. Cada paso tiene descripción detallada.",
+          "type": "stages",
+          "title": "string",
+          "items": [
+            {
+              "stage": "number",
+              "title": "string",
+              "content": "string — explicación detallada del paso",
+              "severity": "null | mild | moderate | critical — opcional, para indicar gravedad"
+            }
+          ]
+        },
+
+        "comparison": {
+          "$description": "Tabla comparativa. Para: diagnóstico diferencial, comparar fármacos, tipos celulares, estructuras anatómicas, etc.",
+          "type": "comparison",
+          "title": "string",
+          "headers": ["string — nombre de cada columna"],
+          "rows": [
+            ["string — valor de cada celda"]
+          ],
+          "highlight_column": "number | null — columna a resaltar (0-indexed)"
+        },
+
+        "list_detail": {
+          "$description": "Lista de ítems con ícono + label + detalle. Para: factores de riesgo, fármacos, síntomas, criterios diagnósticos, etc.",
+          "type": "list_detail",
+          "title": "string",
+          "intro": "string | null — texto introductorio antes de la lista",
+          "items": [
+            {
+              "label": "string — nombre del ítem",
+              "detail": "string — explicación",
+              "icon": "string — nombre de ícono lucide-react",
+              "severity": "null | low | medium | high — opcional"
+            }
+          ]
+        },
+
+        "grid": {
+          "$description": "Grid de ítems compactos (2 columnas). Para: territorios vasculares, tipos de tejido, clasificaciones, etc.",
+          "type": "grid",
+          "title": "string",
+          "intro": "string | null",
+          "columns": "2 | 3 — número de columnas",
+          "items": [
+            {
+              "label": "string",
+              "detail": "string",
+              "icon": "string"
+            }
+          ]
+        },
+
+        "two_column": {
+          "$description": "Dos cards lado a lado. Para: comparar categorías (modificable vs no modificable, ventajas vs desventajas, arterial vs venoso, etc.)",
+          "type": "two_column",
+          "columns": [
+            {
+              "title": "string",
+              "content_type": "list_detail | prose",
+              "items_or_content": "array de items O string de prosa"
+            }
+          ]
+        },
+
+        "callout": {
+          "$description": "Nota destacada: perla clínica, tip de examen, correlación clínica, nota del profesor, mnemotecnia. Card con borde coloreado.",
+          "type": "callout",
+          "variant": "tip | warning | clinical | mnemonic | exam",
+          "title": "string",
+          "content": "string"
+        },
+
+        "image_reference": {
+          "$description": "Referencia a imagen/diagrama. La IA indica qué imagen sería útil — el profesor o el sistema la agrega después.",
+          "type": "image_reference",
+          "description": "string — qué debería mostrar la imagen",
+          "caption": "string",
+          "image_url": "string | null — se llena después"
+        },
+
+        "section_divider": {
+          "$description": "Separador visual entre grandes secciones del resumen. Opcional.",
+          "type": "section_divider",
+          "label": "string | null — texto del separador (ej: 'Parte II — Fisiopatología')"
+        }
+      }
+    }
+  ]
+}

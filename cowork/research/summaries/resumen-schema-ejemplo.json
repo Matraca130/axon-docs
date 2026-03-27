@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "topic": "Aterosclerosis",
+    "area": "Cardiología",
+    "subarea": "Patología Vascular",
+    "difficulty": "intermedio",
+    "tags": ["cardiovascular", "patología", "arterias", "inflamación"],
+    "estimated_read_time_min": 8,
+    "exam_relevance": "alta",
+    "version": 1,
+    "status": "draft",
+    "generated_by": "ai",
+    "reviewed_by": null
+  },
+
+  "title": "Aterosclerosis",
+  "subtitle": "Enfermedad crónica inflamatoria de las arterias de mediano y gran calibre",
+
+  "keywords": {
+    "placa_ateroma": {
+      "term": "placa de ateroma",
+      "definition": "Lesión focal de la íntima arterial compuesta por lípidos, células inflamatorias, células musculares lisas y matriz extracelular, cubierta por una capa fibrosa.",
+      "related": ["estría grasa", "núcleo necrótico", "capa fibrosa"]
+    },
+    "disfuncion_endotelial": {
+      "term": "disfunción endotelial",
+      "definition": "Pérdida de la capacidad del endotelio para mantener la homeostasis vascular: reducción de óxido nítrico (NO), aumento de permeabilidad y expresión de moléculas de adhesión.",
+      "related": ["VCAM-1", "ICAM-1", "óxido nítrico"]
+    },
+    "ldl_oxidado": {
+      "term": "LDL oxidado",
+      "definition": "Lipoproteína de baja densidad modificada por radicales libres. Es altamente aterogénica: promueve inflamación, es captada por receptores scavenger de macrófagos sin regulación negativa.",
+      "related": ["receptores scavenger", "células espumosas", "estrés oxidativo"]
+    },
+    "celulas_espumosas": {
+      "term": "células espumosas",
+      "definition": "Macrófagos cargados de lípidos (LDL oxidado) en el espacio subendotelial. Son el componente celular principal de la estría grasa y liberan citocinas proinflamatorias.",
+      "related": ["macrófagos", "estría grasa", "LDL oxidado"]
+    },
+    "vcam1": {
+      "term": "VCAM-1 / ICAM-1",
+      "definition": "Moléculas de adhesión vascular/intercelular expresadas en el endotelio disfuncional. Facilitan la unión y transmigración de monocitos al espacio subendotelial.",
+      "related": ["disfunción endotelial", "monocitos", "inflamación"]
+    },
+    "colageno_fibrosa": {
+      "term": "capa fibrosa",
+      "definition": "Cubierta de colágeno y células musculares lisas que recubre la placa. Una capa gruesa = placa estable. Una capa delgada con gran núcleo necrótico = placa vulnerable a ruptura.",
+      "related": ["colágeno", "células musculares lisas", "placa vulnerable"]
+    },
+    "estatinas": {
+      "term": "estatinas",
+      "definition": "Inhibidores de la HMG-CoA reductasa. Reducen LDL 30-50%, tienen efecto pleiotrópico antiinflamatorio y estabilizador de placa. Piedra angular del tratamiento.",
+      "related": ["HMG-CoA reductasa", "LDL", "efecto pleiotrópico"]
+    },
+    "cascada_coagulacion": {
+      "term": "cascada de coagulación",
+      "definition": "La ruptura de placa expone el factor tisular al flujo sanguíneo, activando trombina y formando un trombo oclusivo que puede causar IAM o ACV isquémico.",
+      "related": ["factor tisular", "trombina", "trombo"]
+    },
+    "score_calcio": {
+      "term": "score de calcio coronario",
+      "definition": "Estudio por tomografía computarizada sin contraste que cuantifica la calcificación coronaria (escala de Agatston). Un score >400 indica riesgo cardiovascular alto.",
+      "related": ["TC sin contraste", "escala de Agatston", "calcificación"]
+    }
+  },
+
+  "sections": [
+    {
+      "type": "definition",
+      "title": "Definición",
+      "content": "La aterosclerosis es una enfermedad crónica e inflamatoria caracterizada por la formación de {{placa_ateroma}} en la túnica íntima de las arterias de mediano y gran calibre. Es la principal causa subyacente de enfermedad cardiovascular a nivel mundial, responsable de ~80% de las muertes por ECV."
+    },
+    {
+      "type": "key_point",
+      "title": "Concepto Central",
+      "content": "La aterosclerosis NO es un simple depósito de grasa. Es un proceso inflamatorio crónico que comienza con {{disfuncion_endotelial}}. El motor de la enfermedad es la inflamación, no el colesterol per se.",
+      "importance": "critical"
+    },
+    {
+      "type": "stages",
+      "title": "Patogenia — Etapas de Formación",
+      "items": [
+        {
+          "stage": 1,
+          "title": "Disfunción endotelial",
+          "content": "Factores de riesgo (HTA, tabaco, LDL elevado) dañan el endotelio → aumento de permeabilidad y expresión de {{vcam1}}. El LDL penetra la íntima y se oxida.",
+          "severity": null
+        },
+        {
+          "stage": 2,
+          "title": "Estría grasa",
+          "content": "Monocitos migran a la íntima → se diferencian en macrófagos → fagocitan {{ldl_oxidado}} → se convierten en {{celulas_espumosas}}. Esta es la lesión más temprana, presente desde la infancia.",
+          "severity": "mild"
+        },
+        {
+          "stage": 3,
+          "title": "Placa fibrosa",
+          "content": "Células musculares lisas migran de la media a la íntima y producen colágeno, formando una {{colageno_fibrosa}} sobre el núcleo lipídico necrótico. La placa crece y reduce la luz arterial.",
+          "severity": "moderate"
+        },
+        {
+          "stage": 4,
+          "title": "Placa complicada",
+          "content": "La placa puede ulcerarse, calcificarse o sufrir ruptura. La rotura expone contenido trombogénico al flujo sanguíneo → activa la {{cascada_coagulacion}} → trombo oclusivo → IAM o ACV.",
+          "severity": "critical"
+        }
+      ]
+    },
+    {
+      "type": "two_column",
+      "title": "Factores de Riesgo",
+      "columns": [
+        {
+          "title": "No Modificables",
+          "items": [
+            { "label": "Edad", "detail": "Hombres >45 años, Mujeres >55 años", "icon": "clock" },
+            { "label": "Sexo masculino", "detail": "Mayor incidencia antes de la menopausia", "icon": "user" },
+            { "label": "Genética", "detail": "Hipercolesterolemia familiar, historia familiar de ECV precoz", "icon": "dna" }
+          ]
+        },
+        {
+          "title": "Modificables",
+          "items": [
+            { "label": "Hipertensión arterial", "detail": "Daño endotelial mecánico crónico", "icon": "heart-pulse", "severity": "high" },
+            { "label": "Tabaquismo", "detail": "Estrés oxidativo + disfunción endotelial", "icon": "cigarette", "severity": "high" },
+            { "label": "Dislipidemia", "detail": "LDL elevado (>130 mg/dL), HDL bajo (<40)", "icon": "droplet", "severity": "medium" },
+            { "label": "Diabetes mellitus", "detail": "Glicación de proteínas + inflamación crónica", "icon": "activity", "severity": "medium" },
+            { "label": "Obesidad / Sedentarismo", "detail": "Síndrome metabólico, resistencia a insulina", "icon": "weight", "severity": "medium" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "title": "Manifestaciones Clínicas por Territorio",
+      "intro": "La aterosclerosis es sistémica. Sus manifestaciones dependen del lecho vascular afectado:",
+      "items": [
+        { "label": "Arterias coronarias", "detail": "Angina estable, angina inestable, IAM", "icon": "heart" },
+        { "label": "Carótidas / Cerebrales", "detail": "ACV isquémico, AIT (ataque isquémico transitorio)", "icon": "brain" },
+        { "label": "Arterias periféricas", "detail": "Claudicación intermitente, isquemia crítica de miembros", "icon": "footprints" },
+        { "label": "Aorta", "detail": "Aneurisma aórtico abdominal, disección", "icon": "arrow-up-down" },
+        { "label": "Arterias renales", "detail": "HTA renovascular, nefropatía isquémica", "icon": "filter" },
+        { "label": "Arterias mesentéricas", "detail": "Isquemia mesentérica crónica / aguda", "icon": "utensils" }
+      ]
+    },
+    {
+      "type": "two_column",
+      "title": "Diagnóstico y Tratamiento",
+      "columns": [
+        {
+          "title": "Diagnóstico",
+          "items": [
+            { "label": "Perfil lipídico", "detail": "LDL, HDL, triglicéridos, colesterol total" },
+            { "label": "Ecografía Doppler carotídea", "detail": "Grosor íntima-media (GIM), presencia de placas" },
+            { "label": "{{score_calcio}}", "detail": "TC sin contraste, escala de Agatston" },
+            { "label": "Angiografía coronaria", "detail": "Gold standard para estenosis. Invasivo." },
+            { "label": "AngioTC / AngioRM", "detail": "Alternativas no invasivas para evaluar anatomía vascular" }
+          ]
+        },
+        {
+          "title": "Tratamiento",
+          "items": [
+            { "label": "{{estatinas}}", "detail": "Primera línea. Reducen LDL 30-50% + estabilización de placa", "severity": "critical" },
+            { "label": "Antiagregantes", "detail": "AAS 100mg/día, clopidogrel si intolerancia" },
+            { "label": "IECA / ARA-II", "detail": "Control HTA + protección endotelial" },
+            { "label": "Ezetimiba", "detail": "Asociar si no se alcanza meta de LDL con estatinas" },
+            { "label": "Cambios de estilo de vida", "detail": "Dieta mediterránea, ejercicio 150min/sem, cese tabáquico" }
+          ]
+        }
+      ]
+    }
+  ]
+}

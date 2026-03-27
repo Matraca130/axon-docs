@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aterosclerosis — Preview de Resumen | AXON</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --dark-teal: #1B3B36;
+    --dark-panel: #1a2e2a;
+    --teal-accent: #2a8c7a;
+    --hover-teal: #244e47;
+    --teal-50: #e8f5f1;
+    --teal-100: #d1f0e7;
+    --teal-300: #5cbdaa;
+    --teal-400: #2dd4a8;
+    --progress-end: #0d9488;
+    --page-bg: #F0F2F5;
+    --card-white: #ffffff;
+    --border-card: #e5e7eb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --text-inverse: #ffffff;
+    --sidebar-text: #8fbfb3;
+    --sidebar-sub: #6db5a5;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --font-heading: Georgia, serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--page-bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ══════════════════════════════════════════════ */
+  /* PAGE HEADER — como AxonPageHeader             */
+  /* ══════════════════════════════════════════════ */
+  .page-header {
+    padding: 24px 32px 28px;
+    background: var(--card-white);
+    border-bottom: 1px solid var(--border-card);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 350px; height: 100%;
+    background: linear-gradient(135deg, transparent 30%, var(--teal-50) 100%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+    position: relative; z-index: 1;
+  }
+  .breadcrumb span { margin: 0 5px; opacity: 0.5; }
+  .breadcrumb .current { color: var(--teal-accent); font-weight: 500; }
+
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    position: relative; z-index: 1;
+  }
+
+  .page-subtitle {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    position: relative; z-index: 1;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    position: relative; z-index: 1;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+  }
+  .pill.warn { background: #fef3c7; color: #92400e; }
+  .pill.info { background: #ecfeff; color: #0e7490; }
+  .pill svg { width: 12px; height: 12px; }
+
+  /* ══════════════════════════════════════════════ */
+  /* CONTENT WRAPPER                               */
+  /* ══════════════════════════════════════════════ */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 28px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* ══════════════════════════════════════════════ */
+  /* CARD — bg-white rounded-2xl shadow-sm         */
+  /* ══════════════════════════════════════════════ */
+  .card {
+    background: var(--card-white);
+    border-radius: 16px;
+    border: 1px solid var(--border-card);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 24px;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+  .card-title {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal-accent);
+    flex-shrink: 0;
+  }
+
+  .card p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+  .card p + p { margin-top: 8px; }
+
+  /* ══════════════════════════════════════════════ */
+  /* KEYWORD — {{term}} renderizado                */
+  /* ══════════════════════════════════════════════ */
+  .kw {
+    display: inline;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border: 1px solid transparent;
+  }
+  .kw:hover {
+    background: var(--teal-100);
+    border-color: rgba(42,140,122,0.25);
+    box-shadow: 0 2px 10px rgba(42,140,122,0.15);
+  }
+
+  /* Popup */
+  .kw .tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card-white);
+    border: 1px solid var(--border-card);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    padding: 14px 18px;
+    width: 280px;
+    z-index: 100;
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    line-height: 1.65;
+    cursor: default;
+  }
+  .kw .tip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: var(--card-white);
+  }
+  .kw .tip .tip-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .kw .tip .related {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .kw .tip .related span {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    font-weight: 500;
+  }
+  .kw:hover .tip { display: block; }
+
+  /* ══════════════════════════════════════════════ */
+  /* KEY POINT — Dark Teal card                    */
+  /* ══════════════════════════════════════════════ */
+  .key-point {
+    background: linear-gradient(135deg, var(--dark-teal), var(--dark-panel));
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .key-point .card-title { color: var(--text-inverse); }
+  .key-point .dot { background: var(--teal-400); }
+  .key-point p { color: var(--sidebar-text); font-size: 14px; line-height: 1.75; }
+  .key-point .kw {
+    background: rgba(42,140,122,0.25);
+    color: var(--teal-400);
+    border-color: rgba(42,140,122,0.3);
+  }
+  .key-point .kw:hover { background: rgba(42,140,122,0.4); }
+  .key-point .label {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* ══════════════════════════════════════════════ */
+  /* STAGES — Etapas numeradas                     */
+  /* ══════════════════════════════════════════════ */
+  .stages { display: flex; flex-direction: column; gap: 0; position: relative; }
+
+  .stages::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 24px;
+    bottom: 24px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--teal-100), var(--teal-accent), #ef4444);
+    border-radius: 2px;
+  }
+
+  .stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 14px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .stage:hover { background: var(--teal-50); }
+
+  .stage-num {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: var(--card-white);
+    border: 2px solid var(--teal-100);
+    color: var(--teal-accent);
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 1;
+    transition: all 0.2s;
+  }
+  .stage:hover .stage-num {
+    background: var(--teal-accent);
+    color: white;
+    border-color: var(--teal-accent);
+  }
+  .stage.critical .stage-num {
+    border-color: #fecaca;
+    color: var(--error);
+  }
+  .stage.critical:hover .stage-num {
+    background: var(--error);
+    color: white;
+    border-color: var(--error);
+  }
+
+  .stage-body { flex: 1; }
+  .stage-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stage-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .severity {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .severity.mild { background: #fef3c7; color: #92400e; }
+  .severity.moderate { background: #ffedd5; color: #9a3412; }
+  .severity.critical { background: #fef2f2; color: #991b1b; }
+
+  /* ══════════════════════════════════════════════ */
+  /* TWO COLUMN                                    */
+  /* ══════════════════════════════════════════════ */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .col-title {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .col-title .mini-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal-accent);
+  }
+
+  /* ══════════════════════════════════════════════ */
+  /* LIST ITEMS — icon + label + detail            */
+  /* ══════════════════════════════════════════════ */
+  .list-items { display: flex; flex-direction: column; gap: 8px; }
+
+  .list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--page-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-card);
+    transition: all 0.15s;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .list-item:hover {
+    border-color: rgba(42,140,122,0.3);
+    background: var(--teal-50);
+  }
+
+  .list-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .list-item.danger .list-icon { background: #fef2f2; color: var(--error); }
+  .list-item.warn .list-icon { background: #fef3c7; color: var(--warning); }
+
+  .list-item strong {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .list-item .detail {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 1px;
+  }
+
+  /* ══════════════════════════════════════════════ */
+  /* GRID — manifestaciones clínicas               */
+  /* ══════════════════════════════════════════════ */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .grid-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--page-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-card);
+    transition: all 0.15s;
+  }
+  .grid-item:hover {
+    border-color: rgba(42,140,122,0.3);
+    background: var(--teal-50);
+  }
+  .grid-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .grid-label {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .grid-detail {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    margin-top: 1px;
+  }
+
+  /* ══════════════════════════════════════════════ */
+  /* RESPONSIVE                                    */
+  /* ══════════════════════════════════════════════ */
+  @media (max-width: 700px) {
+    .two-col, .grid-2 { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+    .page-header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="breadcrumb">
+    Cardiología <span>›</span> Patología Vascular <span>›</span> <span class="current">Aterosclerosis</span>
+  </div>
+  <h1 class="page-title">Aterosclerosis</h1>
+  <p class="page-subtitle">Enfermedad crónica inflamatoria de las arterias de mediano y gran calibre</p>
+  <div class="meta-row">
+    <span class="pill">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+      Cardiología
+    </span>
+    <span class="pill info">~8 min de lectura</span>
+    <span class="pill warn">Alta frecuencia en exámenes</span>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ══ DEFINICIÓN ══ -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Definición</div>
+    <p>
+      La aterosclerosis es una enfermedad crónica e inflamatoria caracterizada por la formación de
+      <span class="kw">placa de ateroma
+        <span class="tip">
+          <div class="tip-title">Placa de ateroma</div>
+          Lesión focal de la íntima arterial compuesta por lípidos, células inflamatorias, células musculares lisas y matriz extracelular, cubierta por una capa fibrosa.
+          <div class="related"><span>estría grasa</span><span>núcleo necrótico</span><span>capa fibrosa</span></div>
+        </span>
+      </span>
+      en la túnica íntima de las arterias de mediano y gran calibre. Es la principal causa subyacente de enfermedad cardiovascular a nivel mundial, responsable de ~80% de las muertes por ECV.
+    </p>
+  </div>
+
+  <!-- ══ KEY POINT ══ -->
+  <div class="key-point">
+    <div class="card-title"><div class="dot"></div> Concepto Central <span class="label">Importante</span></div>
+    <p>
+      La aterosclerosis <strong style="color: #ffffff;">NO</strong> es un simple depósito de grasa. Es un proceso inflamatorio crónico que comienza con
+      <span class="kw">disfunción endotelial
+        <span class="tip">
+          <div class="tip-title">Disfunción endotelial</div>
+          Pérdida de la capacidad del endotelio para mantener la homeostasis vascular: reducción de óxido nítrico (NO), aumento de permeabilidad y expresión de moléculas de adhesión.
+          <div class="related"><span>VCAM-1</span><span>ICAM-1</span><span>óxido nítrico</span></div>
+        </span>
+      </span>. El motor de la enfermedad es la <strong style="color: #ffffff;">inflamación</strong>, no el colesterol per se.
+    </p>
+  </div>
+
+  <!-- ══ PATOGENIA — STAGES ══ -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Patogenia — Etapas de Formación</div>
+    <div class="stages">
+
+      <div class="stage">
+        <div class="stage-num">1</div>
+        <div class="stage-body">
+          <div class="stage-title">Disfunción endotelial</div>
+          <div class="stage-desc">
+            Factores de riesgo (HTA, tabaco, LDL elevado) dañan el endotelio → aumento de permeabilidad y expresión de
+            <span class="kw">VCAM-1 / ICAM-1
+              <span class="tip">
+                <div class="tip-title">VCAM-1 / ICAM-1</div>
+                Moléculas de adhesión vascular/intercelular expresadas en el endotelio disfuncional. Facilitan la unión y transmigración de monocitos al espacio subendotelial.
+                <div class="related"><span>disfunción endotelial</span><span>monocitos</span></div>
+              </span>
+            </span>. El LDL penetra la íntima y se oxida.
+          </div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-num">2</div>
+        <div class="stage-body">
+          <div class="stage-title">Estría grasa <span class="severity mild">Leve</span></div>
+          <div class="stage-desc">
+            Monocitos migran a la íntima → se diferencian en macrófagos → fagocitan
+            <span class="kw">LDL oxidado
+              <span class="tip">
+                <div class="tip-title">LDL oxidado (oxLDL)</div>
+                Lipoproteína de baja densidad modificada por radicales libres. Altamente aterogénica: promueve inflamación, captada por receptores scavenger sin regulación negativa.
+                <div class="related"><span>receptores scavenger</span><span>células espumosas</span><span>estrés oxidativo</span></div>
+              </span>
+            </span>
+            → se convierten en
+            <span class="kw">células espumosas
+              <span class="tip">
+                <div class="tip-title">Células espumosas</div>
+                Macrófagos cargados de lípidos en el espacio subendotelial. Componente celular principal de la estría grasa. Liberan citocinas proinflamatorias que perpetúan el proceso.
+                <div class="related"><span>macrófagos</span><span>estría grasa</span><span>LDL oxidado</span></div>
+              </span>
+            </span>. Lesión más temprana, presente desde la infancia.
+          </div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-num">3</div>
+        <div class="stage-body">
+          <div class="stage-title">Placa fibrosa <span class="severity moderate">Moderado</span></div>
+          <div class="stage-desc">
+            Células musculares lisas migran de la media a la íntima y producen colágeno, formando una
+            <span class="kw">capa fibrosa
+              <span class="tip">
+                <div class="tip-title">Capa fibrosa</div>
+                Cubierta de colágeno y células musculares lisas. Capa gruesa = placa estable. Capa delgada con gran núcleo necrótico = placa vulnerable a ruptura.
+                <div class="related"><span>colágeno</span><span>CML</span><span>placa vulnerable</span></div>
+              </span>
+            </span>
+            sobre el núcleo lipídico necrótico. La placa crece y reduce la luz arterial.
+          </div>
+        </div>
+      </div>
+
+      <div class="stage critical">
+        <div class="stage-num">4</div>
+        <div class="stage-body">
+          <div class="stage-title">Placa complicada <span class="severity critical">Crítico</span></div>
+          <div class="stage-desc">
+            La placa puede ulcerarse, calcificarse o sufrir ruptura. La rotura expone contenido trombogénico al flujo sanguíneo → activa la
+            <span class="kw">cascada de coagulación
+              <span class="tip">
+                <div class="tip-title">Cascada de coagulación</div>
+                La ruptura expone el factor tisular, activando trombina y formando un trombo oclusivo → IAM o ACV isquémico.
+                <div class="related"><span>factor tisular</span><span>trombina</span><span>trombo</span></div>
+              </span>
+            </span>
+            → trombo oclusivo → IAM o ACV.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ FACTORES DE RIESGO ══ -->
+  <div class="two-col">
+    <div class="card">
+      <div class="col-title"><div class="mini-dot"></div> Factores No Modificables</div>
+      <div class="list-items">
+        <div class="list-item">
+          <div class="list-icon">&#128337;</div>
+          <div><strong>Edad</strong><div class="detail">Hombres >45 años · Mujeres >55 años</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#9794;&#65039;</div>
+          <div><strong>Sexo masculino</strong><div class="detail">Mayor incidencia antes de la menopausia</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#129516;</div>
+          <div><strong>Genética</strong><div class="detail">Hipercolesterolemia familiar · HF de ECV precoz</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="col-title"><div class="mini-dot"></div> Factores Modificables</div>
+      <div class="list-items">
+        <div class="list-item danger">
+          <div class="list-icon">&#128148;</div>
+          <div><strong>Hipertensión arterial</strong><div class="detail">Daño endotelial mecánico crónico</div></div>
+        </div>
+        <div class="list-item danger">
+          <div class="list-icon">&#128684;</div>
+          <div><strong>Tabaquismo</strong><div class="detail">Estrés oxidativo + disfunción endotelial</div></div>
+        </div>
+        <div class="list-item warn">
+          <div class="list-icon">&#128167;</div>
+          <div><strong>Dislipidemia</strong><div class="detail">LDL elevado (>130 mg/dL) · HDL bajo (<40)</div></div>
+        </div>
+        <div class="list-item warn">
+          <div class="list-icon">&#128137;</div>
+          <div><strong>Diabetes mellitus</strong><div class="detail">Glicación de proteínas + inflamación crónica</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#9878;&#65039;</div>
+          <div><strong>Obesidad / Sedentarismo</strong><div class="detail">Síndrome metabólico · Resistencia a insulina</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MANIFESTACIONES CLÍNICAS ══ -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Manifestaciones Clínicas por Territorio</div>
+    <p style="margin-bottom: 14px;">La aterosclerosis es sistémica. Sus manifestaciones dependen del lecho vascular afectado:</p>
+    <div class="grid-2">
+      <div class="grid-item">
+        <div class="grid-icon">&#10084;&#65039;</div>
+        <div><div class="grid-label">Arterias coronarias</div><div class="grid-detail">Angina estable · Angina inestable · IAM</div></div>
+      </div>
+      <div class="grid-item">
+        <div class="grid-icon">&#129504;</div>
+        <div><div class="grid-label">Carótidas / Cerebrales</div><div class="grid-detail">ACV isquémico · AIT</div></div>
+      </div>
+      <div class="grid-item">
+        <div class="grid-icon">&#129470;</div>
+        <div><div class="grid-label">Arterias periféricas</div><div class="grid-detail">Claudicación intermitente · Isquemia crítica</div></div>
+      </div>
+      <div class="grid-item">
+        <div class="grid-icon">&#129728;</div>
+        <div><div class="grid-label">Aorta</div><div class="grid-detail">Aneurisma aórtico abdominal · Disección</div></div>
+      </div>
+      <div class="grid-item">
+        <div class="grid-icon">&#128167;</div>
+        <div><div class="grid-label">Arterias renales</div><div class="grid-detail">HTA renovascular · Nefropatía isquémica</div></div>
+      </div>
+      <div class="grid-item">
+        <div class="grid-icon">&#127860;</div>
+        <div><div class="grid-label">Arterias mesentéricas</div><div class="grid-detail">Isquemia mesentérica crónica / aguda</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DIAGNÓSTICO Y TRATAMIENTO ══ -->
+  <div class="two-col">
+    <div class="card">
+      <div class="col-title"><div class="mini-dot"></div> Diagnóstico</div>
+      <div class="list-items">
+        <div class="list-item">
+          <div class="list-icon">&#128300;</div>
+          <div><strong>Perfil lipídico</strong><div class="detail">LDL · HDL · Triglicéridos · Colesterol total</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#128225;</div>
+          <div><strong>Ecografía Doppler carotídea</strong><div class="detail">Grosor íntima-media (GIM) · Presencia de placas</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#128187;</div>
+          <div>
+            <strong><span class="kw">Score de calcio coronario
+              <span class="tip">
+                <div class="tip-title">Score de calcio coronario</div>
+                TC sin contraste que cuantifica calcificación coronaria (escala de Agatston). Score >400 = riesgo cardiovascular alto.
+                <div class="related"><span>Agatston</span><span>TC</span><span>calcificación</span></div>
+              </span>
+            </span></strong>
+            <div class="detail">TC sin contraste · Escala de Agatston</div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#128161;</div>
+          <div><strong>Angiografía coronaria</strong><div class="detail">Gold standard para estenosis · Invasivo</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="col-title"><div class="mini-dot"></div> Tratamiento</div>
+      <p style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal-accent); margin-bottom: 8px;">Farmacológico</p>
+      <div class="list-items">
+        <div class="list-item">
+          <div class="list-icon">&#128138;</div>
+          <div>
+            <strong><span class="kw">Estatinas
+              <span class="tip">
+                <div class="tip-title">Estatinas</div>
+                Inhibidores de la HMG-CoA reductasa. Reducen LDL 30-50%. Efecto pleiotrópico antiinflamatorio y estabilizador de placa. Piedra angular del tratamiento.
+                <div class="related"><span>HMG-CoA reductasa</span><span>LDL</span><span>pleiotrópico</span></div>
+              </span>
+            </span></strong>
+            <div class="detail">1ª línea · Reducen LDL 30-50% + estabilización de placa</div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#128138;</div>
+          <div><strong>Antiagregantes</strong><div class="detail">AAS 100mg/día · Clopidogrel si intolerancia</div></div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon">&#128138;</div>
+          <div><strong>IECA / ARA-II</strong><div class="detail">Control HTA + protección endotelial</div></div>
+        </div>
+      </div>
+      <p style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal-accent); margin-bottom: 8px; margin-top: 14px;">No farmacológico</p>
+      <div class="list-item" style="border: 1px dashed rgba(42,140,122,0.3); background: var(--teal-50);">
+        <div class="list-icon" style="background: var(--teal-accent); color: white;">&#127807;</div>
+        <div><strong style="color: var(--teal-accent);">Cambios de estilo de vida</strong><div class="detail">Dieta mediterránea · Ejercicio 150 min/sem · Cese tabáquico · Control de peso</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

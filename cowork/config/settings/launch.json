@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frontend",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd", "C:\\dev\\axon\\frontend", "&&", "npm", "run", "dev"],
+      "port": 5173
+    }
+  ],
+  "autoVerify": false
+}

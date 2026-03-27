@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axon Medical Academy — Estudiá medicina de otro modo</title>
+<meta name="description" content="Plataforma de aprendizaje con IA adaptativa para estudiantes de medicina de la UNLP. Flashcards inteligentes, quizzes adaptativos y tutor de voz 24/7. Empezá gratis hoy.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Axon Medical Academy">
+<meta name="theme-color" content="#1B3B36">
+<link rel="canonical" href="https://axonmedical.com/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Axon Medical Academy — Estudiá medicina de otro modo">
+<meta property="og:description" content="Flashcards inteligentes, quizzes adaptativos y tutor IA para estudiantes de medicina de la UNLP. Basado en FSRS v4 y repetición espaciada científica.">
+<meta property="og:url" content="https://axonmedical.com/">
+<meta property="og:site_name" content="Axon Medical Academy">
+<meta property="og:locale" content="es_AR">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Axon Medical Academy — Estudiá medicina de otro modo">
+<meta name="twitter:description" content="Plataforma de aprendizaje con IA adaptativa para medicina. Flashcards, quizzes y tutor de voz 24/7.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" as="style">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   AXON MEDICAL ACADEMY — LANDING v4
+   Anti-AI-slop rewrite applying Anthropic frontend-design principles:
+   - SVG icons (no emojis)
+   - Grain texture + gradient meshes for atmosphere
+   - Asymmetric compositions + grid-breaking
+   - Staggered motion with creative hover states
+   - Editorial typography moments
+   ============================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --brand:       #1B3B36;
+  --brand-mid:   #244e47;
+  --accent:      #2a8c7a;
+  --accent-light:#2dd4a8;
+  --accent-pale: #ccfbf1;
+  --dark-panel:  #1a2e2a;
+  --sidebar-txt: #8fbfb3;
+  --bg-warm:     #f8f7f4;
+  --bg-card:     #FFFFFF;
+  --text:        #1a1a1a;
+  /* Design tokens */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 100px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.06);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.1);
+  --text-title:  #111827;
+  --text-muted:  #6b7280;
+  --text-light:  #9ca3af;
+  --border:      #e5e7eb;
+  --axon-red:    #f43f5e;
+  --micro-bg:#ede9fe; --micro-fg:#7c3aed;
+  --bio-bg:#d1fae5;   --bio-fg:#059669;
+  --histo-bg:#e0f2fe; --histo-fg:#0284c7;
+  --anat-bg:#ffe4e6;  --anat-fg:#e11d48;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-warm);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px; line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ---- GRAIN OVERLAY (atmosphere) ---- */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- SKIP LINK ---- */
+.skip-link {
+  position: absolute; top: -100%; left: 50%; transform: translateX(-50%);
+  background: var(--accent-light); color: var(--brand);
+  padding: 0.5rem 1.5rem; border-radius: var(--radius-sm);
+  font-weight: 600; z-index: 200;
+  transition: top 0.2s; text-decoration: none;
+}
+.skip-link:focus { top: 1rem; }
+
+/* ---- FOCUS STATES ---- */
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+nav a:focus-visible, nav button:focus-visible { outline-color: var(--accent-light); border-radius: 4px; }
+.footer-links a:focus-visible { outline-color: var(--accent-light); border-radius: 2px; }
+.form-row input:focus-visible { outline: none; }
+
+/* ============================================
+   NAV
+   ============================================ */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 100;
+  background: rgba(27,59,54,0.92);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0.9rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+nav.light {
+  background: rgba(248,247,244,0.92);
+  border-bottom-color: var(--border);
+}
+nav.light .logo { color: var(--brand); }
+nav.light .nav-links a:not(.btn-nav) { color: var(--text-muted); }
+nav.light .nav-links a:not(.btn-nav):hover { color: var(--brand); }
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.35rem; color: #fff;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 0.5rem;
+  transition: color 0.4s;
+}
+.logo:focus-visible { outline-color: var(--accent-light); border-radius: 4px; }
+.logo-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(45,212,168,0.2);
+  animation: pulse-dot 2.4s infinite;
+}
+@keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 3px rgba(45,212,168,0.2)} 50%{box-shadow:0 0 0 6px rgba(45,212,168,0.05)} }
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a {
+  color: rgba(255,255,255,0.7); text-decoration: none;
+  font-size: 0.88rem; font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: #fff; }
+.btn-nav {
+  background: var(--accent-light) !important;
+  color: var(--brand) !important;
+  padding: 0.5rem 1.2rem; border-radius: var(--radius-sm);
+  font-size: 0.85rem !important; font-weight: 600 !important;
+  transition: all 0.2s !important;
+  min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+}
+.btn-nav:hover { background: #3ee8b8 !important; transform: translateY(-1px); }
+
+/* ---- HAMBURGER ---- */
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; flex-direction: column; gap: 5px; z-index: 101; }
+.nav-toggle span { width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
+nav.light .nav-toggle span { background: var(--brand); }
+.nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ============================================
+   HERO — Scroll-linked canvas
+   ============================================ */
+.hero-scroll-container { position: relative; height: 500vh; }
+.hero-sticky {
+  position: sticky; top: 0;
+  width: 100%; height: 100vh;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-canvas-wrapper { position: absolute; inset: 0; z-index: 1; background: var(--brand); }
+.hero-canvas { width: 100%; height: 100%; object-fit: contain; display: block; }
+.hero-canvas-wrapper::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(27,59,54,0.92) 0%,
+    rgba(27,59,54,0.75) 25%,
+    rgba(27,59,54,0.3) 45%,
+    transparent 60%
+  );
+  z-index: 2; pointer-events: none;
+}
+
+/* Preloader */
+.hero-preloader {
+  position: absolute; inset: 0; z-index: 50;
+  background: var(--brand);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.hero-preloader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
+.preloader-text { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-light); letter-spacing: 0.12em; text-transform: uppercase; }
+.preloader-bar { width: 200px; height: 2px; background: rgba(45,212,168,0.15); border-radius: 2px; overflow: hidden; }
+.preloader-fill { height: 100%; width: 0%; background: var(--accent-light); border-radius: 2px; transition: width 0.15s ease; }
+
+/* Hero text */
+.hero-content {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 80px);
+  display: flex; align-items: center; height: 100%;
+}
+.hero-text {
+  max-width: 520px;
+  opacity: 0; transform: translateY(30px);
+  animation: fadeInUp 1s ease-out 0.3s forwards;
+}
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  background: rgba(45,212,168,0.08);
+  border: 1px solid rgba(45,212,168,0.2);
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 600;
+  color: var(--accent-light);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.hero-badge::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--accent-light);
+  box-shadow: 0 0 8px var(--accent-light);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+  font-weight: 400; line-height: 1.08;
+  color: #f5f5f5;
+  margin-bottom: 20px; letter-spacing: -0.02em;
+}
+.hero-title em { font-style: italic; color: var(--accent-light); }
+.hero-subtitle {
+  font-size: clamp(1rem, 1.8vw, 1.12rem);
+  line-height: 1.65; color: rgba(245,245,245,0.8);
+  margin-bottom: 36px; max-width: 440px;
+}
+.hero-cta-group { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 48px; }
+.btn-hero-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px;
+  background: var(--accent-light); color: var(--brand);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 600;
+  border: none; border-radius: var(--radius-md);
+  cursor: pointer; text-decoration: none;
+  transition: all 0.25s;
+  box-shadow: 0 0 20px rgba(45,212,168,0.3);
+}
+.btn-hero-primary:hover { background: #3ee8b8; transform: translateY(-2px); box-shadow: 0 4px 30px rgba(45,212,168,0.45); }
+.btn-hero-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px;
+  background: transparent; color: #f5f5f5;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 500;
+  border: 1px solid rgba(245,245,245,0.2);
+  border-radius: var(--radius-md);
+  cursor: pointer; text-decoration: none;
+  transition: all 0.25s;
+}
+.btn-hero-secondary:hover { border-color: var(--accent-light); color: var(--accent-light); background: rgba(45,212,168,0.06); }
+
+.hero-stats { display: flex; gap: 32px; }
+.stat-item { display: flex; flex-direction: column; }
+.stat-number { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--accent-light); line-height: 1.2; }
+.stat-label { font-size: 0.72rem; color: rgba(245,245,245,0.7); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+/* Terminal cards */
+.terminal-components { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.terminal-card {
+  position: absolute; pointer-events: auto;
+  opacity: 0; transform: scale(0.8);
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  will-change: opacity, transform;
+}
+.terminal-card.visible { opacity: 1; transform: scale(1); }
+.terminal-card.visible:hover { transform: scale(1.03); }
+.t-card {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+  border-radius: 14px; padding: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(45,212,168,0.15), 0 0 40px rgba(45,212,168,0.08);
+  color: #1a1a1a; cursor: pointer; transition: box-shadow 0.3s ease;
+}
+.t-card:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(45,212,168,0.3), 0 0 60px rgba(45,212,168,0.15); }
+.terminal-1 { top: 15%; right: 4%; width: 220px; }
+.terminal-2 { top: 45%; right: 2%; width: 240px; transition-delay: 0.15s; }
+.terminal-4 { bottom: 3%; left: 50%; transform: translateX(-50%) scale(0.8); width: 230px; transition-delay: 0.45s; }
+.terminal-4.visible { transform: translateX(-50%) scale(1); }
+
+.flashcard-inner { min-height: 110px; display: flex; flex-direction: column; justify-content: space-between; }
+.flashcard-label, .quiz-label, .tutor-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.12em; margin-bottom: 10px;
+}
+.flashcard-question { font-family: 'DM Serif Display', serif; font-size: 1rem; line-height: 1.3; color: #1a1a1a; flex-grow: 1; }
+.flashcard-answer { display: none; font-size: 0.95rem; color: #2a2a2a; line-height: 1.5; }
+.flashcard-inner.flipped .flashcard-question { display: none; }
+.flashcard-inner.flipped .flashcard-answer { display: block; }
+.flashcard-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #eee; }
+.flashcard-hint { font-size: 0.7rem; color: #999; }
+.flashcard-flip-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; color: var(--accent-light); font-size: 0.75rem; transition: transform 0.3s; }
+.flashcard-inner.flipped .flashcard-flip-icon { transform: rotate(180deg); }
+.quiz-question-hero { font-size: 0.9rem; font-weight: 600; margin-bottom: 14px; line-height: 1.4; }
+.quiz-options-hero { display: flex; flex-direction: column; gap: 8px; }
+.quiz-option-hero { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; border: 1.5px solid #e5e5e5; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; background: white; min-height: 44px; }
+.quiz-option-hero:hover { border-color: var(--accent); background: rgba(45,212,168,0.04); }
+.quiz-option-hero.correct { border-color: var(--accent-light); background: rgba(45,212,168,0.1); color: var(--brand); font-weight: 600; }
+.quiz-option-hero.wrong { border-color: var(--axon-red); background: rgba(244,63,94,0.06); opacity: 0.6; }
+.quiz-option-letter { width: 24px; height: 24px; border-radius: 6px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+.quiz-option-hero.correct .quiz-option-letter { background: var(--accent-light); color: white; }
+.quiz-option-hero.wrong .quiz-option-letter { background: var(--axon-red); color: white; }
+.tutor-message { display: flex; gap: 10px; align-items: flex-start; }
+.tutor-avatar { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--accent)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tutor-avatar svg { width: 16px; height: 16px; }
+.tutor-bubble { background: #f5f5f5; border-radius: 12px 12px 12px 4px; padding: 8px 12px; font-size: 0.75rem; line-height: 1.5; color: #333; flex-grow: 1; }
+.tutor-wave { display: flex; align-items: center; gap: 2px; margin-top: 10px; height: 24px; }
+.tutor-wave-bar { width: 3px; border-radius: 3px; background: var(--accent); animation: wave-bar 1.2s ease-in-out infinite; }
+.tutor-wave-bar:nth-child(1){height:8px;animation-delay:0s}
+.tutor-wave-bar:nth-child(2){height:16px;animation-delay:0.1s}
+.tutor-wave-bar:nth-child(3){height:12px;animation-delay:0.2s}
+.tutor-wave-bar:nth-child(4){height:20px;animation-delay:0.3s}
+.tutor-wave-bar:nth-child(5){height:10px;animation-delay:0.4s}
+.tutor-wave-bar:nth-child(6){height:14px;animation-delay:0.5s}
+.tutor-wave-bar:nth-child(7){height:6px;animation-delay:0.6s}
+.tutor-wave-bar:nth-child(8){height:18px;animation-delay:0.7s}
+.tutor-wave-bar:nth-child(9){height:10px;animation-delay:0.8s}
+@keyframes wave-bar { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(0.4)} }
+
+/* Scroll indicator */
+.scroll-indicator { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 1; transition: opacity 0.5s; }
+.scroll-indicator.hidden { opacity: 0; pointer-events: none; }
+.scroll-indicator-text { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(245,245,245,0.6); text-transform: uppercase; letter-spacing: 0.2em; }
+.scroll-indicator-arrow { width: 18px; height: 18px; border-right: 1.5px solid rgba(245,245,245,0.5); border-bottom: 1.5px solid rgba(245,245,245,0.5); transform: rotate(45deg); animation: scroll-bounce 2s ease-in-out infinite; }
+@keyframes scroll-bounce { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(6px)} }
+
+/* ============================================
+   TRUST BAR
+   ============================================ */
+#trust {
+  background: var(--brand);
+  padding: 1.4rem 2rem;
+  display: flex; justify-content: center; align-items: center;
+  gap: 2.5rem; flex-wrap: wrap;
+}
+.trust-item { color: #b0d8cc; font-size: 0.82rem; font-weight: 500; display: flex; align-items: center; gap: 0.4rem; }
+.trust-item strong { color: #fff; }
+.trust-sep { color: rgba(255,255,255,0.15); }
+
+/* ============================================
+   SECTIONS — Shared
+   ============================================ */
+section { position: relative; }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.section-label::before { content: ''; width: 24px; height: 1.5px; background: var(--accent); border-radius: 2px; }
+h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  color: var(--text-title); line-height: 1.1; margin-bottom: 1rem;
+}
+h2 em { font-style: italic; color: var(--accent); }
+.lead { color: var(--text-muted); font-size: 1.05rem; max-width: 560px; line-height: 1.75; margin-bottom: 3rem; }
+
+/* Reveal with stagger */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal[data-delay="1"] { transition-delay: 0.08s; }
+.reveal[data-delay="2"] { transition-delay: 0.16s; }
+.reveal[data-delay="3"] { transition-delay: 0.24s; }
+.reveal[data-delay="4"] { transition-delay: 0.32s; }
+.reveal[data-delay="5"] { transition-delay: 0.40s; }
+.reveal[data-delay="6"] { transition-delay: 0.48s; }
+
+/* ---- SVG Icon system ---- */
+.icon-wrap {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.1rem;
+  background: linear-gradient(135deg, rgba(42,140,122,0.08), rgba(45,212,168,0.12));
+  border: 1px solid rgba(42,140,122,0.15);
+}
+.icon-wrap svg { width: 20px; height: 20px; color: var(--accent); }
+
+/* ============================================
+   PROBLEMA — Asymmetric layout
+   ============================================ */
+#problema {
+  padding: 8rem 2rem;
+  background: var(--bg-warm);
+  position: relative;
+  overflow: hidden;
+}
+/* Subtle gradient mesh behind problem section */
+#problema::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244,63,94,0.04) 0%, transparent 70%);
+  top: -100px; right: -200px;
+  pointer-events: none;
+}
+.pain-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.2rem; margin-top: 1rem;
+}
+.pain-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+  overflow: hidden;
+}
+.pain-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 3px; height: 0;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+  transition: height 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.pain-card:hover::before { height: 100%; }
+.pain-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.06); transform: translateY(-3px); }
+.pain-icon-wrap {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+}
+.pain-icon-wrap svg { width: 20px; height: 20px; }
+.pain-icon-wrap.books { background: rgba(139,92,246,0.08); color: #7c3aed; }
+.pain-icon-wrap.money { background: rgba(244,63,94,0.08); color: var(--axon-red); }
+.pain-icon-wrap.clock { background: rgba(245,158,11,0.08); color: #f59e0b; }
+.pain-icon-wrap.stress { background: rgba(99,102,241,0.08); color: #6366f1; }
+.pain-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--text-title); margin-bottom: 0.4rem; }
+.pain-desc { font-size: 0.87rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ============================================
+   BENTO GRID — Diferenciales
+   ============================================ */
+#diferenciales {
+  padding: 8rem 2rem;
+  background: var(--bg-card);
+  position: relative;
+  overflow: hidden;
+}
+#diferenciales::before {
+  content: '';
+  position: absolute;
+  width: 800px; height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,212,168,0.03) 0%, transparent 60%);
+  bottom: -200px; left: -300px;
+  pointer-events: none;
+}
+.bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.bento-card {
+  background: var(--bg-warm); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 2rem; position: relative; overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.bento-card:hover { border-color: rgba(42,140,122,0.25); box-shadow: 0 12px 40px rgba(0,0,0,0.06); transform: translateY(-4px); }
+.bento-card.bento-hero { grid-column: span 2; background: linear-gradient(135deg, var(--brand) 0%, #1e4a43 100%); border-color: transparent; }
+.bento-card.bento-tall { grid-row: span 2; }
+.bento-card.bento-wide { grid-column: span 2; }
+.bento-card.bento-dark { background: linear-gradient(135deg, var(--brand), #1a3330); border-color: transparent; }
+.bento-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--accent-pale); color: var(--accent);
+  border: 1px solid rgba(42,140,122,0.2);
+  padding: 0.2rem 0.65rem; border-radius: 100px; margin-bottom: 1rem;
+}
+.bento-badge.exclusive { background: rgba(139,92,246,0.08); color: #7c3aed; border-color: rgba(139,92,246,0.2); }
+.bento-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--text-title); margin-bottom: 0.7rem; line-height: 1.25; }
+.bento-card.bento-hero h3 { color: #fff; font-size: 1.8rem; }
+.bento-card.bento-hero h3 em { font-style: italic; color: var(--accent-light); }
+.bento-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.2rem; }
+.bento-card.bento-hero p { color: rgba(255,255,255,0.65); }
+
+/* Voice Hero */
+.voice-hero-demo { display: flex; align-items: flex-start; gap: 0.75rem; }
+.vh-avatar { width: 38px; height: 38px; border-radius: 50%; background: rgba(45,212,168,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(45,212,168,0.25); }
+.vh-avatar svg { width: 18px; height: 18px; color: var(--accent-light); }
+.vh-bubble { background: rgba(255,255,255,0.06); border-radius: 0 14px 14px 14px; padding: 0.9rem 1.1rem; flex: 1; border: 1px solid rgba(255,255,255,0.08); }
+.vh-text { font-size: 0.82rem; color: rgba(255,255,255,0.8); line-height: 1.55; margin-bottom: 0.7rem; }
+.vh-wave { display: flex; align-items: center; gap: 3px; height: 16px; }
+.vh-wave span { width: 3px; border-radius: 100px; background: var(--accent-light); animation: waveBar2 1.2s ease-in-out infinite; }
+.vh-wave span:nth-child(1){height:6px;animation-delay:0s}
+.vh-wave span:nth-child(2){height:14px;animation-delay:0.15s}
+.vh-wave span:nth-child(3){height:10px;animation-delay:0.3s}
+.vh-wave span:nth-child(4){height:16px;animation-delay:0.1s}
+.vh-wave span:nth-child(5){height:8px;animation-delay:0.25s}
+@keyframes waveBar2 { 0%,100%{transform:scaleY(0.3);opacity:0.4} 50%{transform:scaleY(1);opacity:1} }
+
+/* Algo visual (BKT bars) */
+.algo-visual { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.algo-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 0.5rem; align-items: center; }
+.algo-label { font-size: 0.72rem; color: var(--text-muted); }
+.algo-bar-wrap { background: var(--border); border-radius: 100px; height: 5px; overflow: hidden; }
+.algo-bar { height: 100%; border-radius: 100px; transition: width 1s ease; }
+.algo-pct { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; color: var(--accent); text-align: right; }
+.algo-pct.warn { color: #f59e0b; }
+.algo-pct.danger { color: var(--axon-red); }
+.algo-note { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--axon-red); font-weight: 600; margin-top: 0.3rem; }
+
+/* WhatsApp */
+.wa-demo { background: #e5ddd5; border-radius: 12px; padding: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.wa-msg { padding: 0.5rem 0.8rem; border-radius: 10px; font-size: 0.75rem; line-height: 1.4; max-width: 88%; }
+.wa-msg.bot { background: #fff; color: #1a1a1a; align-self: flex-start; border-radius: 0 10px 10px 10px; }
+.wa-msg.user { background: #dcf8c6; color: #1a1a1a; align-self: flex-end; border-radius: 10px 0 10px 10px; }
+
+/* Knowledge Graph */
+.kg-demo svg { width: 100%; height: auto; }
+
+/* PDF */
+.pdf-flow { display: flex; align-items: center; gap: 0.6rem; justify-content: center; margin-top: 0.5rem; }
+.pdf-flow-step { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.pdf-flow-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.pdf-flow-icon svg { width: 20px; height: 20px; }
+.pdf-flow-icon.doc { background: rgba(99,102,241,0.1); color: #6366f1; }
+.pdf-flow-icon.ai { background: rgba(45,212,168,0.1); color: var(--accent); }
+.pdf-flow-icon.cards { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.pdf-flow-label { font-size: 0.65rem; color: var(--text-light); font-weight: 500; }
+.pdf-flow-arrow { color: var(--accent); font-size: 0.8rem; }
+.pdf-flow-arrow svg { width: 16px; height: 16px; }
+
+/* XP */
+.xp-bar-wrap { background: var(--border); border-radius: 100px; height: 8px; overflow: hidden; margin-bottom: 0.5rem; }
+.xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); border-radius: 100px; }
+.xp-info { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; margin-bottom: 0.8rem; }
+.xp-val { color: var(--accent); font-weight: 700; }
+.xp-cap { color: var(--text-light); }
+.badges-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.xp-badge { background: var(--accent-pale); color: var(--accent); font-size: 0.65rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: 100px; border: 1px solid rgba(42,140,122,0.15); display: flex; align-items: center; gap: 0.3rem; }
+.xp-badge svg { width: 12px; height: 12px; }
+
+/* Predictor */
+.pred-alert { display: flex; align-items: flex-start; gap: 0.6rem; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.15); border-radius: 10px; padding: 0.8rem; margin-top: 0.5rem; }
+.pred-alert svg { width: 18px; height: 18px; color: #fca5a5; flex-shrink: 0; margin-top: 2px; }
+.pred-text { font-size: 0.78rem; color: #fca5a5; line-height: 1.4; }
+.pred-text strong { color: #fff; }
+
+/* ============================================
+   FUNCIONALIDADES — Offset grid
+   ============================================ */
+#features {
+  padding: 8rem 2rem;
+  background: var(--bg-warm);
+  position: relative;
+}
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+/* Offset second row for visual interest */
+.features-grid .feat-card:nth-child(n+4) { transform: translateX(20px); }
+.feat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+}
+.feat-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.06); transform: translateY(-4px) !important; border-color: rgba(42,140,122,0.2); }
+.feat-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--text-title); margin-bottom: 0.5rem; }
+.feat-desc { font-size: 0.87rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ============================================
+   CÓMO FUNCIONA — Editorial layout
+   ============================================ */
+#como {
+  padding: 8rem 2rem;
+  background: var(--bg-card);
+  position: relative;
+  overflow: hidden;
+}
+#como::after {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(42,140,122,0.03) 0%, transparent 60%);
+  top: -100px; left: -200px;
+  pointer-events: none;
+}
+.como-inner { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start; position: relative; z-index: 1; }
+.steps { display: flex; flex-direction: column; }
+.step { display: flex; gap: 1.8rem; align-items: flex-start; position: relative; padding-bottom: 2.5rem; }
+.step:last-child { padding-bottom: 0; }
+.step::before { content: ''; position: absolute; left: 19px; top: 44px; bottom: 0; width: 1px; background: linear-gradient(180deg, var(--accent), transparent); }
+.step:last-child::before { display: none; }
+.step-num {
+  min-width: 40px; height: 40px; border-radius: 50%;
+  background: var(--accent-pale); border: 2px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--brand);
+}
+.step-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--text-title); margin-bottom: 0.4rem; padding-top: 0.4rem; }
+.step-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+
+/* ============================================
+   MATERIAS
+   ============================================ */
+#materias {
+  padding: 8rem 2rem;
+  background: var(--bg-warm);
+}
+.materias-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; margin-top: 2.5rem; }
+.materia-card {
+  border-radius: 16px; padding: 1.5rem;
+  border: 1px solid var(--border); background: var(--bg-card);
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.materia-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.06); }
+.materia-card.upcoming { opacity: 0.55; }
+.mat-icon { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 0.9rem; }
+.mat-icon svg { width: 18px; height: 18px; }
+.mat-icon.anat  { background: var(--anat-bg); color: var(--anat-fg); }
+.mat-icon.histo { background: var(--histo-bg); color: var(--histo-fg); }
+.mat-icon.bio   { background: var(--bio-bg); color: var(--bio-fg); }
+.mat-icon.micro { background: var(--micro-bg); color: var(--micro-fg); }
+.mat-icon.soon  { background: #f3f4f6; color: var(--text-light); }
+.mat-year { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
+.mat-name { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--text-title); margin-bottom: 0.7rem; }
+.mat-bar { height: 3px; border-radius: 100px; margin-bottom: 0.7rem; }
+.mat-bar.anat  { background: var(--anat-fg); width: 85%; }
+.mat-bar.histo { background: var(--histo-fg); width: 70%; }
+.mat-bar.bio   { background: var(--bio-fg); width: 75%; }
+.mat-bar.micro { background: var(--micro-fg); width: 80%; }
+.mat-bar.soon  { background: var(--border); width: 30%; }
+.mat-status { display: inline-flex; align-items: center; gap: 0.35rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 100px; }
+.mat-status.live { background: var(--accent-pale); color: var(--accent); border: 1px solid rgba(42,140,122,0.2); }
+.mat-status.live::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse-dot 1.5s infinite; }
+.mat-status.soon { background: #f3f4f6; color: var(--text-light); border: 1px solid var(--border); }
+
+/* ============================================
+   PRECIOS
+   ============================================ */
+#precios {
+  padding: 8rem 2rem;
+  background: var(--bg-card);
+  position: relative;
+}
+.precios-header { text-align: center; margin-bottom: 3rem; }
+.precios-header .lead { margin: 0 auto; }
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 760px; margin: 0 auto; }
+.price-card {
+  border-radius: var(--radius-lg); padding: 2.5rem;
+  border: 1px solid var(--border); background: var(--bg-warm);
+  transition: all 0.4s; position: relative;
+}
+.price-card.featured { background: linear-gradient(135deg, var(--brand), #1e4a43); border-color: transparent; box-shadow: 0 16px 48px rgba(27,59,54,0.25); }
+.price-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--accent-light); color: var(--brand); font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3rem 1rem; border-radius: 100px; }
+.price-plan { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.8rem; }
+.price-card.featured .price-plan { color: var(--sidebar-txt); }
+.price-amount { font-family: 'DM Serif Display', serif; font-size: 3rem; color: var(--text-title); line-height: 1; margin-bottom: 0.3rem; }
+.price-amount span { font-family: 'DM Sans', sans-serif; font-size: 1rem; color: var(--text-muted); }
+.price-card.featured .price-amount { color: #fff; }
+.price-card.featured .price-amount span { color: var(--sidebar-txt); }
+.price-period { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 2rem; }
+.price-card.featured .price-period { color: var(--sidebar-txt); }
+.price-features { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; }
+.price-features li { font-size: 0.87rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.55rem; }
+.price-features li.included { color: var(--text-title); }
+.price-card.featured .price-features li { color: var(--sidebar-txt); }
+.price-card.featured .price-features li.included { color: #fff; }
+.price-features li.included::before { content: '\2713'; color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+.price-card.featured .price-features li.included::before { color: var(--accent-light); }
+.price-features li:not(.included)::before { content: '\2013'; color: var(--border); }
+.btn-price { width: 100%; padding: 0.9rem; border-radius: var(--radius-md); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.3s; border: none; text-decoration: none; display: block; text-align: center; }
+.btn-price.primary { background: var(--accent-light); color: var(--brand); box-shadow: 0 4px 20px rgba(45,212,168,0.3); }
+.btn-price.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(45,212,168,0.4); }
+.btn-price.ghost { background: transparent; border: 1.5px solid var(--accent); color: var(--brand); }
+.btn-price.ghost:hover { background: var(--accent-pale); }
+.price-note { text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+
+/* Testimonial */
+.testimonial-inline { max-width: 760px; margin: 3rem auto 0; background: var(--bg-warm); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; display: flex; align-items: flex-start; gap: 1.2rem; }
+.testimonial-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-pale), rgba(42,140,122,0.15)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.testimonial-avatar svg { width: 22px; height: 22px; color: var(--accent); }
+.testimonial-quote { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--text-title); line-height: 1.5; margin-bottom: 0.5rem; font-style: italic; }
+.testimonial-name { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); }
+
+/* ============================================
+   FUNDADOR
+   ============================================ */
+#fundador {
+  padding: 8rem 2rem;
+  background: var(--brand);
+  position: relative;
+  overflow: hidden;
+}
+#fundador::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,212,168,0.06) 0%, transparent 60%);
+  bottom: -200px; right: -200px;
+  pointer-events: none;
+}
+.founder-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.8fr; gap: 4rem; align-items: center; position: relative; z-index: 1; }
+.founder-avatar { width: 100%; aspect-ratio: 1; border-radius: 20px; background: var(--dark-panel); border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; }
+.founder-avatar svg { width: 64px; height: 64px; color: var(--sidebar-txt); opacity: 0.4; }
+.founder-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-light); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+.founder-label::before { content: ''; width: 24px; height: 1.5px; background: var(--accent-light); border-radius: 2px; }
+.founder-quote { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; line-height: 1.35; margin-bottom: 1.5rem; }
+.founder-quote em { font-style: italic; color: var(--accent-light); }
+.founder-bio { font-size: 0.9rem; color: var(--sidebar-txt); line-height: 1.8; }
+.founder-name { margin-top: 1.5rem; font-family: 'DM Serif Display', serif; font-size: 1rem; color: #fff; }
+.founder-role { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-light); margin-top: 0.2rem; }
+
+/* ============================================
+   CTA FINAL
+   ============================================ */
+#cta-final {
+  padding: 8rem 2rem;
+  background: var(--bg-warm);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#cta-final::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,212,168,0.05) 0%, transparent 60%);
+  top: -100px; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+.cta-inner { max-width: 560px; margin: 0 auto; position: relative; z-index: 1; }
+#cta-final h2 { margin-bottom: 1rem; }
+#cta-final .lead { margin: 0 auto 1.5rem; }
+.waitlist-counter {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent-pale); border: 1px solid rgba(42,140,122,0.2);
+  border-radius: 100px; padding: 0.4rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.8rem;
+}
+.waitlist-counter strong { color: var(--accent); }
+.form-row {
+  display: flex; gap: 0.6rem;
+  background: var(--bg-card); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 0.35rem; margin-bottom: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.form-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(42,140,122,0.08); }
+.form-row input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; padding: 0.7rem 1rem; }
+.form-row input::placeholder { color: var(--text-light); }
+.form-row .btn-cta { background: var(--brand); color: #fff; border: none; padding: 0.72rem 1.4rem; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.25s; }
+.form-row .btn-cta:hover { background: var(--brand-mid); }
+.form-note { font-size: 0.78rem; color: var(--text-muted); }
+.form-note a { color: var(--accent); text-decoration: none; }
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer { background: var(--brand); border-top: 1px solid rgba(255,255,255,0.06); padding: 2.5rem 2rem; }
+.footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+.footer-logo { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+.footer-copy { font-size: 0.8rem; color: var(--sidebar-txt); margin-top: 0.3rem; }
+.footer-links { display: flex; gap: 1.8rem; }
+.footer-links a { font-size: 0.82rem; color: var(--sidebar-txt); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: #fff; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1000px) {
+  .bento-grid { grid-template-columns: 1fr 1fr; }
+  .bento-card.bento-hero { grid-column: span 2; }
+  .bento-card.bento-wide { grid-column: span 2; }
+  .bento-card.bento-tall { grid-row: span 1; }
+}
+@media (max-width: 900px) {
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .features-grid .feat-card:nth-child(n+4) { transform: none; }
+  .materias-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .founder-inner { grid-template-columns: 1fr; }
+  .founder-avatar { width: 160px; margin: 0 auto; }
+  .como-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .pain-grid { grid-template-columns: 1fr; }
+  .nav-toggle { display: flex; }
+  .nav-links {
+    display: none; position: fixed; top: 0; right: 0;
+    width: 280px; height: 100vh;
+    background: var(--brand);
+    flex-direction: column; gap: 0;
+    padding: 5rem 2rem 2rem;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { color: rgba(255,255,255,0.8) !important; padding: 0.8rem 0; font-size: 1rem !important; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .nav-links .btn-nav { margin-top: 1rem; text-align: center; }
+}
+@media (max-width: 768px) {
+  .hero-scroll-container { height: 300vh; }
+  nav { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(27,59,54,0.95); }
+  nav.light { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  body::after { opacity: 0.015; }
+  .hero-text { max-width: 100%; }
+  .hero-title { font-size: 2.2rem; }
+  .hero-canvas-wrapper::after { background: linear-gradient(to bottom, rgba(27,59,54,0.85) 0%, rgba(27,59,54,0.5) 40%, rgba(27,59,54,0.7) 100%); }
+  .terminal-card { display: none; }
+  .hero-stats { gap: 20px; }
+  .stat-number { font-size: 1.2rem; }
+  #trust { gap: 1.5rem; padding: 1.2rem 1rem; }
+  .trust-item { font-size: 0.75rem; }
+  .testimonial-inline { flex-direction: column; text-align: center; align-items: center; }
+}
+@media (max-width: 640px) {
+  .bento-grid { grid-template-columns: 1fr; }
+  .bento-card.bento-hero, .bento-card.bento-wide { grid-column: span 1; }
+  .features-grid { grid-template-columns: 1fr; }
+  .materias-grid { grid-template-columns: 1fr 1fr; }
+  .form-row { flex-direction: column; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"EducationalOrganization","name":"Axon Medical Academy","url":"https://axonmedical.com/","description":"Plataforma de aprendizaje inteligente para estudiantes de medicina de la UNLP","address":{"@type":"PostalAddress","addressLocality":"La Plata","addressRegion":"Buenos Aires","addressCountry":"AR"},"founder":{"@type":"Person","name":"Petrick"}},{"@type":"SoftwareApplication","name":"Axon Medical Academy","applicationCategory":"EducationalApplication","operatingSystem":"Web","inLanguage":"es-AR","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"ARS"},{"@type":"Offer","name":"Pro","price":"0","priceCurrency":"ARS"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué es Axon Medical Academy?","acceptedAnswer":{"@type":"Answer","text":"Axon es una plataforma de aprendizaje inteligente diseñada específicamente para estudiantes de medicina de la UNLP. Usa IA adaptativa, flashcards con repetición espaciada (FSRS v4) y un tutor de voz para personalizar tu estudio."}},{"@type":"Question","name":"¿Es gratis?","acceptedAnswer":{"@type":"Answer","text":"Sí, el plan Free es gratuito para siempre e incluye resúmenes de todas las materias, 50 flashcards por mes y quizzes básicos. El plan Pro desbloquea flashcards ilimitadas, tutor IA de voz y más."}},{"@type":"Question","name":"¿Qué materias están disponibles?","acceptedAnswer":{"@type":"Answer","text":"Actualmente están disponibles Anatomía, Histología, Biología (1° año) y Microbiología (3° año). Próximamente se agregan Fisiología, Bioquímica y Patología."}},{"@type":"Question","name":"¿Qué es FSRS v4?","acceptedAnswer":{"@type":"Answer","text":"FSRS v4 (Free Spaced Repetition Scheduler) es el algoritmo de repetición espaciada más avanzado. A diferencia del SM-2 de Anki (1987), FSRS calcula la probabilidad exacta de que recuerdes cada concepto."}}]}]}
+</script>
+</head>
+<body>
+<a href="#problema" class="skip-link">Saltar al contenido</a>
+
+<!-- ======= NAV ======= -->
+<nav id="mainNav">
+  <a href="#" class="logo"><div class="logo-dot"></div>Axon Medical Academy</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="#features">Funcionalidades</a></li>
+    <li><a href="#materias">Materias</a></li>
+    <li><a href="#precios">Precios</a></li>
+    <li><a href="#fundador">Nosotros</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#cta-final" class="btn-nav">Empezá gratis</a></li>
+  </ul>
+</nav>
+
+<!-- ======= HERO ======= -->
+<section class="hero-scroll-container" id="hero">
+  <div class="hero-sticky">
+    <div class="hero-preloader" id="preloader">
+      <span class="preloader-text">Cargando experiencia</span>
+      <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
+    </div>
+    <div class="hero-canvas-wrapper">
+      <canvas class="hero-canvas" id="heroCanvas" role="img" aria-label="Animación de un árbol neural que representa las funcionalidades de Axon"></canvas>
+    </div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">Plataforma Educativa con IA</div>
+        <h1 class="hero-title">Estudiá medicina<br><em>de otro modo</em></h1>
+        <p class="hero-subtitle">Flashcards inteligentes, quizzes adaptativos y un tutor IA que se adapta a tu ritmo. Todo basado en evidencia científica de cómo aprende tu cerebro.</p>
+        <div class="hero-cta-group">
+          <a href="#cta-final" class="btn-hero-primary">Empezá gratis <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a href="#diferenciales" class="btn-hero-secondary"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><polygon points="6,3 13,8 6,13" fill="currentColor"/></svg> Ver qué incluye</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item"><span class="stat-number">X,XXX</span><span class="stat-label">Estudiantes</span></div>
+          <div class="stat-item"><span class="stat-number">XX%</span><span class="stat-label">Aprobación</span></div>
+          <div class="stat-item"><span class="stat-number">XXk+</span><span class="stat-label">Flashcards</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Terminal Cards -->
+    <div class="terminal-components" id="terminalComponents">
+      <div class="terminal-card terminal-1" id="t1">
+        <div class="t-card">
+          <div class="flashcard-inner" id="flashcard1" tabindex="0" role="button" aria-label="Flashcard: tocá o presioná Enter para voltear" onclick="this.classList.toggle('flipped')">
+            <span class="flashcard-label">Anatomía I — Flashcard</span>
+            <div class="flashcard-question">¿Cuál es el hueso más largo del cuerpo humano?</div>
+            <div class="flashcard-answer">El <strong>fémur</strong> es el hueso más largo y fuerte del cuerpo humano. Se extiende desde la cadera hasta la rodilla.</div>
+            <div class="flashcard-footer"><span class="flashcard-hint">Tocá para voltear</span><div class="flashcard-flip-icon">↻</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="terminal-card terminal-2" id="t2">
+        <div class="t-card">
+          <span class="quiz-label">Quiz — Osteología</span>
+          <div class="quiz-question-hero">¿Qué hueso protege el encéfalo?</div>
+          <div class="quiz-options-hero" id="quizOptions" role="group" aria-label="Opciones de respuesta">
+            <div class="quiz-option-hero" data-correct="false" tabindex="0" role="button" aria-label="Opción A: Esternón" onclick="handleQuiz(this)"><span class="quiz-option-letter">A</span><span>Esternón</span></div>
+            <div class="quiz-option-hero" data-correct="true" tabindex="0" role="button" aria-label="Opción B: Cráneo" onclick="handleQuiz(this)"><span class="quiz-option-letter">B</span><span>Cráneo</span></div>
+            <div class="quiz-option-hero" data-correct="false" tabindex="0" role="button" aria-label="Opción C: Escápula" onclick="handleQuiz(this)"><span class="quiz-option-letter">C</span><span>Escápula</span></div>
+            <div class="quiz-option-hero" data-correct="false" tabindex="0" role="button" aria-label="Opción D: Sacro" onclick="handleQuiz(this)"><span class="quiz-option-letter">D</span><span>Sacro</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="terminal-card terminal-4" id="t4">
+        <div class="t-card">
+          <span class="tutor-label">Tutor IA</span>
+          <div class="tutor-message">
+            <div class="tutor-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-light)"><path d="M12 2a8 8 0 0 0-8 8c0 3.4 2.1 6.3 5 7.5V20a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-2.5c2.9-1.2 5-4.1 5-7.5a8 8 0 0 0-8-8z"/><path d="M9 22h6"/></svg></div>
+            <div class="tutor-bubble">Veo que te trabaste con <strong>cráneo</strong>. ¿Querés que repasemos los huesos de la bóveda craneal?</div>
+          </div>
+          <div class="tutor-wave"><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div><div class="tutor-wave-bar"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator" id="scrollIndicator"><span class="scroll-indicator-text">Scroll</span><div class="scroll-indicator-arrow"></div></div>
+  </div>
+</section>
+
+<!-- ======= TRUST BAR ======= -->
+<div id="trust">
+  <div class="trust-item">Hecho para <strong>UNLP</strong> Medicina</div>
+  <span class="trust-sep">·</span>
+  <div class="trust-item"><strong>X,XXX+</strong> estudiantes</div>
+  <span class="trust-sep">·</span>
+  <div class="trust-item">1° y 3° año de medicina</div>
+  <span class="trust-sep">·</span>
+  <div class="trust-item">IA <strong>adaptativa</strong></div>
+  <span class="trust-sep">·</span>
+  <div class="trust-item">Modelos <strong>3D interactivos</strong></div>
+</div>
+
+<!-- ======= MAIN CONTENT ======= -->
+<main>
+
+<!-- ======= EL PROBLEMA ======= -->
+<section id="problema">
+  <div class="container">
+    <p class="section-label reveal">El problema</p>
+    <h2 class="reveal">Estudiar medicina en la UNLP es difícil.<br><em>No tiene por qué serlo.</em></h2>
+    <p class="lead reveal">Estudiantes gastan miles de pesos y horas infinitas buscando resúmenes dispersos, videos genéricos y clases particulares carísimas — para materias que tienen solución específica.</p>
+    <div class="pain-grid">
+      <div class="pain-card reveal" data-delay="1">
+        <div class="pain-icon-wrap books"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
+        <div class="pain-title">Información dispersa y desactualizada</div>
+        <p class="pain-desc">Resúmenes en Drive, PDFs de años anteriores, grupos de WhatsApp. Nadie sabe qué entra en el parcial de este semestre.</p>
+      </div>
+      <div class="pain-card reveal" data-delay="2">
+        <div class="pain-icon-wrap money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="pain-title">Clases particulares inaccesibles</div>
+        <p class="pain-desc">ARS 8.000–13.000 por hora. Para muchos estudiantes, es una opción que simplemente no existe.</p>
+      </div>
+      <div class="pain-card reveal" data-delay="3">
+        <div class="pain-icon-wrap clock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="pain-title">Sin sistema de revisión inteligente</div>
+        <p class="pain-desc">Sin repetición espaciada, estudiás lo que ya sabés y olvidás lo que más necesitabas repasar.</p>
+      </div>
+      <div class="pain-card reveal" data-delay="4">
+        <div class="pain-icon-wrap stress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="pain-title">Ansiedad antes de los parciales</div>
+        <p class="pain-desc">Sin simulacros reales ni feedback claro, no sabés si estás listo hasta que es demasiado tarde.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= BENTO GRID ======= -->
+<section id="diferenciales">
+  <div class="container">
+    <p class="section-label reveal">Lo que nos hace diferentes</p>
+    <h2 class="reveal" style="max-width:640px">Otras plataformas rastrean tus clics.<br><em>Axon rastrea tu comprensión.</em></h2>
+    <p class="lead reveal" style="max-width:580px;margin-bottom:5rem">Cada funcionalidad fue elegida en base a investigación científica sobre cómo aprende el cerebro humano. No por tendencias de mercado.</p>
+    <div class="bento-grid">
+
+      <!-- VOZ -->
+      <div class="bento-card bento-hero reveal">
+        <div class="bento-badge exclusive">Exclusivo — ningún LMS tiene esto</div>
+        <h3>Podés <em>hablarle</em><br>a tu tutor</h3>
+        <p>OpenAI Realtime API. Discutí un caso clínico. Explicá un concepto en voz alta. La retrieval practice verbal es una de las técnicas más efectivas de memorización — disponible a las 3 de la mañana, antes del parcial.</p>
+        <div class="voice-hero-demo">
+          <div class="vh-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
+          <div class="vh-bubble">
+            <div class="vh-text">Explicame cómo funciona el mecanismo de resistencia del MRSA.</div>
+            <div class="vh-wave"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOTOR -->
+      <div class="bento-card bento-tall reveal">
+        <div class="bento-badge">Motor científico</div>
+        <h3>No es repetición espaciada.<br>Es predicción probabilística.</h3>
+        <p>Mientras Anki usa SM-2 (creado en 1987), Axon corre FSRS v4 + BKT v4 simultáneamente — el sistema calcula la probabilidad exacta de que sepas cada subtema.</p>
+        <div class="algo-visual">
+          <div class="algo-row"><span class="algo-label">Anatomía · Miembro superior</span><div class="algo-bar-wrap"><div class="algo-bar" style="width:82%;background:var(--accent)"></div></div><span class="algo-pct">82%</span></div>
+          <div class="algo-row"><span class="algo-label">Micro · Resistencia MRSA</span><div class="algo-bar-wrap"><div class="algo-bar" style="width:41%;background:#f59e0b"></div></div><span class="algo-pct warn">41%</span></div>
+          <div class="algo-row"><span class="algo-label">Histo · Cartílago hialino</span><div class="algo-bar-wrap"><div class="algo-bar" style="width:28%;background:var(--axon-red)"></div></div><span class="algo-pct danger">28%</span></div>
+          <div class="algo-note">↑ Axon va a focalizarse acá ahora</div>
+        </div>
+      </div>
+
+      <!-- WHATSAPP -->
+      <div class="bento-card reveal">
+        <div class="bento-badge">Cero fricción</div>
+        <h3>Estudiá donde<br>ya estás</h3>
+        <p>WhatsApp Cloud API + Telegram nativos. Flashcards vencidas, alertas y el tutor llegan a tu chat — sin abrir otra app.</p>
+        <div class="wa-demo">
+          <div class="wa-msg bot">Tenés 8 flashcards vencidas de Microbiología. ¿Repasamos ahora? <strong>Respondé "sí"</strong></div>
+          <div class="wa-msg user">sí</div>
+          <div class="wa-msg bot">¡Genial! Primera: ¿cuál es el mecanismo de resistencia del MRSA?</div>
+        </div>
+      </div>
+
+      <!-- KNOWLEDGE GRAPH -->
+      <div class="bento-card bento-wide reveal">
+        <div class="bento-badge">Visual</div>
+        <h3>Ves cómo se conecta el conocimiento</h3>
+        <p>Mapa interactivo con D3.js que muestra conexiones entre conceptos, detecta nodos débiles en tiempo real y sugiere las conexiones que faltan en tu comprensión.</p>
+        <div class="kg-demo">
+          <svg viewBox="0 0 420 160" role="img" aria-label="Mapa de conocimiento interactivo mostrando conexiones entre Microbiología, Bacterias, Antibióticos, Resistencia y Virología">
+            <line x1="210" y1="80" x2="100" y2="40" stroke="#2a8c7a" stroke-width="1.5" stroke-opacity="0.4"/>
+            <line x1="210" y1="80" x2="320" y2="40" stroke="#2a8c7a" stroke-width="1.5" stroke-opacity="0.4"/>
+            <line x1="210" y1="80" x2="80" y2="130" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.5" stroke-dasharray="4,3"/>
+            <line x1="210" y1="80" x2="340" y2="130" stroke="#2a8c7a" stroke-width="1.5" stroke-opacity="0.4"/>
+            <line x1="100" y1="40" x2="80" y2="130" stroke="#f59e0b" stroke-width="1" stroke-opacity="0.3"/>
+            <circle cx="210" cy="80" r="22" fill="#1B3B36" stroke="#2dd4a8" stroke-width="2"/>
+            <text x="210" y="84" text-anchor="middle" fill="#fff" font-size="8" font-family="DM Sans">Microbiología</text>
+            <circle cx="100" cy="40" r="16" fill="#1B3B36" stroke="#2a8c7a" stroke-width="1.5"/>
+            <text x="100" y="44" text-anchor="middle" fill="#8fbfb3" font-size="7" font-family="DM Sans">Bacterias</text>
+            <circle cx="320" cy="40" r="16" fill="#1B3B36" stroke="#2a8c7a" stroke-width="1.5"/>
+            <text x="320" y="44" text-anchor="middle" fill="#8fbfb3" font-size="7" font-family="DM Sans">Antibióticos</text>
+            <circle cx="80" cy="130" r="18" fill="#3d1010" stroke="#f43f5e" stroke-width="2"/>
+            <text x="80" y="128" text-anchor="middle" fill="#f87171" font-size="7" font-family="DM Sans">Resistencia</text>
+            <text x="80" y="138" text-anchor="middle" fill="#f87171" font-size="6" font-family="DM Sans">p=0.28</text>
+            <circle cx="340" cy="130" r="16" fill="#1B3B36" stroke="#2a8c7a" stroke-width="1.5"/>
+            <text x="340" y="134" text-anchor="middle" fill="#8fbfb3" font-size="7" font-family="DM Sans">Virología</text>
+            <rect x="130" y="108" width="100" height="26" rx="8" fill="#2dd4a8" opacity="0.9"/>
+            <text x="180" y="125" text-anchor="middle" fill="#0d2e2a" font-size="7" font-weight="bold" font-family="DM Sans">IA: revisar Resistencia →</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- PDF -->
+      <div class="bento-card reveal">
+        <div class="bento-badge">Para profesores</div>
+        <h3>PDF se convierte en<br>contenido en segundos</h3>
+        <p>Subís un archivo de apuntes → Gemini OCR lo procesa → flashcards, keywords y conexiones generadas automáticamente.</p>
+        <div class="pdf-flow">
+          <div class="pdf-flow-step"><div class="pdf-flow-icon doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="pdf-flow-label">Tu PDF</span></div>
+          <div class="pdf-flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+          <div class="pdf-flow-step"><div class="pdf-flow-icon ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 3.4 2.1 6.3 5 7.5V20a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-2.5c2.9-1.2 5-4.1 5-7.5a8 8 0 0 0-8-8z"/></svg></div><span class="pdf-flow-label">Gemini OCR</span></div>
+          <div class="pdf-flow-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
+          <div class="pdf-flow-step"><div class="pdf-flow-icon cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16"/></svg></div><span class="pdf-flow-label">Flashcards</span></div>
+        </div>
+      </div>
+
+      <!-- GAMIFICACIÓN -->
+      <div class="bento-card reveal">
+        <div class="bento-badge">Engagement</div>
+        <h3>XP que refleja<br>aprendizaje real</h3>
+        <p>39 badges, 11 acciones, streaks y cap de 500 XP/día. No son "puntos por clickear" — el motor mide calidad y consistencia.</p>
+        <div class="xp-demo">
+          <div class="xp-bar-wrap"><div class="xp-bar-fill" style="width:68%"></div></div>
+          <div class="xp-info"><span class="xp-val">340 XP hoy</span><span class="xp-cap">meta: 500 XP</span></div>
+          <div class="badges-row">
+            <div class="xp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg> Microbiólogo</div>
+            <div class="xp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg> 7 días</div>
+            <div class="xp-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Sprint</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREDICTOR -->
+      <div class="bento-card bento-dark reveal">
+        <div class="bento-badge" style="background:rgba(139,92,246,0.1);color:#a78bfa;border-color:rgba(139,92,246,0.2)">En roadmap</div>
+        <h3 style="color:#fff">Predictor de<br>rendimiento</h3>
+        <p style="color:var(--sidebar-txt)">No te dice "vas a reprobar". Te dice "tu dominio de Farmacología bajó 14% esta semana — acá tenés un plan de 15 minutos".</p>
+        <div class="pred-alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="pred-text">Farmacología bajó 14% esta semana. <strong>Ver plan →</strong></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======= FUNCIONALIDADES ======= -->
+<section id="features">
+  <div class="container">
+    <p class="section-label reveal">Funcionalidades</p>
+    <h2 class="reveal">Todo lo que necesitás.<br>En un solo lugar.</h2>
+    <p class="lead reveal" style="margin-bottom:2.5rem">Axon no es otro repositorio de PDFs. Es un ecosistema de aprendizaje adaptativo construido desde adentro de la UNLP.</p>
+    <div class="features-grid">
+      <div class="feat-card reveal" data-delay="1">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></div>
+        <div class="feat-title">Resúmenes interactivos</div>
+        <p class="feat-desc">Términos técnicos que con un clic abren definiciones, imágenes 3D y links directos a flashcards.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="2">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16"/></svg></div>
+        <div class="feat-title">Flashcards con SRS</div>
+        <p class="feat-desc">Repetición espaciada que sabe exactamente cuándo mostrarte cada concepto para fijar en la memoria de largo plazo.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="3">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div class="feat-title">Quiz adaptativo con IA</div>
+        <p class="feat-desc">La IA analiza tus errores y genera quizzes personalizados para focalizarse en tus puntos más débiles.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="4">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <div class="feat-title">Modelos 3D interactivos</div>
+        <p class="feat-desc">Rotá, explorá y entendé estructuras anatómicas y procesos biológicos en tres dimensiones.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="5">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+        <div class="feat-title">Videos explicativos</div>
+        <p class="feat-desc">Videos cortos y directos hechos para la cursada exacta de la UNLP. Sin vueltas.</p>
+      </div>
+      <div class="feat-card reveal" data-delay="6">
+        <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+        <div class="feat-title">Dashboard de progreso</div>
+        <p class="feat-desc">Mirá tu avance en cada materia y llegá al parcial sabiendo exactamente dónde estás parado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= CÓMO FUNCIONA ======= -->
+<section id="como">
+  <div class="container como-inner">
+    <div>
+      <p class="section-label reveal">Cómo funciona</p>
+      <h2 class="reveal">De cero a preparado<br>en tres pasos</h2>
+      <p class="lead reveal">Axon aprende cómo aprendés vos. Cuanto más la usás, más personalizada se vuelve.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal" data-delay="1"><div class="step-num">01</div><div><div class="step-title">Elegís la materia y empezás</div><p class="step-desc">Accedé a resúmenes, flashcards y videos específicos organizados por la cursada real de la UNLP.</p></div></div>
+      <div class="step reveal" data-delay="2"><div class="step-num">02</div><div><div class="step-title">La IA detecta tus puntos débiles</div><p class="step-desc">A medida que completás quizzes, el sistema identifica dónde errás y adapta automáticamente el contenido.</p></div></div>
+      <div class="step reveal" data-delay="3"><div class="step-num">03</div><div><div class="step-title">Llegás al parcial con confianza</div><p class="step-desc">Con simulacros e indicadores de preparación, sabés cuándo estás listo — y cuándo no.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= MATERIAS ======= -->
+<section id="materias">
+  <div class="container">
+    <p class="section-label reveal">Materias disponibles</p>
+    <h2 class="reveal">Empezamos por donde más se necesita</h2>
+    <p class="lead reveal">Expansión continua basada en la demanda de los estudiantes. Las barras indican cobertura de contenido.</p>
+    <div class="materias-grid">
+      <div class="materia-card reveal" data-delay="1"><div class="mat-icon anat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18a6 6 0 0 0-12 0"/><circle cx="12" cy="8" r="4"/><path d="M9.5 16.5 8 22"/><path d="M14.5 16.5 16 22"/></svg></div><div class="mat-year">1° Año</div><div class="mat-name">Anatomía</div><div class="mat-bar anat"></div><div class="mat-status live">Disponible</div></div>
+      <div class="materia-card reveal" data-delay="2"><div class="mat-icon histo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div><div class="mat-year">1° Año</div><div class="mat-name">Histología</div><div class="mat-bar histo"></div><div class="mat-status live">Disponible</div></div>
+      <div class="materia-card reveal" data-delay="3"><div class="mat-icon bio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v8L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45L14 10V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg></div><div class="mat-year">1° Año</div><div class="mat-name">Biología</div><div class="mat-bar bio"></div><div class="mat-status live">Disponible</div></div>
+      <div class="materia-card reveal" data-delay="4"><div class="mat-icon micro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></svg></div><div class="mat-year">3° Año</div><div class="mat-name">Microbiología</div><div class="mat-bar micro"></div><div class="mat-status live">Disponible</div></div>
+      <div class="materia-card upcoming reveal" data-delay="1"><div class="mat-icon soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="mat-year">2° Año</div><div class="mat-name">Fisiología</div><div class="mat-bar soon"></div><div class="mat-status soon">Próximamente</div></div>
+      <div class="materia-card upcoming reveal" data-delay="2"><div class="mat-icon soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v8L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45L14 10V2"/></svg></div><div class="mat-year">2° Año</div><div class="mat-name">Bioquímica</div><div class="mat-bar soon"></div><div class="mat-status soon">Próximamente</div></div>
+      <div class="materia-card upcoming reveal" data-delay="3"><div class="mat-icon soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></div><div class="mat-year">3° Año</div><div class="mat-name">Patología</div><div class="mat-bar soon"></div><div class="mat-status soon">Próximamente</div></div>
+      <div class="materia-card upcoming reveal" data-delay="4"><div class="mat-icon soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div><div class="mat-year">+</div><div class="mat-name">Tu voto cuenta</div><div class="mat-bar soon"></div><div class="mat-status soon">Votá la próxima →</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PRECIOS ======= -->
+<section id="precios">
+  <div class="container">
+    <div class="precios-header">
+      <p class="section-label reveal" style="justify-content:center">Precios</p>
+      <h2 class="reveal">Acceso completo.<br>Sin sorpresas.</h2>
+      <p class="lead reveal">ARS XXX/mes equivale a <strong style="color:var(--text-title)">2 minutos de clase particular</strong>. Axon funciona 24/7.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-plan">Free</div>
+        <div class="price-amount">$0 <span>ARS</span></div>
+        <p class="price-period">Para siempre</p>
+        <ul class="price-features">
+          <li class="included">Resúmenes de todas las materias</li>
+          <li class="included">50 flashcards/mes</li>
+          <li class="included">Quiz básico</li>
+          <li>Tutor IA de voz</li>
+          <li>Repetición espaciada ilimitada</li>
+          <li>Dashboard de progreso</li>
+        </ul>
+        <a href="#cta-final" class="btn-price ghost">Empezá gratis</a>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="price-badge">Más popular</div>
+        <div class="price-plan">Pro</div>
+        <div class="price-amount">$XXX <span>ARS/mes</span></div>
+        <p class="price-period">Cancelá cuando quieras</p>
+        <ul class="price-features">
+          <li class="included">Todo lo del plan Free</li>
+          <li class="included">Flashcards ilimitadas</li>
+          <li class="included">Tutor IA de voz 24/7</li>
+          <li class="included">FSRS + BKT adaptativo</li>
+          <li class="included">Dashboard completo</li>
+          <li class="included">WhatsApp + Telegram</li>
+        </ul>
+        <a href="#cta-final" class="btn-price primary">Empezá con Pro →</a>
+      </div>
+    </div>
+    <p class="price-note reveal">Sin tarjeta de crédito para el plan Free. Cancelación en un clic.</p>
+    <div class="testimonial-inline reveal">
+      <div class="testimonial-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div>
+        <p class="testimonial-quote">"Aprobé Anatomía en el primer parcial gracias a las flashcards y los quizzes adaptativos. Nunca había estudiado tan eficiente."</p>
+        <p class="testimonial-name">— Placeholder, 2° año Medicina UNLP</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FUNDADOR ======= -->
+<section id="fundador">
+  <div class="founder-inner">
+    <div class="founder-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    <div>
+      <p class="founder-label">Quién está detrás</p>
+      <p class="founder-quote">"Creé Axon porque vi a mis compañeros gastar fortunas en clases particulares y seguir reprobando. Tenía que existir <em>algo mejor</em>."</p>
+      <p class="founder-bio">Axon nació dentro de la Facultad de Ciencias Médicas de la UNLP. No es una plataforma genérica adaptada a medicina — fue construida específicamente para estas materias, estos profesores y estos parciales.</p>
+      <p class="founder-name">Petrick — Fundador</p>
+      <p class="founder-role">Axon Medical Academy</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======= CTA FINAL ======= -->
+<section id="cta-final">
+  <div class="cta-inner">
+    <p class="section-label reveal" style="justify-content:center">Empezá ahora</p>
+    <h2 class="reveal">Tu próximo parcial<br>puede ser <em>diferente</em></h2>
+    <p class="lead reveal" style="margin:0 auto 1.5rem">Registrate gratis y empezá a estudiar con IA adaptativa, flashcards inteligentes y todo el contenido de tu cursada.</p>
+    <div class="waitlist-counter reveal"><strong>XXX</strong> estudiantes ya se sumaron esta semana</div>
+    <form class="form-row reveal" onsubmit="event.preventDefault()">
+      <input type="email" id="email-cta" placeholder="Tu email" aria-label="Tu email" required>
+      <button type="submit" class="btn-cta">Empezá gratis →</button>
+    </form>
+    <p class="form-note reveal">Sin tarjeta. Cancelás cuando quieras. <a href="#">Política de privacidad</a></p>
+  </div>
+</section>
+
+</main>
+
+<!-- ======= FAQ ======= -->
+<section id="faq" style="padding:5rem 2rem;background:var(--bg-warm)">
+  <div class="container">
+    <p class="section-label reveal" style="justify-content:center">Preguntas frecuentes</p>
+    <h2 class="reveal" style="text-align:center;margin-bottom:3rem">¿Tenés dudas?</h2>
+    <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:1rem">
+      <details class="reveal" data-delay="1" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg,16px);padding:1.5rem 2rem;cursor:pointer">
+        <summary style="font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-title);list-style:none;display:flex;justify-content:space-between;align-items:center">¿Qué es Axon Medical Academy?<span style="color:var(--accent);font-size:1.2rem">+</span></summary>
+        <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);line-height:1.7">Axon es una plataforma de aprendizaje inteligente diseñada específicamente para estudiantes de medicina de la UNLP. Usa IA adaptativa, flashcards con repetición espaciada (FSRS v4) y un tutor de voz para personalizar tu estudio.</p>
+      </details>
+      <details class="reveal" data-delay="2" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg,16px);padding:1.5rem 2rem;cursor:pointer">
+        <summary style="font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-title);list-style:none;display:flex;justify-content:space-between;align-items:center">¿Es gratis?<span style="color:var(--accent);font-size:1.2rem">+</span></summary>
+        <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);line-height:1.7">Sí, el plan Free es gratuito para siempre e incluye resúmenes de todas las materias, 50 flashcards por mes y quizzes básicos. El plan Pro desbloquea flashcards ilimitadas, tutor IA de voz y algoritmos adaptativos avanzados.</p>
+      </details>
+      <details class="reveal" data-delay="3" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg,16px);padding:1.5rem 2rem;cursor:pointer">
+        <summary style="font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-title);list-style:none;display:flex;justify-content:space-between;align-items:center">¿Qué materias están disponibles?<span style="color:var(--accent);font-size:1.2rem">+</span></summary>
+        <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);line-height:1.7">Actualmente están disponibles Anatomía, Histología, Biología (1° año) y Microbiología (3° año). Próximamente se agregan Fisiología, Bioquímica y Patología — y podés votar cuál se agrega después.</p>
+      </details>
+      <details class="reveal" data-delay="4" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg,16px);padding:1.5rem 2rem;cursor:pointer">
+        <summary style="font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-title);list-style:none;display:flex;justify-content:space-between;align-items:center">¿Qué es FSRS v4 y por qué es mejor que Anki?<span style="color:var(--accent);font-size:1.2rem">+</span></summary>
+        <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);line-height:1.7">FSRS v4 (Free Spaced Repetition Scheduler) es el algoritmo de repetición espaciada más avanzado disponible. A diferencia del SM-2 que usa Anki (creado en 1987), FSRS calcula la probabilidad exacta de que recuerdes cada concepto y ajusta los intervalos en tiempo real.</p>
+      </details>
+      <details class="reveal" data-delay="5" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg,16px);padding:1.5rem 2rem;cursor:pointer">
+        <summary style="font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--text-title);list-style:none;display:flex;justify-content:space-between;align-items:center">¿Puedo estudiar desde el celular?<span style="color:var(--accent);font-size:1.2rem">+</span></summary>
+        <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);line-height:1.7">Sí, Axon funciona completamente desde el navegador del celular. Además, con la integración de WhatsApp y Telegram, podés recibir flashcards y alertas directamente en tu chat sin abrir otra app.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <a href="#" class="footer-logo"><div class="logo-dot"></div>Axon Medical Academy</a>
+      <p class="footer-copy">© 2026 Axon Medical Academy. Todos los derechos reservados.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#">Funcionalidades</a>
+      <a href="#">Precios</a>
+      <a href="#">Términos</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+<script>
+// Scroll reveal with stagger
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      setTimeout(() => { entry.target.style.willChange = 'auto'; }, 800);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Canvas image sequence
+const canvas = document.getElementById('heroCanvas');
+const ctx = canvas.getContext('2d');
+const heroSection = document.getElementById('hero');
+const scrollIndicator = document.getElementById('scrollIndicator');
+const terminals = document.querySelectorAll('.terminal-card');
+const preloader = document.getElementById('preloader');
+const preloaderFill = document.getElementById('preloaderFill');
+const START_FRAME = 115, END_FRAME = 298;
+const FRAME_COUNT = END_FRAME - START_FRAME + 1;
+const frames = [];
+let currentFrame = 0, imagesReady = false, ticking = false;
+
+function framePath(i) {
+  return `assets/hero-video/frames-60fps-avif/frame_${String(i).padStart(4,'0')}.avif`;
+}
+function detectAvif() {
+  return new Promise(r => {
+    const img = new Image();
+    img.onload = () => r(true); img.onerror = () => r(false);
+    img.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKBzgABq0SY5OUDQAsIAAAABAAB4BgvA==';
+  });
+}
+
+function preloadFrames() {
+  let loaded = 0;
+  const BATCH1 = 40;
+  return new Promise(resolve => {
+    function loadFrame(i) {
+      const idx = i - START_FRAME;
+      const img = new Image();
+      img.onload = img.onerror = () => {
+        loaded++;
+        preloaderFill.style.width = Math.round((loaded / FRAME_COUNT) * 100) + '%';
+        if (loaded === Math.min(BATCH1, FRAME_COUNT)) resolve();
+      };
+      img.src = framePath(i);
+      frames[idx] = img;
+    }
+    for (let i = START_FRAME; i < START_FRAME + Math.min(BATCH1, FRAME_COUNT); i++) { loadFrame(i); }
+    setTimeout(() => { for (let i = START_FRAME + BATCH1; i <= END_FRAME; i++) { loadFrame(i); } }, 100);
+  });
+}
+
+function resizeCanvas() {
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width*dpr; canvas.height = rect.height*dpr;
+  canvas.style.width = rect.width+'px'; canvas.style.height = rect.height+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  drawFrame(currentFrame);
+}
+
+function drawFrame(index) {
+  if (!frames[index]||!frames[index].complete) return;
+  const img = frames[index];
+  const cw = canvas.width/(window.devicePixelRatio||1), ch = canvas.height/(window.devicePixelRatio||1);
+  const ir = img.naturalWidth/img.naturalHeight, cr = cw/ch;
+  let dw,dh,dx,dy;
+  if (cr>ir) { dw=cw; dh=cw/ir; dx=0; dy=(ch-dh)/2; }
+  else { dh=ch; dw=ch*ir; dx=(cw-dw)/2; dy=0; }
+  ctx.clearRect(0,0,cw,ch); ctx.drawImage(img,dx,dy,dw,dh);
+}
+
+function onScroll() { if (!ticking) { requestAnimationFrame(updateOnScroll); ticking=true; } }
+function updateOnScroll() {
+  ticking = false;
+  if (prefersReducedMotion) return;
+  if (!imagesReady) return;
+  const rect = heroSection.getBoundingClientRect();
+  const sh = heroSection.offsetHeight - window.innerHeight;
+  const progress = Math.min(Math.max(-rect.top/sh,0),1);
+  const tf = Math.min(Math.floor(progress*FRAME_COUNT),FRAME_COUNT-1);
+  if (tf!==currentFrame) { currentFrame=tf; drawFrame(currentFrame); }
+  if (progress>0.1) scrollIndicator.classList.add('hidden'); else scrollIndicator.classList.remove('hidden');
+  const heroText = document.querySelector('.hero-text');
+  if (progress<0.45) { heroText.style.opacity='1'; heroText.style.transform='translateY(0)'; }
+  else if (progress<0.65) { const fp=(progress-0.45)/0.2; heroText.style.opacity=String(1-fp*0.85); heroText.style.transform=`translateY(${fp*-20}px)`; }
+  else { heroText.style.opacity='0.15'; heroText.style.transform='translateY(-20px)'; }
+  const ct=[0.60,0.70,0.92];
+  terminals.forEach((c,i) => { if (c.style.display==='none') return; if (progress>=ct[i]) c.classList.add('visible'); else c.classList.remove('visible'); });
+}
+
+// Nav transition via IntersectionObserver
+const trustSection = document.getElementById('trust');
+if (trustSection) {
+  const navObserver = new IntersectionObserver((entries) => {
+    const nav = document.getElementById('mainNav');
+    entries.forEach(entry => {
+      if (entry.isIntersecting) nav.classList.add('light');
+      else nav.classList.remove('light');
+    });
+  }, { threshold: 0 });
+  navObserver.observe(trustSection);
+}
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+async function init() {
+  resizeCanvas();
+  const avif = await detectAvif();
+  if (!avif) {
+    framePath = function(i) { return `assets/hero-video/frames-webp-hq2/frame_${String(Math.round(i*24/60)).padStart(4,'0')}.webp`; };
+  }
+  await Promise.race([preloadFrames(), new Promise(resolve => setTimeout(resolve, 12000))]);
+  imagesReady = true; drawFrame(0); preloader.classList.add('loaded');
+  if (prefersReducedMotion) {
+    terminals.forEach(c => { if (c.style.display !== 'none') c.classList.add('visible'); });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  updateOnScroll();
+
+  // Hamburger menu
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.querySelector('.nav-links');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+    navToggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open'); navToggle.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }));
+}
+window.addEventListener('resize', resizeCanvas);
+init();
+
+function handleQuiz(el) {
+  const c = el.closest('.quiz-options-hero');
+  if (c.dataset.answered==='true') return;
+  c.dataset.answered = 'true';
+  c.querySelectorAll('.quiz-option-hero').forEach(o => {
+    if (o.dataset.correct==='true') o.classList.add('correct');
+    else if (o===el) o.classList.add('wrong');
+  });
+}
+
+// Keyboard handlers for interactive elements
+document.querySelectorAll('.flashcard-inner[role="button"]').forEach(fc => {
+  fc.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.classList.toggle('flipped'); }
+  });
+});
+document.querySelectorAll('.quiz-option-hero[role="button"]').forEach(opt => {
+  opt.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleQuiz(this); }
+  });
+});
+</script>
+
+
+</body>
+</html>

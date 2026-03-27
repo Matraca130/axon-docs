@@ -1,0 +1,119 @@
+{
+  "template_id": "anatomia",
+  "name": "Anatomía",
+  "description": "Template para regiones anatómicas, órganos o sistemas. Estructura → relaciones → irrigación → inervación → clínica.",
+  "version": "1.0.0",
+
+  "notes_for_ai": "Anatomía es fundamentalmente VISUAL y ESPACIAL. Usa muchas image_references (el profesor las llenará después), grids (para estructuras), y two_columns (para comparar lados o variantes). Los stages se usan para embriología o trayectos (de nervios, vasos). Las keywords son estructuras anatómicas y sus relaciones.",
+
+  "sections": [
+    {
+      "name": "Ubicación y Concepto General",
+      "required": true,
+      "suggested_block": "prose",
+      "description": "Dónde está, qué es, límites generales.",
+      "tips": "Orientar espacialmente al estudiante PRIMERO, luego profundizar. Si es una región → límites. Si es un órgano → ubicación en cavidad."
+    },
+    {
+      "name": "Imagen de referencia — Vista general",
+      "required": true,
+      "suggested_block": "image_reference",
+      "description": "Imagen anatómica general de la estructura/región.",
+      "tips": "En anatomía las imágenes son ESENCIALES. Siempre incluir al menos una. Describir exactamente qué debe mostrar."
+    },
+    {
+      "name": "Componentes / Estructura",
+      "required": true,
+      "suggested_block": "grid",
+      "alternative_blocks": ["list_detail"],
+      "description": "Partes que componen la estructura.",
+      "tips": "Grid 2-3 columnas: estructura → función/descripción → dato relevante. Si hay jerarquía (capas, zonas) → list_detail."
+    },
+    {
+      "name": "Concepto Clave",
+      "required": false,
+      "suggested_block": "key_point",
+      "description": "El dato anatómico más importante / más preguntado.",
+      "tips": "Ejemplo: 'El nervio laríngeo recurrente izquierdo rodea el arco aórtico — por eso la aorta lo puede comprimir'."
+    },
+    {
+      "name": "Relaciones Anatómicas",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["grid", "prose"],
+      "description": "Con qué estructuras se relaciona (anterior, posterior, medial, lateral).",
+      "tips": "Usar orientación espacial. Las relaciones son lo que más preguntan en exámenes."
+    },
+    {
+      "name": "Irrigación",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["grid", "stages"],
+      "description": "Arterias y venas. Ramas y drenaje.",
+      "tips": "Si el trayecto arterial tiene ramificaciones secuenciales → stages. Si son múltiples fuentes → list_detail."
+    },
+    {
+      "name": "Inervación",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["grid", "two_column"],
+      "description": "Nervios motores, sensitivos, autónomos.",
+      "tips": "Motor vs Sensitivo → two_column. Si es un plexo con muchos nervios → grid."
+    },
+    {
+      "name": "Drenaje Linfático",
+      "required": false,
+      "suggested_block": "list_detail",
+      "description": "Cadenas ganglionares y drenaje.",
+      "tips": "Relevante en oncología. Si no es clínicamente significativo, omitir."
+    },
+    {
+      "name": "Variantes Anatómicas",
+      "required": false,
+      "suggested_block": "callout",
+      "alternative_blocks": ["list_detail"],
+      "description": "Variantes normales que el estudiante debe conocer.",
+      "tips": "variant='warning'. Ejemplo: arteria hepática accesoria desde la mesentérica superior (25% de la población)."
+    },
+    {
+      "name": "Embriología / Desarrollo",
+      "required": false,
+      "suggested_block": "stages",
+      "description": "Origen embriológico si es clínicamente relevante.",
+      "tips": "Solo incluir si explica malformaciones o variantes. No incluir embriología por completitud."
+    },
+    {
+      "name": "Correlación Clínica / Quirúrgica",
+      "required": true,
+      "suggested_block": "callout",
+      "alternative_blocks": ["list_detail"],
+      "description": "Relevancia clínica y quirúrgica de la anatomía.",
+      "tips": "variant='clinical'. Ejemplo: 'En la apendicectomía, el punto de McBurney marca la base del apéndice'. Conectar anatomía con práctica."
+    },
+    {
+      "name": "Dato de Examen",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "La pregunta clásica de anatomía sobre esta estructura.",
+      "tips": "variant='exam'. Las preguntas de anatomía suelen ser sobre relaciones y variantes."
+    }
+  ],
+
+  "keyword_guidelines": {
+    "min_keywords": 5,
+    "max_keywords": 20,
+    "priority_distribution": "~15% critical, ~35% high, ~30% medium, ~20% low",
+    "what_to_mark": [
+      "Estructuras anatómicas principales",
+      "Arterias y nervios con nombre propio",
+      "Ligamentos y fascias clave",
+      "Puntos de referencia quirúrgicos",
+      "Espacios y triángulos anatómicos"
+    ],
+    "what_NOT_to_mark": [
+      "Cada músculo mencionado en una lista larga",
+      "Direcciones genéricas (superior, lateral)",
+      "Estructuras obvias sin relevancia particular"
+    ]
+  }
+}

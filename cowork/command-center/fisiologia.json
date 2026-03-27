@@ -1,0 +1,117 @@
+{
+  "template_id": "fisiologia",
+  "name": "Fisiología",
+  "description": "Template para sistemas y procesos fisiológicos. Desde estructura hasta regulación.",
+  "version": "1.0.0",
+
+  "notes_for_ai": "Fisiología se centra en CÓMO FUNCIONA el cuerpo. El flujo es: estructura → función → mecanismo → regulación → integración clínica. Usa muchos stages (cascadas, ciclos) y comparisons (estados normales vs alterados). Los keywords suelen ser mediadores, hormonas, iones, receptores.",
+
+  "sections": [
+    {
+      "name": "Concepto y Función General",
+      "required": true,
+      "suggested_block": "prose",
+      "description": "Qué hace este sistema/proceso y por qué es importante.",
+      "tips": "Dar contexto: qué pasaría si este proceso fallara. Conectar con la vida real."
+    },
+    {
+      "name": "Concepto Clave",
+      "required": false,
+      "suggested_block": "key_point",
+      "description": "El principio fundamental que gobierna este proceso.",
+      "tips": "Ejemplo fisiología renal: 'El riñón filtra 180L/día pero solo excreta 1.5L — el 99% se reabsorbe'."
+    },
+    {
+      "name": "Bases Anatómicas / Estructurales",
+      "required": false,
+      "suggested_block": "grid",
+      "alternative_blocks": ["list_detail", "prose"],
+      "description": "Estructuras involucradas y su rol funcional.",
+      "tips": "Si son estructuras con funciones discretas → grid. Si es una descripción continua → prose."
+    },
+    {
+      "name": "Mecanismo / Proceso",
+      "required": true,
+      "suggested_block": "stages",
+      "alternative_blocks": ["prose"],
+      "description": "Cómo funciona paso a paso.",
+      "tips": "Si es secuencial (potencial de acción, contracción muscular) → stages. Si es multifactorial → prose. Marcar mediadores como keywords."
+    },
+    {
+      "name": "Imagen de referencia — Mecanismo",
+      "required": false,
+      "suggested_block": "image_reference",
+      "description": "Diagrama del proceso fisiológico.",
+      "tips": "Describir qué elementos debe mostrar el diagrama."
+    },
+    {
+      "name": "Variables y Valores Normales",
+      "required": false,
+      "suggested_block": "grid",
+      "alternative_blocks": ["comparison"],
+      "description": "Parámetros medibles y sus rangos normales.",
+      "tips": "Grid 2-3 columnas: variable, valor normal, unidad. Si se comparan estados → comparison."
+    },
+    {
+      "name": "Regulación",
+      "required": true,
+      "suggested_block": "two_column",
+      "alternative_blocks": ["list_detail", "stages"],
+      "description": "Cómo se regula: feedback positivo/negativo, hormonas, sistema nervioso.",
+      "tips": "Estimuladores vs Inhibidores → two_column. Si es una cascada regulatoria → stages."
+    },
+    {
+      "name": "Integración con Otros Sistemas",
+      "required": false,
+      "suggested_block": "grid",
+      "alternative_blocks": ["prose"],
+      "description": "Cómo se conecta con otros procesos fisiológicos.",
+      "tips": "Grid: sistema → conexión → efecto. Ayuda al estudiante a ver el panorama completo."
+    },
+    {
+      "name": "Correlación Clínica",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Qué pasa cuando este proceso falla — conexión con patología.",
+      "tips": "variant='clinical'. Ejemplo: 'La falla en la reabsorción de Na+ en el asa de Henle → hiponatremia → edema cerebral'."
+    },
+    {
+      "name": "Normal vs Alterado",
+      "required": false,
+      "suggested_block": "comparison",
+      "description": "Tabla comparando estado fisiológico normal vs estados patológicos.",
+      "tips": "Columnas: parámetro, normal, hiper, hipo. Highlight la columna normal."
+    },
+    {
+      "name": "Dato de Examen",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Concepto fisiológico que siempre preguntan.",
+      "tips": "variant='exam'. Los conceptos de fisiología en exámenes suelen ser sobre mecanismos de regulación."
+    },
+    {
+      "name": "Tip / Mnemotecnia",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Ayuda para recordar secuencias o valores.",
+      "tips": "variant='mnemonic' o 'tip' según corresponda."
+    }
+  ],
+
+  "keyword_guidelines": {
+    "min_keywords": 5,
+    "max_keywords": 15,
+    "priority_distribution": "~20% critical, ~30% high, ~30% medium, ~20% low",
+    "what_to_mark": [
+      "Hormonas y mediadores (aldosterona, ADH, norepinefrina)",
+      "Receptores y canales (receptor AT1, canal de Na+ voltaje-dependiente)",
+      "Procesos clave (despolarización, filtración glomerular)",
+      "Valores críticos (TFG normal, presión osmótica)"
+    ],
+    "what_NOT_to_mark": [
+      "Órganos obvios (corazón, riñón — a menos que sea para detallar su función específica)",
+      "Términos descriptivos genéricos",
+      "Unidades de medida"
+    ]
+  }
+}

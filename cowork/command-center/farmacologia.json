@@ -1,0 +1,126 @@
+{
+  "template_id": "farmacologia",
+  "name": "Farmacología",
+  "description": "Template para grupos farmacológicos o fármacos individuales. Desde mecanismo hasta indicaciones y RAM.",
+  "version": "1.0.0",
+
+  "notes_for_ai": "Farmacología tiene un flujo muy distinto a patología. El foco está en MECANISMO → EFECTO → USO CLÍNICO. Si es un grupo farmacológico (e.g. 'Estatinas'), cubrir el grupo y mencionar diferencias entre miembros. Si es un fármaco individual, ser más específico en farmacocinética.",
+
+  "sections": [
+    {
+      "name": "Clasificación y Grupo",
+      "required": true,
+      "suggested_block": "prose",
+      "description": "A qué grupo pertenece, cómo se clasifica dentro de su familia.",
+      "tips": "Si hay subgrupos → grid o list_detail. Ejemplo: beta-bloqueantes selectivos vs no selectivos."
+    },
+    {
+      "name": "Mecanismo de Acción",
+      "required": true,
+      "suggested_block": "stages",
+      "alternative_blocks": ["prose", "key_point"],
+      "description": "Cómo actúa el fármaco a nivel molecular/celular.",
+      "tips": "Si es una cascada (fármaco → receptor → segundo mensajero → efecto) → stages. Si es simple (inhibe X) → prose o key_point. Marcar receptores y enzimas como keywords."
+    },
+    {
+      "name": "Concepto Clave del Mecanismo",
+      "required": false,
+      "suggested_block": "key_point",
+      "description": "La esencia del mecanismo en una frase.",
+      "tips": "Ejemplo: 'Las estatinas inhiben la HMG-CoA reductasa → reducen síntesis hepática de colesterol → upregulation de receptores LDL → baja LDL plasmático'."
+    },
+    {
+      "name": "Farmacocinética",
+      "required": false,
+      "suggested_block": "grid",
+      "alternative_blocks": ["comparison", "list_detail"],
+      "description": "ADME: absorción, distribución, metabolismo, excreción.",
+      "tips": "Si se comparan varios fármacos del grupo → comparison (filas=fármacos, columnas=absorción/metabolismo/vida media/excreción). Si es un fármaco → grid con los datos ADME."
+    },
+    {
+      "name": "Efectos Farmacológicos",
+      "required": true,
+      "suggested_block": "list_detail",
+      "description": "Qué efectos produce en el organismo (terapéuticos y otros).",
+      "tips": "Usar severity: high=efecto principal, medium=efecto secundario útil, low=efecto menor. Ejemplo estatinas: hipolipemiante (high), antiinflamatorio (medium), estabilizador de placa (medium)."
+    },
+    {
+      "name": "Indicaciones Clínicas",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["grid"],
+      "description": "Para qué se usa en la práctica.",
+      "tips": "Ordenar por frecuencia de uso o importancia. Si son pocas y se pueden agrupar → grid."
+    },
+    {
+      "name": "Correlación Clínica",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Caso clínico donde se prescribe este fármaco.",
+      "tips": "variant='clinical'. Paciente tipo → indicación → elección del fármaco → resultado esperado."
+    },
+    {
+      "name": "Efectos Adversos / RAM",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["two_column"],
+      "description": "Reacciones adversas.",
+      "tips": "Si se dividen en frecuentes vs graves → two_column. Usar severity: high=grave/común, medium=moderado, low=raro. Marcar síndromes específicos como keywords."
+    },
+    {
+      "name": "Contraindicaciones",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["grid"],
+      "description": "Cuándo NO usar.",
+      "tips": "Si son absolutas vs relativas → two_column. Ser directo y claro."
+    },
+    {
+      "name": "Interacciones Importantes",
+      "required": false,
+      "suggested_block": "comparison",
+      "alternative_blocks": ["list_detail"],
+      "description": "Con qué otros fármacos o sustancias interactúa.",
+      "tips": "comparison: columnas = fármaco interactuante, efecto, mecanismo, conducta."
+    },
+    {
+      "name": "Comparación dentro del Grupo",
+      "required": false,
+      "suggested_block": "comparison",
+      "description": "Diferencias entre miembros del grupo farmacológico.",
+      "tips": "Columnas = fármacos individuales, filas = potencia, selectividad, vida media, vía, peculiaridades."
+    },
+    {
+      "name": "Dato de Examen",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Lo que preguntan en el examen sobre este fármaco/grupo.",
+      "tips": "variant='exam'. Ejemplo: 'Efecto adverso más preguntado de las estatinas: miopatía/rabdomiólisis'."
+    },
+    {
+      "name": "Mnemotecnia",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Truco para recordar indicaciones, RAM o mecanismo.",
+      "tips": "variant='mnemonic'. Solo si hay una mnemotecnia natural y útil."
+    }
+  ],
+
+  "keyword_guidelines": {
+    "min_keywords": 5,
+    "max_keywords": 15,
+    "priority_distribution": "~20% critical, ~30% high, ~30% medium, ~20% low",
+    "what_to_mark": [
+      "Nombre del fármaco/grupo",
+      "Receptor o enzima target",
+      "Mecanismo clave",
+      "RAM graves o características",
+      "Indicaciones principales"
+    ],
+    "what_NOT_to_mark": [
+      "Cada fármaco mencionado de pasada en una lista",
+      "Valores numéricos (dosis, concentraciones)",
+      "Términos genéricos (oral, intravenoso)"
+    ]
+  }
+}
