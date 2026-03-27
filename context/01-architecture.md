@@ -36,8 +36,8 @@ Auth (login/signup) uses Supabase Auth SDK directly from frontend.
 
 - **Route style:** Flat routes with query params (NOT nested REST)
 - **CRUD Factory:** `crud-factory.ts` auto-generates 5 endpoints per entity
-- **Route modules:** **10 split modules** + 6 flat files, ~200+ total endpoints
-- **Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, whatsapp
+- **Route modules:** **11 split modules** + 6 flat files, ~200+ total endpoints
+- **Split modules:** ai, content, gamification, members, mux, plans, search, settings, study, telegram, whatsapp
 - **Tests:** **16 Deno-native test files** (~183+ test cases)
 - **Migrations:** **53** SQL files
 

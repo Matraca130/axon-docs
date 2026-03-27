@@ -36,7 +36,7 @@ Designed to be copy-pasted into Figma Make sessions as context.
 - **RAG security hardening**: Revoked RPC access from authenticated role
 - **Settings module**: New `routes/settings/` directory
 - **Batch endpoints**: keyword-connections-batch, flashcards-by-topic, review-batch, topic-progress
-- **10 split route modules** + 6 flat files, **16 test files** (~183+ cases)
+- **11 split route modules** + 6 flat files, **16 test files** (~183+ cases)
 - CORS: **Still wildcard `"*"`** (reverted for MVP, must restrict before launch)
 
 ### Frontend

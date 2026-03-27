@@ -30,7 +30,7 @@
 - ~~Professor ROUTES = PlaceholderPage~~ **RESOLVED** -- all 13 routes wired to real page components (PR #150)
 - ~~Owner ROUTES = PlaceholderPage~~ **RESOLVED** -- all 13 routes wired to real page components (PR #150)
 - Frontend total: **~350 component files** (not "~100+")
-- Backend: **~93 files** in `supabase/functions/server/`
+- Backend: **~103 files** in `supabase/functions/server/`
 - Version mismatch: backend index.ts = **"4.4"**, docs = **"4.5"**
 
 ## Resolved — Security Audit (2026-03-19)
