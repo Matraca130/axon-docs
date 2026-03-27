@@ -1,48 +1,102 @@
-# Axon v4.5 — Platform Documentation
+# Axon — Platform Documentation
 
-Central documentation for the Axon educational platform.
-Designed to be copy-pasted into Figma Make sessions as context.
+Central documentation for the Axon educational platform (LMS for medical education).
 
-> **File size rule:** Every file stays under 10KB (~300 lines) so Figma Make can read it fully.
-
-## Quick Start (Figma Make)
-
-1. Open the file(s) relevant to your task
-2. Copy the raw markdown
-3. Paste into Figma Make as context
+> Updated: 2026-03-27
 
 ## Repos
 
-| Repo | Purpose | Deploy | Status |
+| Repo | Local Path | Stack | Deploy |
 |---|---|---|---|
-| `Matraca130/numero1_sseki_2325_55` | Frontend (React 18/Vite/TW4) | Vercel | v4.5 |
-| `Matraca130/axon-backend` | Backend (Hono/Deno) | Supabase Edge Functions | v4.5 |
-| `Matraca130/axon-docs` | Documentation (this repo) | None | Updated 2026-03-14 |
+| `Matraca130/numero1_sseki_2325_55` | `C:\dev\axon\frontend` | React 18 + Vite 6 + Tailwind v4 + TS | Vercel |
+| `Matraca130/axon-backend` | `C:\dev\axon\backend` | Hono + Deno (Supabase Edge Functions) | GitHub Actions → Supabase |
+| `Matraca130/axon-docs` | `C:\dev\axon\docs` | Markdown (this repo) | — |
+
+## Architecture
+
+```
+Frontend (React 18 + Vite + Tailwind v4) → Vercel
+  └─ apiCall() in lib/api.ts
+       │
+       ▼
+Backend (Hono/Deno) → Supabase Edge Functions
+  ├─ PostgreSQL + pgvector (1536d embeddings)
+  ├─ AI/RAG: Gemini 2.5 Flash (gen) + OpenAI text-embedding-3-large + Claude (alt)
+  │   ├─ Semantic chunking → embedding ingest → RAG chat (streaming)
+  │   └─ Smart generation: flashcards, quizzes, summaries
+  ├─ Adaptive Learning: FSRS v4 (spaced rep) + BKT v4 (knowledge tracing)
+  ├─ Gamification: XP engine + streaks + badges + leaderboard
+  ├─ Messaging: Telegram bot + WhatsApp Cloud API (review-flow, webhooks)
+  ├─ Video: Mux (upload, signed playback, view tracking)
+  └─ Billing: Stripe (checkout, portal, webhooks)
+```
+
+## Auth (Dual Token)
+
+```
+Authorization: Bearer <SUPABASE_ANON_KEY>   ← Project key (always)
+X-Access-Token: <USER_JWT>                  ← User session
+```
+
+Role is NOT in JWT — comes from `GET /institutions`.
+
+## 4 Roles
+
+Owner → Admin → Professor → Student
 
 ## Supabase
 
-- Project ID: `xdnciktarvxyhkrokbng`
-- ~50+ tables (+ ~25 `kv_store_*` junk)
-- **52+ SQL migrations**
-- Embeddings: **1536d** (OpenAI **text-embedding-3-large**, Matryoshka truncation)
+- Project ID: xdnciktarvxyhkrokbng
+- ~50+ tables, 60+ SQL migrations
+- Embeddings: 1536d (OpenAI text-embedding-3-large)
 
-## What Changed (2026-03-10–14)
+## Doc Structure (This Repo)
 
-### Backend
-- **Gamification system** complete: XP engine, 8 hooks (11 actions), 39 badges, streaks, goals
-- **Embedding migration**: Gemini 768d → OpenAI text-embedding-3-large 1536d
-- **WhatsApp integration**: Tables + cron + route module (in development)
-- **PDF extraction**: `extractTextFromPdf()` in gemini.ts (Fase 7)
-- **RAG security hardening**: Revoked RPC access from authenticated role
-- **Settings module**: New `routes/settings/` directory
-- **Batch endpoints**: keyword-connections-batch, flashcards-by-topic, review-batch, topic-progress
-- **11 split route modules** + 6 flat files, **16 test files** (~183+ cases)
-- CORS: **Still wildcard `"*"`** (reverted for MVP, must restrict before launch)
+| Folder | Contents |
+|---|---|
+| `api/` | API route documentation (7 modules) |
+| `bugs/` | Known bugs, runtime bugs, security audit |
+| `claude-config/` | Agent system: registry, agents, memories, rules |
+| `context/` | Architecture, data hierarchy, auth, API conventions, status |
+| `contracts/` | Architecture maps, coordination contracts, audits |
+| `database/` | Schema docs (auth, content, core, study, AI, extras) |
+| `diagnostics/` | Frontend + backend diagnostics |
+| `frontend/` | Build errors, bundle optimization, platform API map |
+| `practices/` | Engineering practices, commit guide, decision log, workflow |
+| `security-audit/` | 3-pass security audit (auth, routes, access, AI, frontend) |
 
-### Frontend
-- **Layout v2**: All roles on responsive RoleShell + MobileDrawer
-- **Auth consolidation**: Single `createContext()`, dual-context bug resolved
-- **lazyRetry**: Stale chunk error recovery for 22 lazy routes
-- **Gamification UI**: 8 React Query hooks + 7 components connected
-- **Axon Medical Academy palette**: teal/gray theme migration
-- Dead code cleanup: old layouts, auth bridge deleted
+## Key Files (Start Here)
+
+- **PLATFORM-CONTEXT.md** — Full platform overview
+- **PROJECT-STATE.md** — Current state, what's done, what's pending (updated per session)
+- **KNOWN-BUGS.md** — All known bugs by severity
+- **ROADMAP.md** — Approved features and priorities
+- **API-MAP.md** — Complete API endpoint map
+
+## Development Workflow
+
+1. Code lives at `C:\dev\axon\` (NEVER in OneDrive — corrupts `.git/`)
+2. Always feature branch + PR, never push to main
+3. Git worktrees for parallel sessions (never checkout non-main in main repo)
+4. Quality gate audit after every agent that writes code
+5. Cowork (OneDrive) = planning/command center; Claude Code CLI = code execution
+
+## Agent System
+
+74 specialized agents organized in 12 sections. See `claude-config/AGENT-REGISTRY.md` for the full index.
+
+- **40/76 agents completed recon** (Batch 1: 20, Batch 2: 20)
+- **36 pending** (Batch 3+4)
+- **8 PRs merged to main** (cumulative)
+
+## Getting Started
+
+1. Read `PLATFORM-CONTEXT.md` for the full technical overview
+2. Check `PROJECT-STATE.md` for what's in flight
+3. See `ROADMAP.md` for approved features
+4. Browse `api/API-MAP.md` to understand endpoints
+5. Start with agent recon in `claude-config/AGENT-REGISTRY.md` if contributing analysis
+
+---
+
+Last updated by agent system, 2026-03-27.

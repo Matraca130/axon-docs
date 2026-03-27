@@ -111,14 +111,73 @@ Cada decision sigue este formato:
 
 ---
 
+### DEC-010: Move git repos OUT of OneDrive
+**Fecha:** 2026-03-21 | **Status:** Accepted
+**Contexto:** OneDrive corrupted .git/ directories for both frontend and backend repos (error 0x8007017F). Files showed as "arquivo ilegível", git commands failed.
+**Decision:** Move all git repos to C:\dev\axon\ (outside OneDrive). OneDrive only for documents, prototypes, and Cowork data.
+**Consecuencias:**
+- (+) No more .git corruption, node_modules sync errors, or .lock file conflicts
+- (+) GitHub is the backup for code, OneDrive for docs
+- (-) Code not synced between machines (need git push/pull)
+
+### DEC-011: Mandatory git worktrees for branch work
+**Fecha:** 2026-03-27 | **Status:** Accepted
+**Contexto:** Multiple Claude Code sessions sharing C:\dev\axon\frontend caused commits on wrong branches when one session did git checkout.
+**Decision:** NEVER git checkout <branch> in main repo. Always use git worktree add for branch work. post-checkout hooks warn if non-main checkout in main repo.
+**Consecuencias:**
+- (+) Complete session isolation — no more cross-contamination
+- (+) Main repo always stays on main
+- (-) Extra disk space for worktrees
+- (-) Must remember to worktree remove after merge
+
+### DEC-012: 74-agent specialized system with file ownership
+**Fecha:** 2026-03-25 | **Status:** Accepted
+**Contexto:** The codebase (~540 files) needed structured agent coverage. Initial approach was ad-hoc agent creation per task.
+**Decision:** Create 74 specialized agents in 12 sections, each with explicit file ownership (zero overlap). Agents do recon → fix in batches. Quality gate agent (XX-02) audits after every session.
+**Consecuencias:**
+- (+) Clear ownership — no file conflicts between agents
+- (+) Recon phase builds deep context per domain
+- (+) Quality gate catches cross-file bugs agents miss
+- (-) Large upfront setup cost (74 agent definitions)
+- (-) Max 5 opus agents simultaneously (API limits)
+
+### DEC-013: Cowork as command center, Claude Code CLI for execution
+**Fecha:** 2026-03-22 | **Status:** Accepted
+**Contexto:** Needed separation between planning/thinking and code execution.
+**Decision:** Cowork (desktop, OneDrive-synced) is for thinking, planning, investigating, and organizing. Claude Code CLI is for actual code changes in feature branches.
+**Consecuencias:**
+- (+) State persists across machines via OneDrive .auto-memory/
+- (+) Clear separation: plan here, execute there
+- (-) Can't execute code changes directly from Cowork
+- (-) Handoff between Cowork and CLI requires clear instructions
+
+### DEC-014: Personalization focus — only 3 features for Sprint 0
+**Fecha:** 2026-03-22 | **Status:** Accepted
+**Contexto:** 195KB document of personalization ideas generated. Risk of scope explosion.
+**Decision:** Only 3 items approved for now: (1) Badges de Esfuerzo, (2) Calibración Adaptativa de Dificultad, (3) Calendario Inteligente + Objetivos (consolidating ideas 1.7 + 3.1). Everything else deferred.
+**Consecuencias:**
+- (+) Extreme focus — no feature creep
+- (+) All 3 build on existing infrastructure (FSRS, gamification, calendar)
+- (-) Many interesting ideas explicitly deferred
+
+### DEC-015: FSRS v4 + BKT v4 dual algorithm for adaptive learning
+**Fecha:** 2025-xx-xx | **Status:** Accepted
+**Contexto:** Needed spaced repetition for flashcards AND knowledge tracing for quizzes.
+**Decision:** Use FSRS v4 for flashcard scheduling (when to review) and BKT v4 for quiz-based knowledge estimation (what the student knows). Both feed into the same mastery model.
+**Consecuencias:**
+- (+) Best-in-class algorithms for each use case
+- (+) Combined mastery signal more accurate than either alone
+- (-) Two algorithm implementations to maintain
+- (-) Need careful calibration of how they interact
+
 ## Template para Nuevas Decisiones
 
 ```markdown
 ### DEC-0XX: [Titulo]
-**Fecha:** YYYY-MM-DD | **Status:** Accepted  
-**Contexto:**  
-**Decision:**  
-**Consecuencias:**  
-- (+)  
-- (-)  
+**Fecha:** YYYY-MM-DD | **Status:** Accepted
+**Contexto:**
+**Decision:**
+**Consecuencias:**
+- (+)
+- (-)
 ```

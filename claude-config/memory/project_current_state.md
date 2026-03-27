@@ -1,73 +1,69 @@
----
-name: Axon Current State (audited 2026-03-20)
-description: Platform v4.5. Security audit completed 2026-03-19. RLS enabled (33+ tables), JWT verified (jose ES256). 62 migrations, backend tests increased. Agent system Phase 1 approved (13 agents).
-type: project
----
+# Project Current State
+Updated: 2026-03-27
 
-Platform version: v4.5 (both frontend and backend)
-Both repos on branch `main` as of 2026-03-20.
+## Agent System Status
+- **40/76 agentes** completaron recon (Batch 1: 20, Batch 2: 20)
+- **36 pendientes**: Batch 3 (AI/3D/Infra/Messaging/Billing=20) + Batch 4 (Cross-cutting/legacy=16)
+- **7 PRs mergeados** a main (4 previos + 3 esta sesión)
+- Agent lessons guardadas en `feedback_agent_lessons_oleada_a.md`
 
-**Security audit completed (2026-03-19):**
-- jose + ES256 JWKS JWT verification (replaces base64 decode)
-- RLS enabled on 33+ tables with institution-scoped policies
-- DOMPurify sanitization on all dangerouslySetInnerHTML
-- CSP + HSTS + Permissions-Policy headers
-- AI prompt sanitization universalized (6 files)
-- AI output validation (stripHtmlTags before DB insert)
-- Telegram webhook hardening (timing-safe + fail-closed)
-- Rate limiting on /signup (5 req/min)
-- Error message sanitization (safeErr strips DB details)
-- CORS wildcard fallback removed
-- Student route guards (RequireRole)
-- SECURITY DEFINER functions hardened (search_path)
-- bulk_reorder + gamification institution scoping
+## Completado esta sesión (2026-03-27)
 
-**Recent additions (since 2026-03-10):**
-- Gamification complete: XP engine, badges, streaks, goals
-- Embedding migration: Gemini 768d → OpenAI 1536d
-- Telegram bot integration (full: webhook, review-flow, tools, rate-limit)
-- Claude AI integration (`claude-ai.ts`)
-- Realtime voice sessions (`as-realtime.ts` frontend, `realtime-session.ts` backend)
-- Billing refactored into `routes/billing/` (Stripe checkout, portal, webhook)
-- Study-queue refactored into `routes/study-queue/` (resolvers, scoring)
-- Smart helpers/prompts split from generate-smart
-- Admin messaging settings (frontend + backend)
-- Sprint preflight CI workflow + tests
-- Frontend: VoiceCallPanel, SummaryCard extracted, summary-helpers
-- AI Chat streaming fix (backend PR #149 + frontend PR #148) — BUG-035 resolved
-- PR #118 merged: messaging integrations + voice call + CORS fix + CI test fixes
-- WhatsApp integration routes added
-- Backend CI test-gate.yml fixed (--allow-env, --allow-net flags; integration tests non-blocking)
+### Flashcard Pipeline — PLAN COMPLETO ✅
+- **PR #204** (frontend): 5 bug fixes generación flashcards (BH-ERR-019/021/024/032/033)
+  - ensureGeneralKeyword paginated response, .id on string (3 callers), MasteryLevel/KeywordCollection type unification, dead exports
+- **PR #174** (backend): Image pipeline — Gemini 2.0 Flash + Supabase Storage
+  - gemini-image.ts, flashcard-image-generator.ts, POST /flashcards/:id/generate-image
+  - SQL migration: flashcards image columns + image_style_packs + image_prompt_templates + image_generation_log + RLS + Storage bucket
+- **PR #207** (frontend): FlashcardImage component + useFlashcardImage hook
+  - FlashcardImage.tsx (<picture> AVIF/WebP on-demand), FlashcardCard.tsx integration, SmartFlashcardGenerator toggle
 
-**Critical open issues (block launch):**
-- BUG-030 (HIGH): Professor + Owner routes wired to PlaceholderPage (16 professor + 8 owner real pages exist, just not connected)
-- BUG-033 (MEDIUM): `useTopicMastery` missing `summary_id` param — backend returns 400, FSRS per-topic aggregation silently fails
-- BUG-034 (LOW): `GET /reading-states?limit=1000` returns 400 — likely missing required parent param
-- S7 JWT Expiry 3600s (needs Pro plan)
-- S9 Part B — 6 SQL functions need REVOKE
-- Frontend tests failing on main (pre-existing)
-- Vercel free plan hit 100 deploys/day limit — auto-deploy from GitHub works but manual `npx vercel deploy` blocked for 24h
+### Infra — Worktree isolation
+- Git `post-checkout` hooks en frontend + backend (WARNING si checkout non-main en repo principal)
+- Script `C:\dev\axon\worktree.sh` para crear worktrees aislados por sesión
+- `agent-workflow.md` actualizado con regla CRÍTICA de worktrees
 
-**Resolved since last memory:**
-- BUG-004 CORS: NOW FIXED in code — index.ts restricts to specific origins (Vercel + localhost). No longer wildcard.
-- BUG-003 RLS: NOW FIXED — RLS enabled on 33+ tables with institution-scoped policies
-- JWT verification: NOW FIXED — jose ES256 JWKS replaces base64 decode
-- TEST-002: chunker.test.ts assertion fixed (`>` → `>=`), PR #118 merged
-- BUG-035: AI Chat streaming fixed — backend PR #149 + frontend PR #148, both merged to main
+## Hallazgos críticos pendientes de fix
+### Seguridad (URGENTE)
+- RLS: platform_plans + ai_reading_config permisivos (AS-03 F-01, F-02)
+- WhatsApp webhook hardcoded fallback salt (AS-04)
+- No 401 interceptor en frontend (AS-04)
 
-**Frontend tech debt:**
-- MUI + Emotion installed, 0 imports — remove
-- Package name still `@figma/my-make-file`
-- No ESLint config
-- 17 test files / 586 source files (~2.9% coverage)
-- 78 stale remote branches
+### Funcionales
+- 5 endpoints fantasma en pa-admin.ts (AO-02)
+- LEVEL_NAMES divergentes xp-constants vs types/gamification (DG-03/DG-04)
+- ~~getKeywordsNeedingCards stub (FC-06) — SmartFlashcardGenerator roto~~ → FIXED (PR #204)
+- ~~KeywordCollection type collision (FC-06)~~ → FIXED (PR #204)
+- Registry paths incorrectos: AO-02, AO-04, AI-01, AI-02
 
-**Backend tech debt:**
-- 92 stale remote branches
-- Backend test count increased (new tests for auth, validate, etc.)
-- BACKEND_MAP.md says 41 migrations (actual: 62)
-- WhatsApp + Telegram have duplicated review-flow logic (~800 LOC each)
+## Config activa
+- settings.local.json: `defaultMode: "bypassPermissions"` + `additionalDirectories` para ambos repos
+- agent-workflow.md: Agent Teams obligatorio, opus siempre, bypassPermissions siempre, worktrees obligatorios
+- Git hooks: post-checkout en ambos repos (warn non-main checkout)
 
-**Why:** Prevents re-doing work, helps prioritize tasks.
+## PRs mergeados (acumulado)
+- fix/batch1-architect-fixes (registry + dead code + memories)
+- fix/watchtime-tracking (MuxVideoPlayer real watch time)
+- fix/studyhub-dead-code (orphan removal + deprecated)
+- fix/batch2-memories (AS-03/AS-04 audit results)
+- **fix/flashcard-generation-bugs (#204)** — 5 bug fixes generación
+- **feat/flashcard-image-pipeline (backend #174)** — Gemini image service + DB
+- **feat/flashcard-image-pipeline (frontend #207)** — FlashcardImage component + hook
+- **feat/block-based-summaries (#208)** — 6 waves resúmenes + 12 code review fixes
 
-**How to apply:** Check here before starting work. BUG-003/JWT are now resolved. BUG-030 remains for professor/owner pages. S7 (JWT expiry) and S9B (REVOKE on 6 functions) are remaining security items. Before adding frontend deps, remove unused MUI+Emotion first.
+## Pendiente para probar
+- `GEMINI_API_KEY` ya configurada en Supabase secrets → test end-to-end: profesor genera flashcard con imagen
+
+## Resúmenes Block-Based — EN MAIN (producción)
+- **PR:** #208 mergeado a main (2026-03-27, commit dabcc9f)
+- **Contenido:** 6 waves + 12 bug fixes del code review (35 archivos, +4630 líneas)
+- **Sesión 1:** COMPLETADA — merge + code review + fixes
+- **Próximo paso:** Smoke test en producción (items 1.13-1.23 del plan)
+- **Sesión 2:** Verificar + fix gaps (hooks huérfanos, tokens, shortcuts) — pendiente
+- **Sesión 3:** Polish opcional (accessibility, tests, DrawingCanvas) — pendiente
+
+## Next session
+1. **Smoke test resúmenes en producción** (Vercel deploy de PR #208)
+2. **Sesión 2 resúmenes:** verificar + fix gaps post-merge
+3. Fixes seguridad (RLS + webhook + 401 interceptor)
+4. Completar recon Batch 3+4 (36 agentes)

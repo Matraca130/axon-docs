@@ -47,9 +47,8 @@ The **Architect agent** reads this index and selects agents based on:
 | 10 | Infrastructure & DevOps | 5 | IF-01 to IF-05 |
 | 11 | Messaging (Telegram/WhatsApp) | 4 | MG-01 to MG-04 |
 | 12 | Billing & Stripe | 4 | BL-01 to BL-04 |
-| 13 | Knowledge Map | 8 | KM-01 to KM-08 |
 | — | Cross-cutting | 9 | XX-01 to XX-09 |
-| | **TOTAL** | **78** | |
+| | **TOTAL** | **70** | |
 
 ---
 
@@ -173,19 +172,6 @@ The **Architect agent** reads this index and selects agents based on:
 | BL-02 | stripe-webhooks | Stripe webhook handlers | `routes/webhooks/stripe*.ts` | BL-01 | `agents/stripe-webhooks.md` |
 | BL-03 | billing-frontend | Billing UI (plans, invoices) | `pages/owner/BillingPage.tsx`, `components/owner/Billing*.tsx` | BL-01 | `agents/billing-frontend.md` |
 | BL-04 | billing-plans | Plan management (CRUD, limits) | `services/plansApi.ts`, `components/owner/Plans*.tsx` | BL-01 | `agents/billing-plans.md` |
-
-## 13. Knowledge Map (KM)
-
-| ID | Agent Name | Scope | Files Owned | Depends On | Definition |
-|----|-----------|-------|-------------|------------|------------|
-| KM-01 | km-graph-core | G6 engine: init, config, behaviors, plugins, layouts | `mindmap/KnowledgeGraph.tsx`, `mindmap/useGraphInit.ts`, `mindmap/graphHelpers.ts` | — | `agents/km-graph-core.md` |
-| KM-02 | km-graph-events | Events, spotlight, keyboard nav, highlighting | `mindmap/useGraphEvents.ts`, `mindmap/useGraphHighlighting.ts`, `mindmap/useKeyboardNav.ts` | KM-01 | `agents/km-graph-events.md` |
-| KM-03 | km-drag-connect | Drag-to-connect + edge reconnect | `mindmap/useDragConnect.ts`, `mindmap/drawDragConnectOverlay.ts`, `mindmap/useEdgeReconnect.ts` | KM-01 | `agents/km-drag-connect.md` |
-| KM-04 | km-toolbar-ui | Toolbar, breadcrumbs, legend, shortcuts, multi-select | `mindmap/GraphToolbar.tsx`, `mindmap/useGraphControls.ts`, `mindmap/GraphBreadcrumbs.tsx`, `mindmap/GraphShortcutsDialog.tsx`, `mindmap/GraphMasteryLegend.tsx`, `mindmap/GraphMultiSelectBar.tsx` | KM-01, KM-02 | `agents/km-toolbar-ui.md` |
-| KM-05 | km-map-view | KnowledgeMapView orchestrator + state hooks | `KnowledgeMapView.tsx`, `mindmap/useMapUIState.ts`, `mindmap/useMapToolState.ts`, `mindmap/useMapStickyNotes.ts`, `mindmap/useMapNodeColors.ts`, `mindmap/useMapEdgeActions.ts`, `mindmap/useMapNodeActions.ts`, `mindmap/MapViewEmptyStates.tsx`, `mindmap/useLocalGraph.ts`, `mindmap/MiniKnowledgeGraph.tsx` | KM-01, KM-02, KM-03, KM-04, KM-06 | `agents/km-map-view.md` |
-| KM-06 | km-modals | Modals and panels (add, annotate, AI tutor, templates) | `mindmap/AddNodeEdgeModal.tsx`, `mindmap/NodeAnnotationModal.tsx`, `mindmap/AiTutorPanel.tsx`, `mindmap/GraphTemplatePanel.tsx`, `mindmap/NodeContextMenu.tsx`, `mindmap/useNodeColors.ts` | KM-01 | `agents/km-modals.md` |
-| KM-07 | km-i18n | Knowledge Map internationalization | `mindmap/graphI18n.ts`, `mindmap/mapViewI18n.ts` | — (transversal) | `agents/km-i18n.md` |
-| KM-08 | km-tester | Knowledge Map tests | `mindmap/__tests__/*.ts` | KM-01 to KM-07 | `agents/km-tester.md` |
 
 ## Cross-Cutting (XX)
 
