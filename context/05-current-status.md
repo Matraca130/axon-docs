@@ -1,162 +1,118 @@
 # 05 -- Current Status
 
-> **Updated: 2026-03-14 (audit pass 15 — ~630 files mapped across 3 repos).**
+> **Updated: 2026-03-27 (8 PRs merged to main, Batch 1+2 recon complete, Batch 3+4 pending)**
 
 ## Build Status
 
 | Repo | Status | Notes |
 |---|---|---|
-| Frontend (Vercel) | Running | v4.5 — responsive, gamification, AI reports, PDF ingest |
-| Backend (Supabase EF) | Running | v4.4 (index.ts) / v4.5 (docs) — ~103 files, 17 route modules. **Note:** Backend index.ts reports v4.4; documentation targets v4.5 specification. |
-| Supabase | Running | 50+ tables, **53 migrations** |
+| Frontend (Vercel) | Running | npm run build passes (primary validation). React 18 + Vite 6 + Tailwind v4. Block-based summaries (PR #208) in production. |
+| Backend (Supabase EF) | Running | deno test passes. ~103 files, 17 route modules. Flashcard image pipeline (PR #174) deployed. |
+| Supabase | Running | 50+ tables, 60+ SQL migrations. 1536d embeddings (OpenAI text-embedding-3-large). |
 
-## Still Pending
+## Session Highlights (2026-03-27)
 
-| Item | Priority |
-|---|---|
-| **CORS wildcard (BUG-004)** | **HIGH** |
-| **Professor+Owner routes disconnected (BUG-030)** | **HIGH** — Pages ready, just need router update |
-| RLS policies (BUG-003) | HIGH |
-| `resolution_tier` (BUG-001) | HIGH |
-| JWT crypto (BUG-002) | MEDIUM — PostgREST mitigates DB routes; non-DB routes at risk |
-| GamificationContext STUB (BUG-021) | MEDIUM |
-| Hardcoded ANON_KEY x3 (BUG-025) | MEDIUM |
-| Demo student fallback (BUG-026) | MEDIUM |
-| architecture.ts 30KB stale (BUG-028) | MEDIUM |
-| kv_store_* cleanup (BUG-011) | LOW |
-| 7 LOW tech debt items (BUG-020..024, 027, 029) | LOW |
+- **8 PRs merged to main** (cumulative, includes fixes + features)
+- **Flashcard pipeline complete:** Image generation (Gemini 2.0 Flash) + DB schema + components
+- **Block-based summaries:** 35 files, +4630 lines, 6 waves of development, 12 code review fixes
+- **Git worktrees:** Isolation infrastructure installed (post-checkout hooks + helper script)
+- **Agent recon:** 40/76 agents completed (Batch 1+2), 36 pending (Batch 3+4)
 
-## Backend: ~103 files LISTED + 3 READ
+## Critical Findings (Pending)
 
-### Route Modules (11 split + 6 flat = 17 mounted in index.ts)
-
-| Module | Files | Key File Size |
+| Item | Category | Priority |
 |---|---|---|
-| ai/ | 14 | generate-smart 30KB, chat 18KB, pre-generate 16KB |
-| content/ | 10 | keyword-connections 10KB |
-| whatsapp/ | 10 | tools 21KB, handler 16KB |
-| telegram/ | 10 | tools, handler, webhook, async-queue |
-| gamification/ | 6 | badges 11KB, helpers 10KB |
-| study/ | 6 | batch-review 22KB, progress 16KB |
-| plans/ | 5 | access, ai-generations, crud, diagnostics |
-| mux/ | 5 | api 9KB, webhook |
-| members/ | 4 | memberships 11KB, institutions 8KB |
-| search/ | 4 | trash-restore 5KB |
-| settings/ | 2 | algorithm-config 6KB |
-| **Flat** | | |
-| routes-billing.ts | — | 16KB |
-| routes-study-queue.ts | — | 16KB |
-| routes-models.ts | — | 10KB |
-| routes-storage.ts | — | 8KB |
-| routes-auth.ts | — | 6KB |
-| routes-student.ts | — | 5KB |
+| RLS too permissive (platform_plans, ai_reading_config) | Security | **URGENT** |
+| WhatsApp webhook hardcoded salt | Security | **URGENT** |
+| No 401 interceptor in frontend | Security | **HIGH** |
+| 3 SECURITY DEFINER missing SET search_path | Security | HIGH |
+| Race conditions (xp-hooks, streak-engine) — RPCs wired but not called | Functional | HIGH |
+| 1031 hardcoded hex colors (175 files) | Design | HIGH |
+| Glassmorphism (14 instances) + wrong heading fonts | Design | HIGH |
+| 238 uses of `: any` (82 files) | Type system | MEDIUM |
+| 28 files exceed 500-line limit | Tech debt | MEDIUM |
+| 5 ghost endpoints (pa-admin.ts) | Code | MEDIUM |
 
-### Core Files (READ: db.ts, auth-helpers.ts, index.ts)
+## Backend Architecture
 
-- **crud-factory.ts** (20KB): Generic CRUD builder for Hono routes
-- **db.ts** (7.6KB READ): `PREFIX="/server"`, admin/user clients, `authenticate()`, JWT decode (no crypto — BUG-002)
-- **auth-helpers.ts** (11KB READ): Fail-closed role authorization, `requireInstitutionRole()`, `canAssignRole()`, role hierarchy
-- **xp-hooks.ts** (16KB): XP triggers for study actions
-- **retrieval-strategies.ts** (13KB): RAG retrieval
-- **lib/**: fsrs-v4.ts (8.7KB), bkt-v4.ts (4KB), types.ts (5.5KB)
+### Route Modules (11 split + 6 flat = 17 mounted)
 
-### Security Model (from db.ts + auth-helpers.ts READ)
-
-- JWT decoded locally (~0.1ms) — crypto deferred to PostgREST on DB queries
-- **WARNING in db.ts**: Non-DB routes (AI, Stripe) may NOT validate JWT cryptographically
-- auth-helpers.ts: Fail-closed, institution-scoped, `ROLE_HIERARCHY` enforced
-- Rate limiting: 120 req/min/user (middleware in index.ts)
-
-## Frontend: 188 logic READ + ~350 components LISTED
-
-### Logic (ALL READ)
-
-| Layer | Files |
-|---|---|
-| services/ | 53 |
-| hooks/ (flat + queries) | 56 |
-| lib/ | 25 |
-| design-system/ | 14 |
-| types/ | 11 |
-| routes/ | 10 |
-| utils/ | 10 |
-| context/ | 9 |
-| **TOTAL** | **188** |
-
-### Components (~350 LISTED, incl. roles/pages/)
-
-| Subdir | Files |
-|---|---|
-| student/ (+ sub) | 57 |
-| content/ (+ flashcard/) | 48 |
-| ui/ | 44 |
-| professor/ | 38 |
-| shared/ | 25 |
-| layout/ (+ topic-sidebar/) | 18 |
-| roles/pages/professor/ | 16 |
-| viewer3d/ | 14 |
-| gamification/ (+ pages/) | 14 |
-| dashboard/ | 11 |
-| design-kit/ | 9 |
-| roles/pages/owner/ | 8 |
-| auth/ | 6 |
-| schedule/ | 6 |
-| roles/pages/admin/ | 6 |
-| tiptap/ (+ extensions/) | 5 |
-| roles/ (flat) | 4 |
-| student-panel/ | 4 |
-| welcome/ | 3 |
-| ai/ | 2 |
-| video/ | 2 |
-| summary/ | 2 |
-| flat | 2 |
-| **TOTAL** | **~350** |
-
-### BUG-030: Routes vs Components Mismatch
-
-**professor-routes.ts** uses `lazyPlaceholder()` for all 8 routes. BUT:
-- `roles/pages/professor/` has **16 real page files**: ProfessorCurriculumPage (12KB), ProfessorFlashcardsPage (17KB), ProfessorQuizzesPage (12KB), SummaryDetailView (39KB!), TopicDetailPanel (18KB), etc.
-- `components/professor/` has **38 real CMS components** + 7 hooks
-- These are BUILT but NOT WIRED to the router.
-
-**owner-routes.ts** also uses `lazyPlaceholder()`. BUT:
-- `roles/pages/owner/` has **8 real page files**: OwnerMembersPage (**50KB** — largest in app!), OwnerPlansPage (30KB), OwnerDashboardPage (23KB), OwnerSubscriptionsPage (15KB), OwnerAccessRulesPage (15KB), OwnerReportsPage (13KB)
-- These are BUILT but NOT WIRED.
-
-**admin-routes.ts** uses `lazyPlaceholder()`. Pages in `roles/pages/admin/` are small (1-1.6KB) wrappers.
-
-### Mega-files (F-020 — UPDATED)
-
-| File | Size | Location |
+| Module | Files | Content |
 |---|---|---|
-| FlashcardsManager.tsx | **61KB** | content/ |
-| StudyOrganizerWizard.tsx | **51KB** | content/ |
-| **OwnerMembersPage.tsx** | **50KB** | roles/pages/owner/ |
-| AxonAIAssistant.tsx | **39KB** | ai/ |
-| **SummaryDetailView.tsx** | **39KB** | roles/pages/professor/ |
-| ModelViewer3D.tsx | **38KB** | content/ |
-| QuizSelection.tsx | **35KB** | content/ |
-| **OwnerPlansPage.tsx** | **30KB** | roles/pages/owner/ |
-| FlashcardBulkImport.tsx | **30KB** | professor/ |
-| TipTapEditor.tsx | **29KB** | tiptap/ |
+| ai/ | 14 | Smart generation, RAG chat, embeddings (Gemini 2.5 Flash) |
+| content/ | 10 | Curricula, topics, keywords, connections |
+| whatsapp/ | 10 | WhatsApp Cloud API integration (Phase 3 branch) |
+| telegram/ | 10 | Telegram bot + webhooks |
+| gamification/ | 6 | XP engine (8 hooks, 11 actions), badges (39), streaks, goals |
+| study/ | 6 | Flashcards, quizzes, batch review, progress tracking |
+| plans/ | 5 | Study plans, scheduling, learning paths |
+| mux/ | 5 | Video upload + signed playback + view tracking |
+| members/ | 4 | User memberships, institutions, access |
+| search/ | 4 | Full-text search, trash/restore |
+| settings/ | 2 | Algorithm config, platform settings |
+| **Flat files** | | |
+| routes-billing.ts | — | Stripe checkout, portal, webhooks |
+| routes-study-queue.ts | — | Review scheduling queue |
+| routes-models.ts | — | Model lookup endpoints |
+| routes-storage.ts | — | File storage operations |
+| routes-auth.ts | — | Auth endpoints |
+| routes-student.ts | — | Student dashboard data |
 
-**14 files >25KB** (was 11 before discovering roles/pages/). Top priority for splitting.
+### Core Infrastructure
 
-### Colocated Hooks
+- **db.ts:** Hono client setup, JWT decode (NO crypto validation), `authenticate()`
+- **auth-helpers.ts:** Fail-closed role authorization, institution-scoped, `ROLE_HIERARCHY`
+- **xp-hooks.ts:** XP triggers (study, completion, mastery)
+- **streak-engine.ts:** Streak calculation logic
+- **retrieval-strategies.ts:** RAG retrieval (semantic + keyword hybrid)
+- **lib/fsrs-v4.ts, bkt-v4.ts:** Spaced repetition + knowledge tracing
+- **Rate limiting:** 120 req/min/user
 
-- student/: 7, professor/: 7, dashboard/: 1, roles/pages/professor/: 1 = **16 total**
+## Frontend Stack & Structure
 
-## FRONTEND-DIAGNOSTIC F-xxx
+### Technology
+- **React 18** + **Vite 6** + **Tailwind v4 (alpha)**
+- 188 logic files (services, hooks, lib, design-system, types, context, utils)
+- ~350 components across 22+ directories
+- Gamification UI: 8 React Query hooks + 7 components
+- 22 lazy routes with error recovery (lazyRetry)
 
-| ID | Status |
-|---|---|
-| F-001 | **FIXED** |
-| F-002 | PARTIALLY FIXED (BUG-022) |
-| F-003 | **NOT FIXED** (BUG-025) |
-| F-005 | PARTIALLY FIXED (BUG-028) |
-| F-006 | **FIXED** |
-| F-008 | **FIXED** |
-| F-009 | **FIXED** |
-| F-010 | **FIXED** |
-| F-014 | **FIXED** |
-| F-020 | **WORSE** — 14 files >25KB |
+### Component Distribution
+
+| Category | Files | Notes |
+|---|---|---|
+| Student features | 57 | Dashboard, flashcards, quizzes, progress |
+| Content management | 48 | Flashcard editors, bulk import, bulk ops |
+| UI primitives | 44 | Design-kit atoms + helpers |
+| Professor CMS | 38 | Content creation, class management |
+| Gamification | 14 | XP, badges, streaks, leaderboard |
+| Layout + Sidebar | 18 | RoleShell, responsive MobileDrawer |
+| 3D Viewer | 14 | Anatomy models, interactive |
+| Dashboard | 11 | Role-specific overviews |
+| Auth | 6 | Login, register, role selection |
+| Schedule | 6 | Calendar, session booking |
+
+### Code Quality Issues
+
+| Issue | Scope | Priority |
+|---|---|---|
+| **14 files >25KB** | FlashcardsManager (61KB), StudyOrganizerWizard (51KB), OwnerMembersPage (50KB), AxonAIAssistant (39KB), SummaryDetailView (39KB) | HIGH |
+| **1031 hardcoded hex colors** | 175 files | HIGH |
+| **238 instances of `: any`** | 82 files | MEDIUM |
+| **Glassmorphism violations** | 14 instances on content cards + design-kit primitives | MEDIUM |
+| **Wrong heading fonts** | 12 instances (Space Grotesk instead of Georgia) | MEDIUM |
+| **28 files exceed 500 lines** | Various | MEDIUM |
+
+## Active Development Branches
+
+### Frontend Features
+- `feature/mindmap-knowledge-graph` (345 files)
+- `feat/sessioncalendario` (107 files)
+- `feat/student-telegram-and-ai-assistant` (105 files)
+- `security/phase-1-frontend` (303 files)
+
+### Backend Features
+- `feat/sessioncalendario` (study intelligence)
+- `perf/ralph-autonomous-improvements` (AI + gamification perf)
+- `fix/realtime-v2-session` (realtime updates)
+- `feature/whatsapp-phase3` (WhatsApp Cloud API)

@@ -1,21 +1,19 @@
-# Memory Index
-
-## Project
-- [project_current_state.md](project_current_state.md) — v4.5, 16 bugs, 62 migrations. Critical: RLS/JWT. Recent: Telegram, Claude AI, realtime, billing.
-- [project_agent_strategy.md](project_agent_strategy.md) — 24-agent system in 3 phases. Phase 1=13 agents. DO NOT re-litigate.
-- [project_delta_mastery_migration.md](project_delta_mastery_migration.md) — Delta Mastery color unification. PR #123 MERGED. Pending: remove @deprecated functions.
+# Axon Memory Index
 
 ## User
-- [user_petri.md](user_petri.md) — Solo developer/founder, works in Spanish, uses Figma Make + Obsidian
+- [user_profile.md](user_profile.md) — Petrick's role, language prefs, working style as Axon founder
 
-## Reference
-- [reference_repos_and_infra.md](reference_repos_and_infra.md) — Supabase project ID, git config, external services (Mux, Stripe, OpenAI, WhatsApp, Telegram)
+## Project
+- [project_current_state.md](project_current_state.md) — Open bugs, recent work, deployment status (update each session)
+- [project_file_organization.md](project_file_organization.md) — Code in C:\dev\axon\, docs in OneDrive (migrated 2026-03-21)
+- [project_active_branches.md](project_active_branches.md) — Active feature branches not yet merged (frontend + backend)
 
 ## Feedback
-- [feedback_autonomous_mode.md](feedback_autonomous_mode.md) — bypassPermissions active. Never ask confirmation. Just execute. (Merges former bypass_permissions)
-- [feedback_agent_isolation.md](feedback_agent_isolation.md) — COMPLETE multi-agent checklist: file isolation, worktrees, model=opus, quality-gate, merge order. (Merges former coordination_lessons + always_opus)
-- [feedback_sync_and_freshness.md](feedback_sync_and_freshness.md) — Volatile state in memory, NOT CLAUDE.md. Update project_current_state after significant work.
-- [feedback_always_use_branches.md](feedback_always_use_branches.md) — gh CLI not authenticated. Push branch, user merges via browser.
-- [feedback_quality_gate.md](feedback_quality_gate.md) — Launch quality-gate Opus IN BACKGROUND the instant each agent finishes.
-- [feedback_streaming_conventions.md](feedback_streaming_conventions.md) — rag-chat: send both ?stream=1 AND body.stream. Check both on backend.
+- [feedback_session_handoff.md](feedback_session_handoff.md) — Always update project state at end of session (OneDrive cross-session sync)
+- [feedback_no_onedrive_repos.md](feedback_no_onedrive_repos.md) — Never put git repos inside OneDrive (causes .git corruption)
+- [feedback_personalization_priorities.md](feedback_personalization_priorities.md) — Which personalization ideas Petrick approved/rejected (difficulty-first, no format/emotional features yet)
+- [feedback_agent_lessons_oleada_a.md](feedback_agent_lessons_oleada_a.md) — Agent lessons from flashcard bug fixes: grep all callers, check type consumers, quality gate catches cross-file bugs
 
+## References
+- [reference_docs_map.md](reference_docs_map.md) — Where to find key docs across the 3 repos
+- [reference_workflow_guide.md](reference_workflow_guide.md) — Pointer to Axon_Workflow_Guide.docx (canonical workflow & org guide)

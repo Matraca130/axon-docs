@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axon Medical Academy — Estudiá medicina de otro modo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Jura:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       AXON MEDICAL ACADEMY — HERO SECTION v3
+       Neural Tree with Scroll-Linked Video
+       ============================================ */
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --axon-bg: #1B3B36;
+      --axon-bg-deep: #152e2a;
+      --axon-green: #2dd4a8;
+      --axon-green-mid: #2a8c7a;
+      --axon-green-dim: #1a6b5a;
+      --axon-white: #f5f5f5;
+      --axon-white-soft: rgba(245, 245, 245, 0.85);
+      --axon-red: #f43f5e;
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'Jura', monospace;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--axon-bg);
+      color: var(--axon-white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ---- SCROLL CONTAINER ---- */
+    .hero-scroll-container {
+      position: relative;
+      height: 500vh; /* 5x viewport = scroll distance to scrub full video */
+    }
+
+    .hero-sticky {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---- CANVAS LAYER (Apple-style image sequence) ---- */
+    .hero-canvas-wrapper {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .hero-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Dark gradient on left for text readability */
+    .hero-canvas-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(27, 59, 54, 0.92) 0%,
+        rgba(27, 59, 54, 0.75) 25%,
+        rgba(27, 59, 54, 0.3) 45%,
+        transparent 60%
+      );
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ---- PRELOADER ---- */
+    .hero-preloader {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      background: var(--axon-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .hero-preloader.loaded {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .preloader-text {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--axon-green);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .preloader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(45, 212, 168, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .preloader-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--axon-green);
+      border-radius: 3px;
+      transition: width 0.15s ease;
+    }
+
+    /* ---- TEXT CONTENT (Left Side) ---- */
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 clamp(24px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    .hero-text {
+      max-width: 520px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s ease-out 0.3s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(45, 212, 168, 0.12);
+      border: 1px solid rgba(45, 212, 168, 0.25);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--axon-green);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--axon-green);
+      box-shadow: 0 0 8px var(--axon-green);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      font-weight: 400;
+      line-height: 1.08;
+      color: var(--axon-white);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--axon-green);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 1.8vw, 1.15rem);
+      line-height: 1.6;
+      color: var(--axon-white-soft);
+      margin-bottom: 36px;
+      max-width: 440px;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--axon-green);
+      color: var(--axon-bg);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 20px rgba(45, 212, 168, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #3ee8b8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 30px rgba(45, 212, 168, 0.45);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--axon-white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid rgba(245, 245, 245, 0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--axon-green);
+      color: var(--axon-green);
+      background: rgba(45, 212, 168, 0.06);
+    }
+
+    /* ---- STATS BAR ---- */
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--axon-green);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: rgba(245, 245, 245, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+
+    /* ---- INTERACTIVE COMPONENTS AT TERMINALS ---- */
+    .terminal-components {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .terminal-card {
+      position: absolute;
+      pointer-events: auto;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .terminal-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .terminal-card.visible:hover {
+      transform: scale(1.03);
+    }
+
+    /* Card base style */
+    .t-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(45, 212, 168, 0.15),
+        0 0 40px rgba(45, 212, 168, 0.08);
+      color: #1a1a1a;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .t-card:hover {
+      box-shadow:
+        0 8px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(45, 212, 168, 0.3),
+        0 0 60px rgba(45, 212, 168, 0.15);
+    }
+
+    /* Terminal 1: Flashcard - top right (smaller) */
+    .terminal-1 {
+      top: 15%;
+      right: 4%;
+      width: 220px;
+      transition-delay: 0s;
+    }
+
+    .flashcard-inner {
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .flashcard-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--axon-green-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .flashcard-question {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      line-height: 1.3;
+      color: #1a1a1a;
+      flex-grow: 1;
+    }
+
+    .flashcard-answer {
+      display: none;
+      font-size: 0.95rem;
+      color: #2a2a2a;
+      line-height: 1.5;
+    }
+
+    .flashcard-inner.flipped .flashcard-question { display: none; }
+    .flashcard-inner.flipped .flashcard-answer { display: block; }
+
+    .flashcard-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .flashcard-hint {
+      font-size: 0.7rem;
+      color: #999;
+    }
+
+    .flashcard-flip-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--axon-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--axon-green);
+      font-size: 0.75rem;
+      transition: transform 0.3s ease;
+    }
+
+    .flashcard-inner.flipped .flashcard-flip-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Terminal 2: Quiz - right center (smaller) */
+    .terminal-2 {
+      top: 45%;
+      right: 2%;
+      width: 240px;
+      transition-delay: 0.15s;
+    }
+
+    .quiz-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--axon-green-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .quiz-question {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1.5px solid #e5e5e5;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--axon-green-mid);
+      background: rgba(45, 212, 168, 0.04);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--axon-green);
+      background: rgba(45, 212, 168, 0.1);
+      color: var(--axon-bg);
+      font-weight: 600;
+    }
+
+    .quiz-option.wrong {
+      border-color: var(--axon-red);
+      background: rgba(244, 63, 94, 0.06);
+      opacity: 0.6;
+    }
+
+    .quiz-option-letter {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .quiz-option.correct .quiz-option-letter {
+      background: var(--axon-green);
+      color: white;
+    }
+
+    .quiz-option.wrong .quiz-option-letter {
+      background: var(--axon-red);
+      color: white;
+    }
+
+    /* Terminal 3: Knowledge Graph - HIDDEN from hero (shown in next section) */
+    .terminal-3 {
+      bottom: 10%;
+      right: 10%;
+      width: 260px;
+      transition-delay: 0.3s;
+      display: none;
+    }
+
+    .kg-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--axon-green-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .kg-canvas {
+      width: 100%;
+      height: 150px;
+      position: relative;
+    }
+
+    .kg-node {
+      position: absolute;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .kg-node:hover {
+      transform: scale(1.1);
+    }
+
+    .kg-node.mastered {
+      background: rgba(45, 212, 168, 0.15);
+      color: var(--axon-green-mid);
+      border: 1px solid rgba(45, 212, 168, 0.3);
+    }
+
+    .kg-node.learning {
+      background: rgba(250, 204, 21, 0.12);
+      color: #b8960c;
+      border: 1px solid rgba(250, 204, 21, 0.3);
+    }
+
+    .kg-node.review {
+      background: rgba(244, 63, 94, 0.1);
+      color: var(--axon-red);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+
+    .kg-line {
+      position: absolute;
+      height: 1px;
+      background: rgba(150, 150, 150, 0.2);
+      transform-origin: left center;
+    }
+
+    /* Terminal 4: AI Tutor - bottom left (below text, not overlapping) */
+    .terminal-4 {
+      bottom: 4%;
+      left: 3%;
+      width: 210px;
+      transition-delay: 0.3s;
+    }
+
+    .tutor-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--axon-green-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .tutor-message {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .tutor-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--axon-bg), var(--axon-green-mid));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.85rem;
+    }
+
+    .tutor-bubble {
+      background: #f5f5f5;
+      border-radius: 12px 12px 12px 4px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: #333;
+      flex-grow: 1;
+    }
+
+    .tutor-typing {
+      display: flex;
+      gap: 4px;
+      padding: 10px 14px;
+    }
+
+    .tutor-typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #999;
+      animation: typing-bounce 1.4s ease-in-out infinite;
+    }
+
+    .tutor-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .tutor-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing-bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    .tutor-wave {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-top: 10px;
+      height: 24px;
+    }
+
+    .tutor-wave-bar {
+      width: 3px;
+      border-radius: 3px;
+      background: var(--axon-green-mid);
+      animation: wave-bar 1.2s ease-in-out infinite;
+    }
+
+    .tutor-wave-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+    .tutor-wave-bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+    .tutor-wave-bar:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+    .tutor-wave-bar:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+    .tutor-wave-bar:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+    .tutor-wave-bar:nth-child(6) { height: 14px; animation-delay: 0.5s; }
+    .tutor-wave-bar:nth-child(7) { height: 6px; animation-delay: 0.6s; }
+    .tutor-wave-bar:nth-child(8) { height: 18px; animation-delay: 0.7s; }
+    .tutor-wave-bar:nth-child(9) { height: 10px; animation-delay: 0.8s; }
+
+    @keyframes wave-bar {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.4); }
+    }
+
+    /* Terminal 5: Spaced Rep - HIDDEN from hero (shown in next section) */
+    .terminal-5 {
+      bottom: 5%;
+      left: 28%;
+      width: 200px;
+      transition-delay: 0.6s;
+      display: none;
+    }
+
+    .sr-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--axon-green-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .sr-schedule {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sr-day {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+    }
+
+    .sr-day-label {
+      width: 32px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: #888;
+      flex-shrink: 0;
+    }
+
+    .sr-bar-track {
+      flex-grow: 1;
+      height: 8px;
+      background: #eee;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .sr-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease-out;
+    }
+
+    .sr-bar-fill.high { background: var(--axon-green); }
+    .sr-bar-fill.mid { background: #facc15; }
+    .sr-bar-fill.low { background: var(--axon-red); }
+
+    .sr-day-count {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.7rem;
+      width: 24px;
+      text-align: right;
+      color: #666;
+    }
+
+    /* ---- SCROLL INDICATOR ---- */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    .scroll-indicator.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .scroll-indicator-text {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: rgba(245, 245, 245, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .scroll-indicator-arrow {
+      width: 20px;
+      height: 20px;
+      border-right: 1.5px solid rgba(245, 245, 245, 0.3);
+      border-bottom: 1.5px solid rgba(245, 245, 245, 0.3);
+      transform: rotate(45deg);
+      animation: scroll-bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes scroll-bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50% { transform: rotate(45deg) translateY(6px); }
+    }
+
+    /* ---- NEXT SECTION PLACEHOLDER ---- */
+    .section-next {
+      min-height: 100vh;
+      background: var(--axon-bg-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+    }
+
+    .section-next h2 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--axon-white);
+      text-align: center;
+      opacity: 0.3;
+    }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .hero-scroll-container {
+        height: 400vh;
+      }
+
+      .hero-text {
+        max-width: 100%;
+      }
+
+      .hero-title {
+        font-size: 2.2rem;
+      }
+
+      .hero-canvas-wrapper::after {
+        background: linear-gradient(
+          to bottom,
+          rgba(27, 59, 54, 0.85) 0%,
+          rgba(27, 59, 54, 0.5) 40%,
+          rgba(27, 59, 54, 0.7) 100%
+        );
+      }
+
+      .terminal-card {
+        display: none;
+      }
+
+      .hero-stats {
+        gap: 20px;
+      }
+
+      .stat-number {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======= HERO SCROLL SECTION ======= -->
+  <section class="hero-scroll-container" id="hero">
+    <div class="hero-sticky">
+
+      <!-- Preloader -->
+      <div class="hero-preloader" id="preloader">
+        <span class="preloader-text">Cargando experiencia</span>
+        <div class="preloader-bar">
+          <div class="preloader-fill" id="preloaderFill"></div>
+        </div>
+      </div>
+
+      <!-- Canvas Layer (Apple-style image sequence) -->
+      <div class="hero-canvas-wrapper">
+        <canvas class="hero-canvas" id="heroCanvas"></canvas>
+      </div>
+
+      <!-- Text Content (Left Side) -->
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-badge">Plataforma Educativa con IA</div>
+          <h1 class="hero-title">
+            Estudiá medicina<br>
+            <em>de otro modo</em>
+          </h1>
+          <p class="hero-subtitle">
+            Flashcards inteligentes, quizzes adaptativos y un tutor IA
+            que se adapta a tu ritmo. Todo basado en evidencia científica
+            de cómo aprende tu cerebro.
+          </p>
+          <div class="hero-cta-group">
+            <a href="#" class="btn-primary">
+              Empezá gratis
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#" class="btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <polygon points="6,3 13,8 6,13" fill="currentColor"/>
+              </svg>
+              Ver demo
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">2,847</span>
+              <span class="stat-label">Estudiantes</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">94%</span>
+              <span class="stat-label">Aprobación</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">12k+</span>
+              <span class="stat-label">Flashcards</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Components at Terminals -->
+      <div class="terminal-components" id="terminalComponents">
+
+        <!-- T1: Flashcard (top-right) -->
+        <div class="terminal-card terminal-1" id="t1">
+          <div class="t-card">
+            <div class="flashcard-inner" id="flashcard1" onclick="this.classList.toggle('flipped')">
+              <span class="flashcard-label">Anatomía I — Flashcard</span>
+              <div class="flashcard-question">¿Cuál es el hueso más largo del cuerpo humano?</div>
+              <div class="flashcard-answer">
+                El <strong>fémur</strong> es el hueso más largo y fuerte del cuerpo humano. Se extiende desde la cadera hasta la rodilla, y soporta gran parte del peso corporal.
+              </div>
+              <div class="flashcard-footer">
+                <span class="flashcard-hint">Tocá para voltear</span>
+                <div class="flashcard-flip-icon">↻</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- T2: Quiz (right-center) -->
+        <div class="terminal-card terminal-2" id="t2">
+          <div class="t-card">
+            <span class="quiz-label">Quiz — Osteología</span>
+            <div class="quiz-question">¿Qué hueso protege el encéfalo?</div>
+            <div class="quiz-options" id="quizOptions">
+              <div class="quiz-option" data-correct="false" onclick="handleQuiz(this)">
+                <span class="quiz-option-letter">A</span>
+                <span>Esternón</span>
+              </div>
+              <div class="quiz-option" data-correct="true" onclick="handleQuiz(this)">
+                <span class="quiz-option-letter">B</span>
+                <span>Cráneo</span>
+              </div>
+              <div class="quiz-option" data-correct="false" onclick="handleQuiz(this)">
+                <span class="quiz-option-letter">C</span>
+                <span>Escápula</span>
+              </div>
+              <div class="quiz-option" data-correct="false" onclick="handleQuiz(this)">
+                <span class="quiz-option-letter">D</span>
+                <span>Sacro</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- T3: Knowledge Graph (bottom-right) -->
+        <div class="terminal-card terminal-3" id="t3">
+          <div class="t-card">
+            <span class="kg-label">Mapa de Conocimiento</span>
+            <div class="kg-canvas">
+              <!-- Connecting lines (SVG) -->
+              <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 260 150">
+                <line x1="130" y1="30" x2="50" y2="75" stroke="rgba(45,212,168,0.2)" stroke-width="1"/>
+                <line x1="130" y1="30" x2="210" y2="60" stroke="rgba(45,212,168,0.2)" stroke-width="1"/>
+                <line x1="50" y1="75" x2="90" y2="125" stroke="rgba(45,212,168,0.2)" stroke-width="1"/>
+                <line x1="130" y1="30" x2="160" y2="110" stroke="rgba(244,63,94,0.2)" stroke-width="1"/>
+                <line x1="210" y1="60" x2="160" y2="110" stroke="rgba(45,212,168,0.15)" stroke-width="1"/>
+              </svg>
+              <div class="kg-node mastered" style="left:38%;top:10%;">Osteología</div>
+              <div class="kg-node mastered" style="left:5%;top:40%;">Fémur</div>
+              <div class="kg-node learning" style="left:65%;top:30%;">Articulaciones</div>
+              <div class="kg-node mastered" style="left:20%;top:72%;">Tibia</div>
+              <div class="kg-node review" style="left:48%;top:65%;">Cráneo</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- T4: AI Tutor (bottom-left) -->
+        <div class="terminal-card terminal-4" id="t4">
+          <div class="t-card">
+            <span class="tutor-label">Tutor IA</span>
+            <div class="tutor-message">
+              <div class="tutor-avatar">🧠</div>
+              <div class="tutor-bubble">
+                Veo que te trabaste con <strong>cráneo</strong>. ¿Querés que repasemos los huesos de la bóveda craneal?
+              </div>
+            </div>
+            <div class="tutor-wave">
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+              <div class="tutor-wave-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- T5: Spaced Repetition Schedule (bottom center-left) -->
+        <div class="terminal-card terminal-5" id="t5">
+          <div class="t-card">
+            <span class="sr-label">Repetición Espaciada</span>
+            <div class="sr-schedule">
+              <div class="sr-day">
+                <span class="sr-day-label">Lun</span>
+                <div class="sr-bar-track"><div class="sr-bar-fill high" style="width:85%"></div></div>
+                <span class="sr-day-count">34</span>
+              </div>
+              <div class="sr-day">
+                <span class="sr-day-label">Mar</span>
+                <div class="sr-bar-track"><div class="sr-bar-fill high" style="width:60%"></div></div>
+                <span class="sr-day-count">22</span>
+              </div>
+              <div class="sr-day">
+                <span class="sr-day-label">Mié</span>
+                <div class="sr-bar-track"><div class="sr-bar-fill mid" style="width:45%"></div></div>
+                <span class="sr-day-count">18</span>
+              </div>
+              <div class="sr-day">
+                <span class="sr-day-label">Jue</span>
+                <div class="sr-bar-track"><div class="sr-bar-fill low" style="width:20%"></div></div>
+                <span class="sr-day-count">8</span>
+              </div>
+              <div class="sr-day">
+                <span class="sr-day-label">Hoy</span>
+                <div class="sr-bar-track"><div class="sr-bar-fill high" style="width:0%"></div></div>
+                <span class="sr-day-count">12</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="scroll-indicator" id="scrollIndicator">
+        <span class="scroll-indicator-text">Scroll</span>
+        <div class="scroll-indicator-arrow"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Next Section Placeholder -->
+  <section class="section-next">
+    <h2>La siguiente sección va acá...</h2>
+  </section>
+
+  <script>
+    // ============================================
+    // APPLE-STYLE CANVAS IMAGE SEQUENCE
+    // Preloads all frames, paints on scroll
+    // ============================================
+
+    const canvas = document.getElementById('heroCanvas');
+    const ctx = canvas.getContext('2d');
+    const heroSection = document.getElementById('hero');
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    const terminals = document.querySelectorAll('.terminal-card');
+    const preloader = document.getElementById('preloader');
+    const preloaderFill = document.getElementById('preloaderFill');
+
+    // 60fps interpolated frames for ultra-smooth scroll
+    // Frame 115 at 60fps — clean soma with Ranvier nodes, no explosive glow
+    const START_FRAME = 115;
+    const END_FRAME = 298;
+    const FRAME_COUNT = END_FRAME - START_FRAME + 1; // 184 usable frames
+    const frames = [];
+    let currentFrame = 0;
+    let imagesReady = false;
+    let ticking = false;
+
+    // AVIF with WebP fallback for older browsers
+    const supportsAvif = document.createElement('canvas')
+      .toDataURL('image/avif').startsWith('data:image/avif');
+
+    function framePath(i) {
+      const num = String(i).padStart(4, '0');
+      // Try AVIF first (smaller, same quality), fallback to WebP
+      return `assets/hero-video/frames-60fps-avif/frame_${num}.avif`;
+    }
+
+    // Detect AVIF support and set path accordingly
+    function detectAvif() {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKBzgABq0SY5OUDQAsIAAAABAAB4BgvA==';
+      });
+    }
+
+    let useAvif = true; // optimistic default
+
+    // Preload only frames START_FRAME to END_FRAME
+    function preloadFrames() {
+      let loaded = 0;
+
+      return new Promise((resolve) => {
+        for (let i = START_FRAME; i <= END_FRAME; i++) {
+          const idx = i - START_FRAME; // 0-based index in our array
+          const img = new Image();
+          img.onload = () => {
+            loaded++;
+            const pct = Math.round((loaded / FRAME_COUNT) * 100);
+            preloaderFill.style.width = pct + '%';
+
+            if (loaded === FRAME_COUNT) {
+              resolve();
+            }
+          };
+          img.onerror = () => {
+            loaded++;
+            if (loaded === FRAME_COUNT) resolve();
+          };
+          img.src = framePath(i);
+          frames[idx] = img;
+        }
+      });
+    }
+
+    // Resize canvas to match display
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawFrame(currentFrame);
+    }
+
+    // Draw a specific frame to canvas (cover mode)
+    function drawFrame(index) {
+      if (!frames[index] || !frames[index].complete) return;
+
+      const img = frames[index];
+      const cw = canvas.width / (window.devicePixelRatio || 1);
+      const ch = canvas.height / (window.devicePixelRatio || 1);
+
+      // Calculate cover dimensions
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const canvasRatio = cw / ch;
+
+      let drawW, drawH, drawX, drawY;
+
+      if (canvasRatio > imgRatio) {
+        drawW = cw;
+        drawH = cw / imgRatio;
+        drawX = 0;
+        drawY = (ch - drawH) / 2;
+      } else {
+        drawH = ch;
+        drawW = ch * imgRatio;
+        drawX = (cw - drawW) / 2;
+        drawY = 0;
+      }
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, drawX, drawY, drawW, drawH);
+    }
+
+    // Scroll handler with requestAnimationFrame
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateOnScroll);
+        ticking = true;
+      }
+    }
+
+    function updateOnScroll() {
+      ticking = false;
+      if (!imagesReady) return;
+
+      const rect = heroSection.getBoundingClientRect();
+      const scrollableHeight = heroSection.offsetHeight - window.innerHeight;
+      const scrolled = -rect.top;
+      const progress = Math.min(Math.max(scrolled / scrollableHeight, 0), 1);
+
+      // Map progress to frame index (0 to FRAME_COUNT-1)
+      const targetFrame = Math.min(
+        Math.floor(progress * FRAME_COUNT),
+        FRAME_COUNT - 1
+      );
+
+      // Only redraw if frame changed
+      if (targetFrame !== currentFrame) {
+        currentFrame = targetFrame;
+        drawFrame(currentFrame);
+      }
+
+      // Hide scroll indicator after 10% scroll
+      if (progress > 0.1) {
+        scrollIndicator.classList.add('hidden');
+      } else {
+        scrollIndicator.classList.remove('hidden');
+      }
+
+      // Fade text out as cards appear (handoff: read text first, then see cards)
+      const heroText = document.querySelector('.hero-text');
+      if (progress < 0.45) {
+        heroText.style.opacity = '1';
+        heroText.style.transform = 'translateY(0)';
+      } else if (progress < 0.65) {
+        // Fade from 1 to 0.15 between 45-65%
+        const fadeProgress = (progress - 0.45) / 0.2;
+        heroText.style.opacity = String(1 - fadeProgress * 0.85);
+        heroText.style.transform = `translateY(${fadeProgress * -20}px)`;
+      } else {
+        heroText.style.opacity = '0.15';
+        heroText.style.transform = 'translateY(-20px)';
+      }
+
+      // Show terminal cards progressively (3 cards only)
+      // Cards appear when branches reach terminals (60-85% of video)
+      const cardThresholds = [0.60, 0.70, 0.80];
+      terminals.forEach((card, i) => {
+        if (card.style.display === 'none') return; // skip hidden cards
+        if (progress >= cardThresholds[i]) {
+          card.classList.add('visible');
+        } else {
+          card.classList.remove('visible');
+        }
+      });
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+
+    async function init() {
+      resizeCanvas();
+
+      // Detect AVIF support, fallback to WebP
+      useAvif = await detectAvif();
+      if (!useAvif) {
+        // Override framePath to use WebP
+        window._framePath = framePath;
+        // Fallback: use 24fps WebP (fewer frames but still works)
+        framePath = function(i) {
+          // Map 60fps frame number back to approximate 24fps frame
+          const frame24 = Math.round(i * 24 / 60);
+          const num = String(frame24).padStart(4, '0');
+          return `assets/hero-video/frames-webp-hq2/frame_${num}.webp`;
+        };
+        console.log('AVIF not supported, falling back to WebP 24fps');
+      } else {
+        console.log('Using 60fps AVIF frames (197 frames, ~12MB)');
+      }
+
+      await preloadFrames();
+      imagesReady = true;
+
+      // Draw first frame
+      drawFrame(0);
+
+      // Hide preloader
+      preloader.classList.add('loaded');
+
+      // Start listening to scroll
+      window.addEventListener('scroll', onScroll, { passive: true });
+      updateOnScroll();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    init();
+
+    // ============================================
+    // QUIZ INTERACTION
+    // ============================================
+
+    function handleQuiz(el) {
+      const options = document.querySelectorAll('#quizOptions .quiz-option');
+      const isCorrect = el.dataset.correct === 'true';
+
+      // Prevent re-clicking
+      if (el.closest('#quizOptions').dataset.answered === 'true') return;
+      el.closest('#quizOptions').dataset.answered = 'true';
+
+      options.forEach(opt => {
+        if (opt.dataset.correct === 'true') {
+          opt.classList.add('correct');
+        } else if (opt === el && !isCorrect) {
+          opt.classList.add('wrong');
+        }
+      });
+    }
+
+    // ============================================
+    // SPACED REP BAR ANIMATION
+    // ============================================
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const todayBar = entry.target.querySelector('.sr-day:last-child .sr-bar-fill');
+          if (todayBar) {
+            setTimeout(() => { todayBar.style.width = '50%'; }, 300);
+          }
+        }
+      });
+    });
+
+    const t5el = document.getElementById('t5');
+    if (t5el) observer.observe(t5el);
+  </script>
+
+</body>
+</html>

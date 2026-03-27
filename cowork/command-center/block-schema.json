@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Axon Summary Block Schema",
+  "description": "Schema estandarizado para los 10 tipos de bloque del sistema de resúmenes Axon. La IA DEBE generar bloques que cumplan este schema exactamente.",
+  "version": "1.0.0",
+
+  "type": "object",
+  "required": ["summary_meta", "keywords", "blocks"],
+  "additionalProperties": false,
+
+  "properties": {
+
+    "summary_meta": {
+      "type": "object",
+      "description": "Metadatos del resumen completo",
+      "required": ["title", "subtitle", "subject_area", "topic", "difficulty", "estimated_reading_min", "tags"],
+      "properties": {
+        "title":                 { "type": "string", "description": "Título principal del resumen (e.g. 'Aterosclerosis')" },
+        "subtitle":              { "type": "string", "description": "Descripción corta de 1 línea" },
+        "subject_area":          { "type": "string", "description": "Área médica (e.g. 'Cardiología')" },
+        "topic":                 { "type": "string", "description": "Tema dentro del área (e.g. 'Patología Vascular')" },
+        "difficulty":            { "enum": ["basico", "intermedio", "avanzado"] },
+        "estimated_reading_min": { "type": "integer", "minimum": 1, "maximum": 60 },
+        "tags":                  { "type": "array", "items": { "type": "string" }, "minItems": 1, "maxItems": 8 }
+      }
+    },
+
+    "keywords": {
+      "type": "array",
+      "description": "Keywords del resumen. Se referencian en el texto de bloques con sintaxis {{keyword_id}}",
+      "items": {
+        "type": "object",
+        "required": ["id", "term", "definition"],
+        "properties": {
+          "id":         { "type": "string", "pattern": "^[a-z0-9_]+$", "description": "ID único, snake_case, sin espacios ni acentos" },
+          "term":       { "type": "string", "description": "Nombre visible del keyword (puede tener acentos/mayúsculas)" },
+          "definition": { "type": "string", "description": "Definición concisa de 1-3 oraciones" },
+          "related":    { "type": "array", "items": { "type": "string" }, "description": "Términos relacionados (nombres legibles, no IDs)" },
+          "priority":   { "enum": [0, 1, 2, 3], "description": "0=bajo, 1=medio, 2=alto, 3=crítico" }
+        }
+      }
+    },
+
+    "blocks": {
+      "type": "array",
+      "description": "Array ordenado de bloques. El orden define la secuencia de lectura.",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/prose" },
+          { "$ref": "#/$defs/key_point" },
+          { "$ref": "#/$defs/stages" },
+          { "$ref": "#/$defs/comparison" },
+          { "$ref": "#/$defs/list_detail" },
+          { "$ref": "#/$defs/grid" },
+          { "$ref": "#/$defs/two_column" },
+          { "$ref": "#/$defs/callout" },
+          { "$ref": "#/$defs/image_reference" },
+          { "$ref": "#/$defs/section_divider" }
+        ]
+      }
+    }
+  },
+
+  "$defs": {
+
+    "prose": {
+      "type": "object",
+      "description": "Texto narrativo/explicativo con párrafos. Usar para definiciones, descripciones, explicaciones extensas.",
+      "required": ["type", "title", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "type":    { "const": "prose" },
+        "title":   { "type": "string" },
+        "content": { "type": "string", "description": "Texto con párrafos separados por \\n\\n. Keywords marcados como {{keyword_id}}." },
+        "image":   { "$ref": "#/$defs/block_image" }
+      }
+    },
+
+    "key_point": {
+      "type": "object",
+      "description": "Concepto crítico que el estudiante DEBE recordar. Se renderiza como card dark teal destacada. Usar con moderación (1-3 por resumen).",
+      "required": ["type", "title", "content", "importance"],
+      "additionalProperties": false,
+      "properties": {
+        "type":       { "const": "key_point" },
+        "title":      { "type": "string" },
+        "content":    { "type": "string", "description": "Explicación del concepto clave. Soporta {{keyword_id}}." },
+        "importance": { "enum": ["high", "critical"] }
+      }
+    },
+
+    "stages": {
+      "type": "object",
+      "description": "Proceso secuencial con etapas numeradas. Ideal para: patogénesis, mecanismos progresivos, algoritmos paso a paso.",
+      "required": ["type", "title", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "type":  { "const": "stages" },
+        "title": { "type": "string" },
+        "items": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": ["stage", "title", "content"],
+            "properties": {
+              "stage":    { "type": "integer", "minimum": 1 },
+              "title":    { "type": "string" },
+              "content":  { "type": "string", "description": "Soporta {{keyword_id}}" },
+              "severity": { "enum": ["mild", "moderate", "critical", null], "description": "Gravedad de la etapa. null si no aplica." }
+            }
+          }
+        }
+      }
+    },
+
+    "comparison": {
+      "type": "object",
+      "description": "Tabla comparativa. Ideal para: diagnóstico diferencial, comparar fármacos, clasificaciones lado a lado.",
+      "required": ["type", "title", "headers", "rows"],
+      "additionalProperties": false,
+      "properties": {
+        "type":             { "const": "comparison" },
+        "title":            { "type": "string" },
+        "headers":          { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 6 },
+        "rows":             { "type": "array", "items": { "type": "array", "items": { "type": "string" } }, "minItems": 1 },
+        "highlight_column": { "type": ["integer", "null"], "description": "Índice (0-based) de columna a destacar, o null" }
+      }
+    },
+
+    "list_detail": {
+      "type": "object",
+      "description": "Lista de ítems con ícono, label y detalle. Ideal para: factores de riesgo, criterios diagnósticos, manifestaciones clínicas.",
+      "required": ["type", "title", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "type":  { "const": "list_detail" },
+        "title": { "type": "string" },
+        "intro": { "type": ["string", "null"], "description": "Párrafo introductorio opcional" },
+        "items": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "required": ["label", "detail", "icon"],
+            "properties": {
+              "label":    { "type": "string" },
+              "detail":   { "type": "string", "description": "Soporta {{keyword_id}}" },
+              "icon":     { "enum": ["Activity", "Heart", "Pill", "Stethoscope", "Shield", "FlaskConical", "Clock", "Lightbulb", "Target", "AlertCircle", "Brain", "Info", "AlertTriangle", "HelpCircle", "CheckCircle2", "CircleDot"] },
+              "severity": { "enum": ["high", "medium", "low", null] }
+            }
+          }
+        }
+      }
+    },
+
+    "grid": {
+      "type": "object",
+      "description": "Grid de cards compactas en 2-3 columnas. Ideal para: territorios vasculares, clasificaciones cortas, enumeraciones visuales.",
+      "required": ["type", "title", "columns", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "type":    { "const": "grid" },
+        "title":   { "type": "string" },
+        "columns": { "enum": [2, 3] },
+        "items":   {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "required": ["label", "detail", "icon"],
+            "properties": {
+              "label":  { "type": "string" },
+              "detail": { "type": "string" },
+              "icon":   { "enum": ["Activity", "Heart", "Pill", "Stethoscope", "Shield", "FlaskConical", "Clock", "Lightbulb", "Target", "AlertCircle", "Brain", "Info", "AlertTriangle", "HelpCircle", "CheckCircle2", "CircleDot"] }
+            }
+          }
+        }
+      }
+    },
+
+    "two_column": {
+      "type": "object",
+      "description": "Dos columnas lado a lado. Ideal para: modificable vs no modificable, ventajas vs desventajas, comparación de dos categorías.",
+      "required": ["type", "columns"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "two_column" },
+        "columns": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["title", "items"],
+            "properties": {
+              "title": { "type": "string" },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["label", "detail"],
+                  "properties": {
+                    "label":  { "type": "string" },
+                    "detail": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "callout": {
+      "type": "object",
+      "description": "Nota destacada con variante semántica. Usar para correlaciones clínicas, mnemotecnias, tips, alertas y datos de examen.",
+      "required": ["type", "variant", "title", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "type":    { "const": "callout" },
+        "variant": { "enum": ["tip", "warning", "clinical", "mnemonic", "exam"], "description": "tip=verde, warning=amarillo, clinical=azul, mnemonic=violeta, exam=rojo" },
+        "title":   { "type": "string" },
+        "content": { "type": "string", "description": "Texto del callout. Soporta \\n para saltos de línea." }
+      }
+    },
+
+    "image_reference": {
+      "type": "object",
+      "description": "Placeholder para imagen. La IA describe qué imagen se necesita; el profesor la sube después.",
+      "required": ["type", "description", "caption"],
+      "additionalProperties": false,
+      "properties": {
+        "type":        { "const": "image_reference" },
+        "description": { "type": "string", "description": "Descripción detallada de qué imagen se necesita (para que el profesor la busque)" },
+        "caption":     { "type": "string", "description": "Texto que aparecerá debajo de la imagen" },
+        "image_url":   { "type": ["string", "null"], "default": null }
+      }
+    },
+
+    "section_divider": {
+      "type": "object",
+      "description": "Separador visual entre secciones. Usar para marcar transiciones temáticas importantes.",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type":  { "const": "section_divider" },
+        "label": { "type": ["string", "null"], "description": "Texto opcional en el separador (e.g. 'Diagnóstico y Tratamiento')" }
+      }
+    },
+
+    "block_image": {
+      "type": ["object", "null"],
+      "description": "Imagen opcional asociada a un bloque prose. Se renderiza al lado del texto.",
+      "properties": {
+        "url":         { "type": ["string", "null"], "default": null },
+        "position":    { "enum": ["left", "right"], "default": "right" },
+        "size":        { "enum": ["small", "medium", "large"], "default": "medium" },
+        "caption":     { "type": "string" },
+        "description": { "type": "string", "description": "Descripción de qué imagen se necesita" }
+      }
+    }
+  }
+}

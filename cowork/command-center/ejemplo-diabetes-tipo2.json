@@ -1,0 +1,164 @@
+{
+  "summary_meta": {
+    "title": "Diabetes Mellitus Tipo 2",
+    "subtitle": "Fisiopatología de la resistencia a la insulina, diagnóstico y manejo terapéutico escalonado",
+    "subject_area": "Endocrinología",
+    "topic": "Metabolismo de la Glucosa",
+    "difficulty": "intermedio",
+    "estimated_reading_min": 18,
+    "tags": ["Endocrinología", "Metabolismo", "Diabetes", "Insulina", "Crónicas no transmisibles", "Alta prevalencia"]
+  },
+
+  "keywords": [
+    { "id": "insulina", "term": "Insulina", "definition": "Hormona peptídica producida por las células β del páncreas. Promueve la captación de glucosa por los tejidos periféricos, la síntesis de glucógeno y la lipogénesis. Su déficit relativo o absoluto define la diabetes.", "related": ["Células β", "Receptor de insulina", "GLUT-4"], "priority": 3 },
+    { "id": "resistencia_insulina", "term": "Resistencia a la insulina", "definition": "Disminución de la respuesta biológica de los tejidos periféricos (músculo, hígado, tejido adiposo) a la acción de la insulina, a pesar de niveles normales o elevados de la hormona.", "related": ["Síndrome metabólico", "Obesidad visceral", "Hiperinsulinemia"], "priority": 3 },
+    { "id": "celulas_beta", "term": "Células β pancreáticas", "definition": "Células de los islotes de Langerhans responsables de producir y secretar insulina. En la DM2, sufren agotamiento progresivo (glucotoxicidad y lipotoxicidad) con pérdida de masa funcional.", "related": ["Islotes de Langerhans", "Glucotoxicidad"], "priority": 2 },
+    { "id": "hba1c", "term": "HbA1c", "definition": "Hemoglobina glicosilada. Refleja el promedio de glucemia de los últimos 2-3 meses. Se usa tanto para diagnóstico (≥6.5%) como para monitoreo del control glucémico.", "related": ["Glucemia en ayunas", "PTOG"], "priority": 3 },
+    { "id": "metformina", "term": "Metformina", "definition": "Biguanida de primera línea en DM2. Reduce la producción hepática de glucosa, mejora la sensibilidad a la insulina y tiene efecto modesto sobre el peso. No causa hipoglucemia como monoterapia.", "related": ["Biguanidas", "AMPK", "Acidosis láctica"], "priority": 2 },
+    { "id": "glut4", "term": "GLUT-4", "definition": "Transportador de glucosa dependiente de insulina, presente en músculo esquelético y tejido adiposo. La insulina promueve su translocación a la membrana celular para permitir la entrada de glucosa.", "related": ["Insulina", "Músculo esquelético", "Translocación"], "priority": 2 },
+    { "id": "sindrome_metabolico", "term": "Síndrome metabólico", "definition": "Conjunto de factores de riesgo cardiometabólicos: obesidad abdominal, hipertrigliceridemia, HDL bajo, hipertensión e hiperglucemia. Precede frecuentemente a la DM2.", "related": ["Resistencia a la insulina", "Obesidad visceral", "Riesgo cardiovascular"], "priority": 2 },
+    { "id": "glucotoxicidad", "term": "Glucotoxicidad", "definition": "Efecto deletéreo de la hiperglucemia crónica sobre las células β, que reduce progresivamente su capacidad de secretar insulina. Genera un ciclo vicioso: más hiperglucemia → más daño → menos insulina.", "related": ["Lipotoxicidad", "Estrés oxidativo", "Apoptosis"], "priority": 1 },
+    { "id": "peptido_c", "term": "Péptido C", "definition": "Fragmento liberado durante la conversión de proinsulina a insulina. Su medición en sangre refleja la producción endógena de insulina. Útil para diferenciar DM1 (bajo) de DM2 (normal/alto).", "related": ["Proinsulina", "Insulina endógena"], "priority": 1 },
+    { "id": "isglt2", "term": "iSGLT2", "definition": "Inhibidores del cotransportador sodio-glucosa tipo 2 en el túbulo proximal renal. Reducen la reabsorción de glucosa, provocando glucosuria terapéutica. Beneficio cardiovascular y renal demostrado.", "related": ["Empagliflozina", "Dapagliflozina", "Glucosuria"], "priority": 1 },
+    { "id": "incretinas", "term": "Incretinas", "definition": "Hormonas intestinales (GLP-1, GIP) liberadas tras la ingesta que potencian la secreción de insulina de forma glucosa-dependiente. Base de los agonistas de GLP-1 e inhibidores de DPP-4.", "related": ["GLP-1", "DPP-4", "Efecto incretina"], "priority": 1 }
+  ],
+
+  "blocks": [
+    {
+      "type": "prose",
+      "title": "Definición y Concepto",
+      "content": "La {{resistencia_insulina}} es el fenómeno central de la Diabetes Mellitus tipo 2 (DM2): los tejidos periféricos pierden progresivamente la capacidad de responder a la {{insulina}}, lo que obliga al páncreas a producir cantidades crecientes de la hormona para mantener la glucemia normal.\n\nLa DM2 representa el 90-95% de todos los casos de diabetes. Es una enfermedad metabólica crónica con dos componentes que progresan en paralelo: la resistencia a la insulina en músculo, hígado y tejido adiposo, y el deterioro progresivo de las {{celulas_beta}} pancreáticas.\n\nA diferencia de la DM tipo 1 (destrucción autoinmune de células β), en la DM2 hay insulina circulante — frecuentemente en cantidades elevadas en etapas iniciales — pero su efecto biológico está disminuido.",
+      "image": {
+        "url": null,
+        "position": "right",
+        "size": "medium",
+        "caption": "Ciclo de resistencia a la insulina y agotamiento de células β",
+        "description": "Diagrama mostrando el ciclo: resistencia periférica → hiperinsulinemia compensatoria → agotamiento de células β → hiperglucemia"
+      }
+    },
+    {
+      "type": "key_point",
+      "title": "Concepto Central",
+      "content": "La DM2 NO es simplemente 'falta de insulina'. Es una enfermedad de DOS componentes simultáneos: la {{resistencia_insulina}} en los tejidos periféricos y el fracaso progresivo de las {{celulas_beta}} para compensar esa resistencia. La hiperglucemia aparece cuando la secreción de insulina ya no puede superar la resistencia — esto puede tardar años.",
+      "importance": "critical"
+    },
+    {
+      "type": "list_detail",
+      "title": "Factores de Riesgo",
+      "intro": "La DM2 tiene un componente genético fuerte (concordancia en gemelos >70%), pero los factores ambientales son los que desencadenan la enfermedad en individuos predispuestos.",
+      "items": [
+        { "label": "Obesidad visceral", "detail": "Factor de riesgo más importante y modificable. La grasa visceral libera ácidos grasos libres y adipocinas proinflamatorias que promueven {{resistencia_insulina}}.", "icon": "AlertCircle", "severity": "high" },
+        { "label": "Sedentarismo", "detail": "El músculo esquelético es el principal consumidor de glucosa. Sin ejercicio, se reduce la expresión de {{glut4}} y la captación de glucosa.", "icon": "Activity", "severity": "high" },
+        { "label": "Historia familiar", "detail": "Riesgo 2-6x mayor con padre o madre con DM2. Componente poligénico: >100 loci identificados, la mayoría afectan función de células β.", "icon": "Heart", "severity": "medium" },
+        { "label": "Síndrome metabólico", "detail": "La presencia de {{sindrome_metabolico}} multiplica el riesgo. Cada componente adicional incrementa la probabilidad de progresión a DM2.", "icon": "Activity", "severity": "high" },
+        { "label": "Edad > 45 años", "detail": "La función de células β declina con la edad. Sin embargo, la DM2 se diagnostica cada vez más en jóvenes por la epidemia de obesidad.", "icon": "Clock", "severity": "medium" },
+        { "label": "Diabetes gestacional previa", "detail": "Mujeres con antecedente de DMG tienen 50% de riesgo de desarrollar DM2 en los siguientes 10 años.", "icon": "AlertTriangle", "severity": "medium" }
+      ]
+    },
+    {
+      "type": "stages",
+      "title": "Fisiopatología — Historia Natural de la DM2",
+      "items": [
+        { "stage": 1, "title": "Resistencia a la insulina temprana", "content": "Factores genéticos + obesidad visceral causan {{resistencia_insulina}} en músculo y tejido adiposo. El {{glut4}} responde menos a la señalización de insulina. El hígado aumenta la producción de glucosa.", "severity": "mild" },
+        { "stage": 2, "title": "Hiperinsulinemia compensatoria", "content": "Las {{celulas_beta}} aumentan la producción de {{insulina}} para compensar la resistencia. La glucemia se mantiene normal. Este estado puede durar años — el paciente ya es metabólicamente enfermo pero 'no tiene diabetes' por laboratorio.", "severity": "mild" },
+        { "stage": 3, "title": "Intolerancia a la glucosa (prediabetes)", "content": "Las células β empiezan a fallar. La compensación es insuficiente tras las comidas: glucemia postprandial elevada (140-199 mg/dL). Glucemia en ayunas aún puede ser normal o levemente elevada (100-125 mg/dL).", "severity": "moderate" },
+        { "stage": 4, "title": "Diabetes manifiesta", "content": "Pérdida del 50-80% de la función de células β al momento del diagnóstico. {{glucotoxicidad}} y lipotoxicidad aceleran la destrucción. Hiperglucemia franca: ayunas ≥126 mg/dL o {{hba1c}} ≥6.5%.", "severity": "moderate" },
+        { "stage": 5, "title": "Falla progresiva y necesidad de insulina", "content": "Agotamiento avanzado de células β. Los antidiabéticos orales pierden eficacia. Necesidad de {{insulina}} exógena. Complicaciones micro y macrovasculares se acumulan si no hay control estricto.", "severity": "critical" }
+      ]
+    },
+    {
+      "type": "image_reference",
+      "description": "Gráfico de la historia natural de la DM2 mostrando: eje X = tiempo (años), dos curvas: sensibilidad a la insulina (descendente desde el inicio) y secreción de insulina (primero sube, luego cae). Marcar los puntos: prediabetes, diagnóstico, necesidad de insulina.",
+      "caption": "Figura 1. Historia natural de la DM2: resistencia vs. secreción de insulina a lo largo del tiempo",
+      "image_url": null
+    },
+    {
+      "type": "callout",
+      "variant": "clinical",
+      "title": "Caso Clínico Típico",
+      "content": "Mujer de 52 años, IMC 33, perímetro abdominal 102 cm, madre diabética. Consulta por poliuria leve de 3 meses. Laboratorio: glucemia en ayunas 148 mg/dL (repetida: 152), HbA1c 7.8%, triglicéridos 220, HDL 38.\n\nEsta paciente probablemente lleva AÑOS con resistencia a la insulina y prediabetes no diagnosticada. Al momento del diagnóstico ya tiene dislipidemia aterogénica y probablemente ha perdido >50% de su masa funcional de células β."
+    },
+    {
+      "type": "section_divider",
+      "label": "Diagnóstico y Tratamiento"
+    },
+    {
+      "type": "comparison",
+      "title": "Criterios Diagnósticos de DM2",
+      "headers": ["Criterio", "Normal", "Prediabetes", "Diabetes"],
+      "rows": [
+        ["Glucemia en ayunas", "< 100 mg/dL", "100-125 mg/dL", "≥ 126 mg/dL"],
+        ["PTOG 2h (75g)", "< 140 mg/dL", "140-199 mg/dL", "≥ 200 mg/dL"],
+        ["HbA1c", "< 5.7%", "5.7-6.4%", "≥ 6.5%"],
+        ["Glucemia al azar + síntomas", "—", "—", "≥ 200 mg/dL"]
+      ],
+      "highlight_column": 3
+    },
+    {
+      "type": "callout",
+      "variant": "warning",
+      "title": "Atención: Confirmación",
+      "content": "Un solo valor alterado NO hace diagnóstico (excepto glucemia ≥200 + síntomas clásicos). Se requiere REPETIR el estudio en un día diferente, o tener 2 criterios distintos alterados en la misma muestra."
+    },
+    {
+      "type": "list_detail",
+      "title": "Diferenciación DM1 vs DM2",
+      "intro": "Aunque son entidades distintas, la presentación puede solaparse. El {{peptido_c}} es el marcador más útil para distinguirlas.",
+      "items": [
+        { "label": "Edad de inicio", "detail": "DM1: típicamente <30 años. DM2: típicamente >40 años (pero cada vez más jóvenes).", "icon": "Clock", "severity": null },
+        { "label": "Fenotipo", "detail": "DM1: delgados. DM2: sobrepeso/obesidad habitual (80-90%), especialmente visceral.", "icon": "Activity", "severity": null },
+        { "label": "Péptido C", "detail": "DM1: bajo o indetectable (no hay {{celulas_beta}} funcionales). DM2: normal o alto (hay insulina, pero los tejidos resisten).", "icon": "FlaskConical", "severity": "high" },
+        { "label": "Anticuerpos", "detail": "DM1: anti-GAD, anti-IA2, anti-insulina positivos (~90%). DM2: negativos.", "icon": "Shield", "severity": "high" },
+        { "label": "Cetoacidosis", "detail": "DM1: debut frecuente con CAD. DM2: raro — más común el estado hiperosmolar hiperglucémico.", "icon": "AlertTriangle", "severity": null }
+      ]
+    },
+    {
+      "type": "two_column",
+      "columns": [
+        {
+          "title": "Tratamiento No Farmacológico",
+          "items": [
+            { "label": "Alimentación", "detail": "Dieta mediterránea, reducción de carbohidratos refinados, fibra, control calórico" },
+            { "label": "Ejercicio", "detail": "150 min/semana aeróbico + 2 sesiones de resistencia. Aumenta expresión de GLUT-4" },
+            { "label": "Pérdida de peso", "detail": "Reducción de 5-10% mejora significativamente la sensibilidad a insulina" },
+            { "label": "Educación", "detail": "Automonitoreo glucémico, reconocimiento de hipoglucemia, cuidado de pies" }
+          ]
+        },
+        {
+          "title": "Tratamiento Farmacológico (escalonado)",
+          "items": [
+            { "label": "1ª línea: Metformina", "detail": "Reduce producción hepática de glucosa. Sin hipoglucemia. Posible beneficio CV" },
+            { "label": "2ª línea: agregar según perfil", "detail": "iSGLT2 (beneficio renal/CV), GLP-1 RA (pérdida de peso), iDPP4 (neutral)" },
+            { "label": "3ª línea: triple terapia", "detail": "Combinar mecanismos complementarios. Considerar insulina si HbA1c persiste >9%" },
+            { "label": "Insulina", "detail": "Basal inicialmente (NPH o análogos). Agregar prandial si no se alcanza meta" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "grid",
+      "title": "Fármacos Clave y su Mecanismo",
+      "columns": 3,
+      "items": [
+        { "label": "Metformina", "detail": "↓ producción hepática glucosa (AMPK)", "icon": "Pill" },
+        { "label": "iSGLT2", "detail": "↓ reabsorción renal de glucosa", "icon": "FlaskConical" },
+        { "label": "GLP-1 RA", "detail": "↑ insulina glucosa-dependiente + saciedad", "icon": "Target" },
+        { "label": "iDPP-4", "detail": "↑ incretinas endógenas (inhibe degradación)", "icon": "Shield" },
+        { "label": "Sulfonilureas", "detail": "↑ secreción de insulina (cierre canal K+)", "icon": "AlertTriangle" },
+        { "label": "Insulina", "detail": "Reemplazo directo de hormona deficiente", "icon": "Heart" }
+      ]
+    },
+    {
+      "type": "callout",
+      "variant": "exam",
+      "title": "Dato Clave para Examen",
+      "content": "La {{metformina}} es SIEMPRE primera línea en DM2 (salvo contraindicación). La pregunta clásica es: ¿cuándo agregar un segundo fármaco? Cuando la HbA1c no alcanza la meta (<7% general) después de 3 meses de metformina + cambios de estilo de vida. Si el paciente tiene enfermedad cardiovascular o renal: agregar {{isglt2}} o GLP-1 RA INDEPENDIENTEMENTE de la HbA1c."
+    },
+    {
+      "type": "callout",
+      "variant": "mnemonic",
+      "title": "Mnemotecnia: Complicaciones Crónicas",
+      "content": "MICRO: Retinopatía, nEfropatía, Neuropatía → REN (las 3 micro)\nMACRO: IAM, ACV, Enfermedad arterial periférica → los mismos territorios de aterosclerosis\n\nRegla: las complicaciones MICROvasculares dependen del CONTROL GLUCÉMICO. Las MACROvasculares dependen del CONTROL GLOBAL de factores de riesgo (HTA, dislipidemia, tabaco)."
+    }
+  ]
+}

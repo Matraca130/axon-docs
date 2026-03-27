@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aterosclerosis — Editor de Resumen | AXON</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --dark-teal: #1B3B36;
+    --dark-panel: #1a2e2a;
+    --teal-accent: #2a8c7a;
+    --hover-teal: #244e47;
+    --teal-50: #e8f5f1;
+    --teal-100: #d1f0e7;
+    --teal-300: #5cbdaa;
+    --teal-400: #2dd4a8;
+    --progress-end: #0d9488;
+    --page-bg: #F0F2F5;
+    --card-white: #ffffff;
+    --border-card: #e5e7eb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --text-inverse: #ffffff;
+    --sidebar-text: #8fbfb3;
+    --sidebar-sub: #6db5a5;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --font-heading: Georgia, serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--page-bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* ══════════ TOOLBAR ══════════ */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--dark-teal);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 10px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .toolbar-label {
+    font-size: 12px;
+    color: var(--sidebar-sub);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .toolbar-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: var(--sidebar-text);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--font-body);
+  }
+  .toolbar-btn:hover {
+    background: rgba(42,140,122,0.2);
+    color: var(--teal-300);
+    border-color: rgba(42,140,122,0.3);
+  }
+  .toolbar-btn.active {
+    background: rgba(42,140,122,0.25);
+    color: var(--teal-400);
+    border-color: rgba(42,140,122,0.4);
+  }
+  .toolbar-btn svg { width: 14px; height: 14px; }
+
+  .toolbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .status-badge.draft { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .status-badge.published { background: rgba(16,185,129,0.15); color: #34d399; }
+
+  /* ══════════ PAGE HEADER ══════════ */
+  .page-header {
+    padding: 24px 32px 28px;
+    background: var(--card-white);
+    border-bottom: 1px solid var(--border-card);
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 350px; height: 100%;
+    background: linear-gradient(135deg, transparent 30%, var(--teal-50) 100%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+    position: relative; z-index: 1;
+  }
+  .breadcrumb .sep { margin: 0 5px; opacity: 0.5; }
+  .breadcrumb .current { color: var(--teal-accent); font-weight: 500; }
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    position: relative; z-index: 1;
+  }
+  .page-subtitle {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    position: relative; z-index: 1;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+    position: relative; z-index: 1;
+  }
+  .pill {
+    font-size: 11px; font-weight: 500; padding: 4px 12px;
+    border-radius: 20px; background: var(--teal-50); color: var(--teal-accent);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .pill.warn { background: #fef3c7; color: #92400e; }
+
+  /* ══════════ CONTENT ══════════ */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 28px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* ══════════ CARDS ══════════ */
+  .card {
+    background: var(--card-white);
+    border-radius: 16px;
+    border: 1px solid var(--border-card);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 24px;
+    transition: box-shadow 0.2s;
+    position: relative;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+  .card-title {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal-accent); flex-shrink: 0; }
+  .card p { font-size: 14px; line-height: 1.75; color: var(--text-secondary); }
+  .card p + p { margin-top: 10px; }
+
+  /* ══════════ KEY POINT ══════════ */
+  .key-point {
+    background: linear-gradient(135deg, var(--dark-teal), var(--dark-panel));
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .key-point .card-title { color: var(--text-inverse); }
+  .key-point .dot { background: var(--teal-400); }
+  .key-point p { color: var(--sidebar-text); }
+  .key-point strong { color: #fff; }
+
+  /* ══════════ KEYWORDS ══════════ */
+  .kw {
+    display: inline;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border: 1px solid transparent;
+  }
+  .kw:hover {
+    background: var(--teal-100);
+    border-color: rgba(42,140,122,0.25);
+    box-shadow: 0 2px 10px rgba(42,140,122,0.15);
+  }
+  .kw .tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card-white);
+    border: 1px solid var(--border-card);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    padding: 14px 18px;
+    width: 280px;
+    z-index: 100;
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    line-height: 1.65;
+    cursor: default;
+  }
+  .kw .tip::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: var(--card-white);
+  }
+  .kw .tip .tip-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .kw .tip .related {
+    margin-top: 8px;
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .kw .tip .related span {
+    font-size: 10px; padding: 2px 7px; border-radius: 10px;
+    background: var(--teal-50); color: var(--teal-accent); font-weight: 500;
+  }
+  .kw:hover .tip { display: block; }
+
+  .key-point .kw {
+    background: rgba(42,140,122,0.25); color: var(--teal-400); border-color: rgba(42,140,122,0.3);
+  }
+  .key-point .kw:hover { background: rgba(42,140,122,0.4); }
+
+  /* ══════════ STAGES ══════════ */
+  .stages { display: flex; flex-direction: column; gap: 0; position: relative; }
+  .stages::before {
+    content: '';
+    position: absolute;
+    left: 23px; top: 24px; bottom: 24px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--teal-100), var(--teal-accent));
+    border-radius: 2px;
+  }
+  .stage {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 16px; border-radius: 14px;
+    transition: all 0.2s; position: relative;
+  }
+  .stage:hover { background: var(--teal-50); }
+  .stage-num {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--card-white); border: 2px solid var(--teal-100);
+    color: var(--teal-accent); font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; z-index: 1; transition: all 0.2s;
+  }
+  .stage:hover .stage-num { background: var(--teal-accent); color: white; border-color: var(--teal-accent); }
+  .stage-title { font-weight: 600; font-size: 14px; color: var(--text-primary); margin-bottom: 3px; }
+  .stage-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+
+  /* ══════════ CALLOUT ══════════ */
+  .callout {
+    border-radius: 14px;
+    padding: 18px 22px;
+    border-left: 4px solid;
+    background: var(--card-white);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .callout.tip { border-color: var(--teal-accent); background: var(--teal-50); }
+  .callout.warning { border-color: var(--warning); background: #fffbeb; }
+  .callout.clinical { border-color: #f43f5e; background: #fff1f2; }
+  .callout.exam { border-color: #3b82f6; background: #eff6ff; }
+  .callout-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+  .callout.tip .callout-label { color: var(--teal-accent); }
+  .callout.warning .callout-label { color: #b45309; }
+  .callout.clinical .callout-label { color: #e11d48; }
+  .callout.exam .callout-label { color: #2563eb; }
+  .callout p { font-size: 13px; line-height: 1.7; color: var(--text-secondary); }
+
+  /* ══════════════════════════════════════════════════════════ */
+  /* DROP ZONES — El corazón de la interacción del profesor   */
+  /* ══════════════════════════════════════════════════════════ */
+
+  /* Zona entre bloques — aparece al hover */
+  .drop-between {
+    height: 8px;
+    margin: 6px 0;
+    position: relative;
+    transition: all 0.2s;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .drop-between::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 2px;
+    background: var(--teal-accent);
+    border-radius: 2px;
+    transition: all 0.25s;
+    opacity: 0;
+  }
+
+  .drop-between:hover::after {
+    width: 100%;
+    opacity: 1;
+  }
+
+  .drop-between:hover {
+    height: 48px;
+    background: var(--teal-50);
+    border: 2px dashed var(--teal-accent);
+  }
+
+  /* Botón de "+" que aparece al hover */
+  .drop-between .add-btn {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--teal-accent);
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(42,140,122,0.3);
+    transition: all 0.15s;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+  }
+  .drop-between:hover .add-btn { display: flex; }
+  .drop-between .add-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
+
+  /* Menu de inserción */
+  .insert-menu {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 22px);
+    transform: translateX(-50%);
+    background: var(--card-white);
+    border: 1px solid var(--border-card);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    padding: 8px;
+    z-index: 100;
+    width: 220px;
+  }
+  .insert-menu.show { display: block; }
+
+  .insert-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .insert-option:hover { background: var(--teal-50); }
+  .insert-option .opt-icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .insert-option .opt-label { font-weight: 500; }
+  .insert-option .opt-desc { font-size: 10px; color: var(--text-tertiary); }
+
+  /* ══════════════════════════════════════════════════════════ */
+  /* IMAGE BLOCK — Bloque de imagen insertado                 */
+  /* ══════════════════════════════════════════════════════════ */
+
+  /* Placeholder vacío (antes de subir imagen) */
+  .image-block-empty {
+    background: var(--card-white);
+    border: 2px dashed var(--border-card);
+    border-radius: 16px;
+    padding: 40px 24px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+  .image-block-empty:hover,
+  .image-block-empty.dragover {
+    border-color: var(--teal-accent);
+    background: var(--teal-50);
+  }
+  .image-block-empty.dragover {
+    box-shadow: 0 0 0 4px rgba(42,140,122,0.15);
+  }
+
+  .upload-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 22px;
+    transition: all 0.2s;
+  }
+  .image-block-empty:hover .upload-icon {
+    background: var(--teal-accent);
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .upload-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .upload-hint {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .upload-hint span {
+    color: var(--teal-accent);
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* Imagen ya cargada */
+  .image-block {
+    background: var(--card-white);
+    border-radius: 16px;
+    border: 1px solid var(--border-card);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    overflow: hidden;
+    position: relative;
+    transition: box-shadow 0.2s;
+  }
+  .image-block:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+  .image-block img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .image-block .img-caption-area {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border-card);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .img-caption-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--teal-50);
+    color: var(--teal-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; flex-shrink: 0;
+  }
+
+  .img-caption {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .img-source {
+    font-size: 10px;
+    color: var(--text-tertiary);
+  }
+
+  /* Botones flotantes sobre imagen */
+  .image-block .img-toolbar {
+    position: absolute;
+    top: 10px; right: 10px;
+    display: flex; gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .image-block:hover .img-toolbar { opacity: 1; }
+
+  .img-tool-btn {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .img-tool-btn:hover { background: rgba(0,0,0,0.7); }
+
+  /* ══════════ DRAG OVERLAY (global) ══════════ */
+  .drag-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(42,140,122,0.08);
+    border: 3px dashed var(--teal-accent);
+    z-index: 200;
+    pointer-events: none;
+    border-radius: 0;
+  }
+  .drag-overlay.show { display: flex; align-items: center; justify-content: center; }
+  .drag-overlay-text {
+    background: var(--dark-teal);
+    color: var(--teal-300);
+    padding: 16px 28px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  /* ══════════ RESIZE HANDLE ══════════ */
+  .resize-handle {
+    display: flex;
+    justify-content: center;
+    padding: 6px 0;
+    cursor: row-resize;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .image-block:hover .resize-handle { opacity: 1; }
+  .resize-dots {
+    width: 40px; height: 4px;
+    border-radius: 2px;
+    background: var(--border-card);
+  }
+
+  /* ══════════ RESPONSIVE ══════════ */
+  @media (max-width: 700px) {
+    .content { padding: 16px; }
+    .page-header { padding: 20px; }
+    .toolbar { padding: 10px 16px; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ TOOLBAR DEL PROFESOR ══════════ -->
+<div class="toolbar">
+  <div class="toolbar-label">Modo Editor</div>
+  <div class="toolbar-divider"></div>
+
+  <button class="toolbar-btn active" id="btnEdit">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+    Editar
+  </button>
+  <button class="toolbar-btn" id="btnPreview">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+    Vista Alumno
+  </button>
+
+  <div class="toolbar-divider"></div>
+
+  <button class="toolbar-btn" onclick="alert('Aquí iría la opción de exportar a PDF')">
+    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6z" clip-rule="evenodd"/></svg>
+    Exportar PDF
+  </button>
+
+  <div class="toolbar-right">
+    <span class="status-badge draft">Borrador — IA</span>
+    <button class="toolbar-btn" style="background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.3); color: #34d399;" onclick="alert('El resumen se publicaría y los alumnos lo verían')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+      Publicar
+    </button>
+  </div>
+</div>
+
+<!-- ══════════ PAGE HEADER ══════════ -->
+<div class="page-header">
+  <div class="breadcrumb">
+    Cardiología <span class="sep">›</span> Patología Vascular <span class="sep">›</span> <span class="current">Aterosclerosis</span>
+  </div>
+  <h1 class="page-title">Aterosclerosis</h1>
+  <p class="page-subtitle">Enfermedad crónica inflamatoria de las arterias de mediano y gran calibre</p>
+  <div class="meta-row">
+    <span class="pill">Cardiología</span>
+    <span class="pill">~45 min</span>
+    <span class="pill warn">Alta frecuencia en exámenes</span>
+  </div>
+</div>
+
+<!-- ══════════ DRAG OVERLAY ══════════ -->
+<div class="drag-overlay" id="dragOverlay">
+  <div class="drag-overlay-text">Suelta la imagen aquí</div>
+</div>
+
+<!-- ══════════ CONTENT ══════════ -->
+<div class="content" id="contentArea">
+
+  <!-- DROP ZONE -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div>
+          <div class="opt-label">Imagen</div>
+          <div class="opt-desc">Subir o arrastrar una imagen</div>
+        </div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation(); alert('Aquí se insertaría un bloque de texto')">
+        <div class="opt-icon">&#9998;</div>
+        <div>
+          <div class="opt-label">Texto</div>
+          <div class="opt-desc">Párrafo de contenido libre</div>
+        </div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation(); alert('Aquí se insertaría un callout')">
+        <div class="opt-icon">&#128161;</div>
+        <div>
+          <div class="opt-label">Nota destacada</div>
+          <div class="opt-desc">Tip, advertencia o perla clínica</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ BLOQUE: Definición ══ -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Definición</div>
+    <p>
+      La aterosclerosis es una enfermedad crónica e inflamatoria caracterizada por la formación de
+      <span class="kw">placas de ateroma
+        <span class="tip">
+          <div class="tip-title">Placa de ateroma</div>
+          Lesión focal de la íntima arterial compuesta por lípidos, células inflamatorias, células musculares lisas y matriz extracelular, cubierta por una capa fibrosa.
+          <div class="related"><span>estría grasa</span><span>núcleo necrótico</span><span>capa fibrosa</span></div>
+        </span>
+      </span>
+      en la túnica íntima de las arterias de mediano y gran calibre. Es la causa subyacente principal de la enfermedad cardiovascular a nivel mundial, responsable de aproximadamente el 80% de las muertes por ECV, incluyendo el infarto agudo al miocardio y el accidente cerebrovascular isquémico.
+    </p>
+    <p>
+      La enfermedad progresa silenciosamente durante décadas. Las primeras lesiones — las estrías grasas — pueden encontrarse ya en la aorta de niños de 3 años y en las coronarias de adolescentes. Sin embargo, las manifestaciones clínicas suelen aparecer a partir de la cuarta o quinta década de la vida, cuando la placa ha crecido lo suficiente para comprometer el flujo sanguíneo o, más críticamente, cuando sufre una ruptura aguda.
+    </p>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#9998;</div>
+        <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#128161;</div>
+        <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ BLOQUE: Key Point ══ -->
+  <div class="key-point">
+    <div class="card-title"><div class="dot"></div> Concepto Central</div>
+    <p>
+      La aterosclerosis <strong>NO</strong> es un simple depósito pasivo de grasa en las arterias. Es un proceso <strong>inflamatorio crónico activo</strong> que comienza con la
+      <span class="kw">disfunción endotelial
+        <span class="tip">
+          <div class="tip-title">Disfunción endotelial</div>
+          Pérdida de la capacidad del endotelio para mantener la homeostasis vascular: reducción de óxido nítrico, aumento de permeabilidad y expresión de moléculas de adhesión.
+          <div class="related"><span>NO</span><span>VCAM-1</span><span>permeabilidad</span></div>
+        </span>
+      </span>. El motor de toda la progresión — desde la estría grasa hasta el infarto — es la <strong>inflamación</strong>, no el colesterol per se. Entender esto cambia completamente el enfoque terapéutico moderno.
+    </p>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#9998;</div>
+        <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#128161;</div>
+        <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ BLOQUE: Imagen ya cargada (ejemplo) ══ -->
+  <div class="image-block">
+    <div class="img-toolbar">
+      <button class="img-tool-btn" title="Reemplazar imagen">&#128247;</button>
+      <button class="img-tool-btn" title="Redimensionar">&#8596;</button>
+      <button class="img-tool-btn" title="Eliminar">&#128465;</button>
+    </div>
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='860' height='340' viewBox='0 0 860 340'%3E%3Crect fill='%231B3B36' width='860' height='340'/%3E%3Ctext x='430' y='140' font-family='Georgia,serif' font-size='24' fill='%235cbdaa' text-anchor='middle'%3ECorte transversal de arteria%3C/text%3E%3Ctext x='430' y='175' font-family='Inter,sans-serif' font-size='14' fill='%238fbfb3' text-anchor='middle'%3EMostrando las tres capas: íntima, media y adventicia%3C/text%3E%3Ccircle cx='430' cy='230' r='60' fill='none' stroke='%232a8c7a' stroke-width='3'/%3E%3Ccircle cx='430' cy='230' r='45' fill='none' stroke='%235cbdaa' stroke-width='8'/%3E%3Ccircle cx='430' cy='230' r='30' fill='none' stroke='%232dd4a8' stroke-width='4'/%3E%3Ccircle cx='430' cy='230' r='20' fill='%231a2e2a'/%3E%3Ctext x='330' y='235' font-family='Inter,sans-serif' font-size='10' fill='%238fbfb3' text-anchor='end'%3EAdventicia%3C/text%3E%3Ctext x='530' y='215' font-family='Inter,sans-serif' font-size='10' fill='%238fbfb3' text-anchor='start'%3EMedia%3C/text%3E%3Ctext x='530' y='245' font-family='Inter,sans-serif' font-size='10' fill='%232dd4a8' text-anchor='start'%3EÍntima%3C/text%3E%3Ctext x='430' y='233' font-family='Inter,sans-serif' font-size='9' fill='%236db5a5' text-anchor='middle'%3ELuz%3C/text%3E%3C/svg%3E" alt="Capas de la pared arterial">
+    <div class="img-caption-area">
+      <div class="img-caption-icon">&#128221;</div>
+      <div>
+        <div class="img-caption">Figura 1. Corte transversal de una arteria mostrando las tres capas de la pared arterial. La íntima es el sitio primario de formación de la placa aterosclerótica.</div>
+        <div class="img-source">Fuente: Atlas de Histología — Adaptado para Axon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#9998;</div>
+        <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#128161;</div>
+        <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ BLOQUE: Patogenia — Stages ══ -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Patogenia — Etapas de Formación</div>
+    <p style="margin-bottom: 16px;">La progresión de la aterosclerosis sigue una secuencia bien definida que se desarrolla a lo largo de décadas:</p>
+    <div class="stages">
+      <div class="stage">
+        <div class="stage-num">1</div>
+        <div>
+          <div class="stage-title">Disfunción endotelial</div>
+          <div class="stage-desc">
+            Factores como la hipertensión, el tabaquismo y la
+            <span class="kw">LDL oxidado
+              <span class="tip">
+                <div class="tip-title">LDL oxidado (oxLDL)</div>
+                Lipoproteína de baja densidad modificada por radicales libres. Altamente aterogénica: promueve inflamación y es captada sin regulación por receptores scavenger de macrófagos.
+                <div class="related"><span>radicales libres</span><span>receptores scavenger</span></div>
+              </span>
+            </span>
+            dañan el endotelio, aumentando su permeabilidad y la expresión de moléculas de adhesión (VCAM-1, ICAM-1). El LDL penetra la íntima y se oxida.
+          </div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage-num">2</div>
+        <div>
+          <div class="stage-title">Formación de la estría grasa</div>
+          <div class="stage-desc">
+            Los monocitos migran al espacio subendotelial, se diferencian en macrófagos y fagocitan el LDL oxidado, convirtiéndose en
+            <span class="kw">células espumosas
+              <span class="tip">
+                <div class="tip-title">Células espumosas</div>
+                Macrófagos cargados de lípidos. Son el componente celular principal de la estría grasa y liberan citocinas proinflamatorias que perpetúan el proceso.
+                <div class="related"><span>macrófagos</span><span>estría grasa</span></div>
+              </span>
+            </span>.
+            Esta es la lesión aterosclerótica más temprana, ya presente en la infancia.
+          </div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage-num">3</div>
+        <div>
+          <div class="stage-title">Placa fibrosa</div>
+          <div class="stage-desc">
+            Las células musculares lisas migran de la media a la íntima, producen colágeno y forman una capa fibrosa protectora sobre el núcleo lipídico necrótico. La placa crece progresivamente, reduciendo la luz arterial.
+          </div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage-num">4</div>
+        <div>
+          <div class="stage-title">Placa complicada — Evento agudo</div>
+          <div class="stage-desc">
+            La placa puede ulcerarse, calcificarse o sufrir ruptura. La rotura expone el contenido trombogénico al flujo sanguíneo, activando la
+            <span class="kw">cascada de coagulación
+              <span class="tip">
+                <div class="tip-title">Cascada de coagulación</div>
+                La ruptura expone factor tisular → activa trombina → forma trombo oclusivo → puede causar IAM o ACV isquémico.
+                <div class="related"><span>factor tisular</span><span>trombina</span><span>trombo</span></div>
+              </span>
+            </span>
+            y formando un trombo que puede ocluir completamente la arteria.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#9998;</div>
+        <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#128161;</div>
+        <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ BLOQUE: Placeholder de imagen vacío (para que el profesor suba) ══ -->
+  <div class="image-block-empty" id="emptyImageBlock" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">&#128247;</div>
+    <div class="upload-text">Arrastra una imagen aquí</div>
+    <div class="upload-hint">o <span>selecciona un archivo</span> desde tu computadora</div>
+    <div class="upload-hint" style="margin-top: 6px; font-size: 11px;">PNG, JPG, SVG — Máx 10MB</div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event, this.closest('.image-block-empty'))">
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#9998;</div>
+        <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#128161;</div>
+        <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ BLOQUE: Callout ══ -->
+  <div class="callout exam">
+    <div class="callout-label">Pregunta frecuente de examen</div>
+    <p>¿Cuál es la lesión aterosclerótica más temprana? <strong style="color: var(--text-primary);">La estría grasa</strong> — compuesta por células espumosas (macrófagos cargados de LDL oxidado) en el espacio subendotelial. Puede encontrarse en la aorta de niños desde los 3 años de edad.</p>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#9998;</div>
+        <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#128161;</div>
+        <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ BLOQUE: Callout warning ══ -->
+  <div class="callout clinical">
+    <div class="callout-label">Perla clínica</div>
+    <p>La mayoría de los infartos al miocardio ocurren por ruptura de placas <strong style="color: var(--text-primary);">vulnerables</strong> (capa fibrosa delgada + gran núcleo necrótico), no por placas que causan mayor estenosis. Una placa que obstruye solo el 40% de la luz puede ser más peligrosa que una de 90% si es inestable.</p>
+  </div>
+
+  <!-- DROP ZONE final -->
+  <div class="drop-between" onclick="toggleMenu(this)">
+    <button class="add-btn">+</button>
+    <div class="insert-menu">
+      <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+        <div class="opt-icon">&#128247;</div>
+        <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#9998;</div>
+        <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+      </button>
+      <button class="insert-option" onclick="event.stopPropagation()">
+        <div class="opt-icon">&#128161;</div>
+        <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ══════════════════════════════════════════════
+  // TOGGLE INSERT MENU
+  // ══════════════════════════════════════════════
+  function toggleMenu(dropZone) {
+    const menu = dropZone.querySelector('.insert-menu');
+    // Close all other menus
+    document.querySelectorAll('.insert-menu.show').forEach(m => {
+      if (m !== menu) m.classList.remove('show');
+    });
+    menu.classList.toggle('show');
+  }
+
+  // Close menus when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.drop-between')) {
+      document.querySelectorAll('.insert-menu.show').forEach(m => m.classList.remove('show'));
+    }
+  });
+
+  // ══════════════════════════════════════════════
+  // INSERT IMAGE BLOCK
+  // ══════════════════════════════════════════════
+  function insertImageBlock(btn) {
+    const dropZone = btn.closest('.drop-between');
+    const menu = dropZone.querySelector('.insert-menu');
+    menu.classList.remove('show');
+
+    const block = document.createElement('div');
+    block.className = 'image-block-empty';
+    block.innerHTML = `
+      <div class="upload-icon">&#128247;</div>
+      <div class="upload-text">Arrastra una imagen aquí</div>
+      <div class="upload-hint">o <span onclick="this.closest('.image-block-empty').querySelector('input').click()">selecciona un archivo</span></div>
+      <div class="upload-hint" style="margin-top: 6px; font-size: 11px;">PNG, JPG, SVG — Máx 10MB</div>
+      <input type="file" accept="image/*" style="display:none" onchange="handleFileSelect(event, this.closest('.image-block-empty'))">
+    `;
+    block.onclick = function(e) {
+      if (e.target.tagName !== 'SPAN') this.querySelector('input').click();
+    };
+
+    // Setup drag events on the new block
+    setupDropEvents(block);
+
+    dropZone.after(block);
+
+    // Add a new drop zone after the image block
+    const newDrop = document.createElement('div');
+    newDrop.className = 'drop-between';
+    newDrop.onclick = function() { toggleMenu(this); };
+    newDrop.innerHTML = `
+      <button class="add-btn">+</button>
+      <div class="insert-menu">
+        <button class="insert-option" onclick="event.stopPropagation(); insertImageBlock(this)">
+          <div class="opt-icon">&#128247;</div>
+          <div><div class="opt-label">Imagen</div><div class="opt-desc">Subir o arrastrar una imagen</div></div>
+        </button>
+        <button class="insert-option" onclick="event.stopPropagation()">
+          <div class="opt-icon">&#9998;</div>
+          <div><div class="opt-label">Texto</div><div class="opt-desc">Párrafo de contenido libre</div></div>
+        </button>
+        <button class="insert-option" onclick="event.stopPropagation()">
+          <div class="opt-icon">&#128161;</div>
+          <div><div class="opt-label">Nota destacada</div><div class="opt-desc">Tip, advertencia o perla clínica</div></div>
+        </button>
+      </div>
+    `;
+    block.after(newDrop);
+  }
+
+  // ══════════════════════════════════════════════
+  // HANDLE FILE SELECT (click to upload)
+  // ══════════════════════════════════════════════
+  function handleFileSelect(event, container) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      loadImage(file, container);
+    }
+  }
+
+  // ══════════════════════════════════════════════
+  // LOAD IMAGE INTO BLOCK
+  // ══════════════════════════════════════════════
+  function loadImage(file, container) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const imageBlock = document.createElement('div');
+      imageBlock.className = 'image-block';
+      imageBlock.innerHTML = `
+        <div class="img-toolbar">
+          <button class="img-tool-btn" title="Reemplazar" onclick="replaceImage(this)">&#128247;</button>
+          <button class="img-tool-btn" title="Eliminar" onclick="removeImage(this)">&#128465;</button>
+        </div>
+        <img src="${e.target.result}" alt="${file.name}" style="max-height: 500px; object-fit: contain; background: #f9fafb;">
+        <div class="img-caption-area">
+          <div class="img-caption-icon">&#128221;</div>
+          <div style="flex:1">
+            <input type="text" placeholder="Escribe un caption para esta imagen..."
+              style="width:100%; border:none; outline:none; font-size:12.5px; color:#6b7280; font-style:italic; font-family:Inter,sans-serif; background:none;"
+              value="">
+            <div class="img-source">${file.name}</div>
+          </div>
+        </div>
+      `;
+      container.replaceWith(imageBlock);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function replaceImage(btn) {
+    const block = btn.closest('.image-block');
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          block.querySelector('img').src = ev.target.result;
+          block.querySelector('.img-source').textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  }
+
+  function removeImage(btn) {
+    const block = btn.closest('.image-block');
+    // Also remove the drop zone after it
+    if (block.nextElementSibling && block.nextElementSibling.classList.contains('drop-between')) {
+      block.nextElementSibling.remove();
+    }
+    block.remove();
+  }
+
+  // ══════════════════════════════════════════════
+  // DRAG & DROP
+  // ══════════════════════════════════════════════
+  const overlay = document.getElementById('dragOverlay');
+  let dragCounter = 0;
+
+  function setupDropEvents(el) {
+    el.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      el.classList.add('dragover');
+    });
+    el.addEventListener('dragleave', () => {
+      el.classList.remove('dragover');
+    });
+    el.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      el.classList.remove('dragover');
+      overlay.classList.remove('show');
+      dragCounter = 0;
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        loadImage(file, el);
+      }
+    });
+  }
+
+  // Setup existing empty blocks
+  document.querySelectorAll('.image-block-empty').forEach(setupDropEvents);
+
+  // Global drag overlay
+  document.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    dragCounter++;
+    if (e.dataTransfer.types.includes('Files')) {
+      overlay.classList.add('show');
+    }
+  });
+
+  document.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter <= 0) {
+      overlay.classList.remove('show');
+      dragCounter = 0;
+    }
+  });
+
+  document.addEventListener('dragover', (e) => e.preventDefault());
+
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    overlay.classList.remove('show');
+    dragCounter = 0;
+
+    // Find the nearest empty image block or drop zone
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      // Find the first empty image block
+      const emptyBlock = document.querySelector('.image-block-empty');
+      if (emptyBlock) {
+        loadImage(file, emptyBlock);
+      }
+    }
+  });
+
+  // ══════════════════════════════════════════════
+  // TOOLBAR TOGGLE (edit vs preview)
+  // ══════════════════════════════════════════════
+  const btnEdit = document.getElementById('btnEdit');
+  const btnPreview = document.getElementById('btnPreview');
+
+  btnPreview.addEventListener('click', () => {
+    btnPreview.classList.add('active');
+    btnEdit.classList.remove('active');
+    // Hide all drop zones and edit controls
+    document.querySelectorAll('.drop-between').forEach(d => d.style.display = 'none');
+    document.querySelectorAll('.img-toolbar').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.image-block-empty').forEach(b => b.style.display = 'none');
+    document.querySelectorAll('.toolbar-btn').forEach(b => {
+      if (b.textContent.includes('Exportar')) b.style.opacity = '1';
+    });
+  });
+
+  btnEdit.addEventListener('click', () => {
+    btnEdit.classList.add('active');
+    btnPreview.classList.remove('active');
+    // Show all drop zones and edit controls
+    document.querySelectorAll('.drop-between').forEach(d => d.style.display = '');
+    document.querySelectorAll('.img-toolbar').forEach(t => t.style.display = '');
+    document.querySelectorAll('.image-block-empty').forEach(b => b.style.display = '');
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+{
+  "template_id": "patologia",
+  "name": "Patología",
+  "description": "Template para enfermedades y procesos patológicos. Cubre desde definición hasta tratamiento.",
+  "version": "1.0.0",
+
+  "notes_for_ai": "Este template es una GUÍA, no una camisa de fuerza. Si el material no tiene información para una sección, omítela. Si necesitas una sección extra, agrégala. El orden de las secciones es el flujo pedagógico recomendado pero puede adaptarse al contenido. SIEMPRE prioriza claridad sobre completitud.",
+
+  "sections": [
+    {
+      "name": "Definición y Concepto",
+      "required": true,
+      "suggested_block": "prose",
+      "description": "Qué es la enfermedad/proceso. Definición clara y concisa. Ubicar en contexto clínico.",
+      "tips": "Incluir clasificación si existe (aguda/crónica, primaria/secundaria). Marcar términos clave como keywords."
+    },
+    {
+      "name": "Concepto Clave",
+      "required": false,
+      "suggested_block": "key_point",
+      "description": "EL dato más importante que define la enfermedad. La frase que el estudiante debe recordar siempre.",
+      "tips": "Máximo 1-2 por resumen. Debe ser memorable y diferenciador. Ejemplo: 'La aterosclerosis NO es acumulación pasiva de grasa — es inflamación activa'."
+    },
+    {
+      "name": "Epidemiología",
+      "required": false,
+      "suggested_block": "prose",
+      "alternative_blocks": ["list_detail", "grid"],
+      "description": "Prevalencia, incidencia, distribución por edad/sexo/geografía.",
+      "tips": "Si hay pocos datos, integrar en la definición. Si hay datos comparativos, considerar grid."
+    },
+    {
+      "name": "Etiología / Factores de Riesgo",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["two_column", "grid"],
+      "description": "Causas y factores predisponentes.",
+      "tips": "Si se dividen en modificables/no modificables → two_column. Si son muchos y cortos → grid. Usar severity para indicar peso relativo."
+    },
+    {
+      "name": "Patogénesis / Fisiopatología",
+      "required": true,
+      "suggested_block": "stages",
+      "alternative_blocks": ["prose"],
+      "description": "Mecanismo de la enfermedad paso a paso.",
+      "tips": "Si es un proceso secuencial claro → stages con severity progresiva. Si es multifactorial sin secuencia → prose. Marcar mediadores y moléculas como keywords."
+    },
+    {
+      "name": "Imagen de referencia — Mecanismo",
+      "required": false,
+      "suggested_block": "image_reference",
+      "description": "Diagrama o esquema del mecanismo patológico.",
+      "tips": "Describir qué debería mostrar la imagen para que el profesor la busque fácilmente."
+    },
+    {
+      "name": "Morfología / Anatomía Patológica",
+      "required": false,
+      "suggested_block": "prose",
+      "alternative_blocks": ["list_detail", "stages"],
+      "description": "Hallazgos macro y microscópicos.",
+      "tips": "Si describe evolución morfológica → stages. Si lista hallazgos discretos → list_detail."
+    },
+    {
+      "name": "Manifestaciones Clínicas",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["grid", "stages"],
+      "description": "Signos y síntomas principales.",
+      "tips": "Si varían por territorio/órgano → grid. Si son progresivos → stages. Usar severity para indicar frecuencia o gravedad."
+    },
+    {
+      "name": "Correlación Clínica",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Caso clínico breve o viñeta que ilustra la presentación típica.",
+      "tips": "Usar variant='clinical'. Describir paciente tipo con datos relevantes. El estudiante debe poder 'ver' al paciente."
+    },
+    {
+      "name": "Separador: Diagnóstico y Tratamiento",
+      "required": false,
+      "suggested_block": "section_divider",
+      "description": "Transición visual hacia la segunda mitad del resumen."
+    },
+    {
+      "name": "Diagnóstico / Estudios",
+      "required": true,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["comparison", "prose"],
+      "description": "Estudios diagnósticos y criterios.",
+      "tips": "Si hay gold standard vs alternativas → comparison. Si hay criterios formales → list_detail con checkmarks."
+    },
+    {
+      "name": "Diagnóstico Diferencial",
+      "required": false,
+      "suggested_block": "comparison",
+      "description": "Tabla comparativa entre entidades similares.",
+      "tips": "Usar highlight_column para la entidad principal. Columnas = entidades, filas = criterios diferenciadores."
+    },
+    {
+      "name": "Tratamiento",
+      "required": true,
+      "suggested_block": "two_column",
+      "alternative_blocks": ["list_detail", "stages"],
+      "description": "Manejo terapéutico.",
+      "tips": "Farmacológico vs No farmacológico → two_column. Si hay líneas de tratamiento escalonadas → stages. Marcar fármacos como keywords."
+    },
+    {
+      "name": "Dato de Examen",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Lo que siempre preguntan en el examen sobre este tema.",
+      "tips": "Usar variant='exam'. Ser directo: 'La placa vulnerable es más peligrosa que la estable'."
+    },
+    {
+      "name": "Mnemotecnia",
+      "required": false,
+      "suggested_block": "callout",
+      "description": "Truco para memorizar datos complejos.",
+      "tips": "Usar variant='mnemonic'. Formato tipo acrónimo o asociación. Si no hay mnemotecnia natural, NO inventar una forzada."
+    },
+    {
+      "name": "Complicaciones / Pronóstico",
+      "required": false,
+      "suggested_block": "list_detail",
+      "alternative_blocks": ["prose"],
+      "description": "Evolución natural, complicaciones, pronóstico.",
+      "tips": "Si hay progresión temporal → stages. Si son complicaciones discretas → list_detail con severity."
+    }
+  ],
+
+  "keyword_guidelines": {
+    "min_keywords": 5,
+    "max_keywords": 15,
+    "priority_distribution": "~20% critical (3), ~30% high (2), ~30% medium (1), ~20% low (0)",
+    "what_to_mark": [
+      "Términos que el estudiante DEBE saber definir",
+      "Mediadores, moléculas, fármacos clave",
+      "Entidades del diagnóstico diferencial",
+      "Conceptos que conectan con otros temas"
+    ],
+    "what_NOT_to_mark": [
+      "Términos obvios o de conocimiento general",
+      "Adjetivos descriptivos (crónico, agudo — a menos que sean diferenciadores)",
+      "Cada fármaco mencionado de pasada"
+    ]
+  }
+}
