@@ -1,12 +1,12 @@
 # Project State
 
-> Updated: 2026-03-27
+> Updated: 2026-03-29
 
 ## Agent System Status
 
 - **40/76 agents completed recon** (Batch 1: 20, Batch 2: 20)
 - **36 pending:** Batch 3 (AI/3D/Infra/Messaging/Billing = 20) + Batch 4 (Cross-cutting/legacy = 16)
-- **8 PRs merged to main** (cumulative)
+- **14 PRs merged to main** (cumulative)
 
 ## PRs Merged (Cumulative)
 
@@ -18,8 +18,25 @@
 6. feat/flashcard-image-pipeline (backend #174) — Gemini 2.0 Flash image service + DB schema
 7. feat/flashcard-image-pipeline (frontend #207) — FlashcardImage component + useFlashcardImage hook
 8. feat/block-based-summaries (#208) — 6 waves + 12 code review fixes (35 files, +4630 lines)
+9. feat/calendar-v2 (frontend #209) — Full calendar v2 implementation (7 sessions completed)
+10. feat/calendar-v2 (backend #175) — Calendar v2 DB schema, API, CRUD endpoints
+11. fix/dispatcher-advisory-lock — advisory lock gamification + WhatsApp adapter + security fixes
+12. fix/summary-blocks-schema-sync — idempotent migration to sync summary_blocks schema
+13. fix/rls-platform-plans — restrict platform_plans writes to service_role
+14. feat/block-embeddings — block hooks, flatten, publish endpoint + TDD tests
 
-## Completed (2026-03-27 Session)
+## Completed (2026-03-27 → 2026-03-29)
+
+### Calendar v2 — COMPLETE & MERGED
+
+- **PR #209 (frontend):** Full calendar v2 implementation
+  - 7 sessions completed: Backend DB+API, Frontend Hooks+PoC, CalendarView+DayCell, ExamPanel+CRUD, Countdown+Finals Week, Mobile Polish+Dark Mode, QA (22 checks)
+  - CalendarView, DayCell, ExamPanel, CountdownWidget, useFinalsWeek
+  - Mobile responsive + dark mode support
+- **PR #175 (backend):** Calendar v2 backend
+  - exam_events table + RLS policies
+  - CRUD endpoints for calendar events
+  - Study session integration
 
 ### Flashcard Pipeline — COMPLETE
 
@@ -43,19 +60,29 @@
 - **PR #208 merged** to main (commit dabcc9f)
 - 6 waves + 12 bug fixes from code review
 - 35 files, +4630 lines
-- **Next:** Smoke test + Session 2 (verify + fix gaps) + Session 3 (polish)
+- Block embeddings pipeline merged (backend): hooks, flatten, publish endpoint + TDD tests
+
+### Backend Stability Fixes (2026-03-27 → 2026-03-29)
+
+- **fix/dispatcher-advisory-lock:** Advisory lock for gamification dispatcher + WhatsApp Claude-to-Gemini tool format adapter + security fixes
+- **fix/summary-blocks-schema-sync:** Idempotent migration to sync summary_blocks schema with production
+- **fix/rls-platform-plans:** Restrict platform_plans writes to service_role (resolves SEC finding)
+- **fix/pregen-institution-rate-limit:** Institution-level rate limit for pre-generate endpoint
+- **fix/wa-tool-format-adapter (#172):** WhatsApp tool format adapter to prevent 100% tool call failure
+- **fix/auto-ingest-backoff (#171):** Exponential backoff for embedding rate limits + content_hash migration
 
 ### Infra — Worktree Isolation
 
 - Git post-checkout hooks in frontend + backend
-- Script `C:\dev\axon\worktree.sh` for isolated worktrees
+- Worktrees created as siblings: `AXON PROJECTO/frontend-feat-branch/`
 - agent-workflow.md updated with critical worktree rules
 
 ## Critical Findings (Pending Fix)
 
 ### Security (URGENT)
 
-- **RLS:** platform_plans + ai_reading_config too permissive (AS-03)
+- ~~**RLS:** platform_plans too permissive~~ → FIXED (fix/rls-platform-plans merged)
+- **RLS:** ai_reading_config still too permissive (AS-03)
 - **WhatsApp webhook:** hardcoded fallback salt (AS-04)
 - **No 401 interceptor** in frontend (AS-04)
 - **3 SECURITY DEFINER functions** missing SET search_path (BH-ERR-015)
@@ -98,26 +125,36 @@
 
 ### Frontend
 
-| Branch | Content | Files |
+| Branch | Content | Status |
 |---|---|---|
-| feature/mindmap-knowledge-graph | Knowledge graph, mindmap, AI tutor | 345 |
-| feat/sessioncalendario | Scheduling intelligence, study plans, calendar | 107 |
-| feat/student-telegram-and-ai-assistant | Telegram integration, AI assistant | 105 |
-| security/phase-1-frontend | Security audit fixes | 303 |
+| feature/mindmap-knowledge-graph | Knowledge graph, mindmap, AI tutor | Active — large feature (345 files) |
+| feat/student-telegram-and-ai-assistant | Telegram integration, AI assistant | Active |
+| security/phase-1-frontend | Security audit fixes | Active (v2 branch also exists) |
+| feat/session-analytics-infra | Session analytics infrastructure | Active |
 
 ### Backend
 
+| Branch | Content | Status |
+|---|---|---|
+| feat/sessioncalendario | Study intelligence, reanalyze endpoint, topic analyzer | Active |
+| perf/ralph-autonomous-improvements | Performance improvements AI + gamification | Active |
+| fix/realtime-v2-session | Realtime session v2 | Active (10+ realtime PRs merged) |
+| feature/whatsapp-phase3 | WhatsApp Cloud API integration | Active |
+
+### Recently Merged / Completed
+
 | Branch | Content |
 |---|---|
-| feat/sessioncalendario | Study intelligence, reanalyze endpoint, topic analyzer |
-| perf/ralph-autonomous-improvements | Performance improvements AI + gamification |
-| fix/realtime-v2-session | Realtime session v2 |
-| feature/whatsapp-phase3 | WhatsApp Cloud API integration |
+| feat/calendar-v2 (frontend #209 + backend #175) | Calendar v2 — full implementation |
+| feat/block-based-summaries (frontend #208) | Block-based summaries — 6 waves |
+| feat/block-embeddings (backend) | Block embeddings pipeline |
+| fix/dispatcher-advisory-lock, fix/rls-platform-plans, fix/summary-blocks-schema-sync | Backend stability + security |
 
 ## Next Steps
 
-1. Smoke test summaries in production (Vercel deploy of PR #208)
-2. Session 2 summaries: verify + fix gaps post-merge
-3. Security fixes (RLS + webhook + 401 interceptor)
-4. Complete recon Batch 3+4 (36 agents)
-5. Student flashcard creation feature (design spec complete, implementation pending)
+1. Smoke test summaries + calendar in production
+2. Security fixes (ai_reading_config RLS + webhook salt + 401 interceptor + SECURITY DEFINER functions)
+3. Complete recon Batch 3+4 (36 agents)
+4. Student flashcard creation feature (design spec complete, implementation pending)
+5. Calibración Adaptativa de Dificultad (Sprint 0 priority — wire FSRS+BKT into generation)
+6. Badges de Esfuerzo (Sprint 0 — quick win, backend infra exists)

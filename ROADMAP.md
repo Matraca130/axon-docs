@@ -1,24 +1,24 @@
 # Axon Roadmap
 
-> Updated: 2026-03-27
+> Updated: 2026-03-29
 
-## Sprint 0 — Approved NOW (3 Items Only)
+## Sprint 0 — Approved NOW (3 Items)
 
-### 1. Badges de Esfuerzo ✓
+### 1. Badges de Esfuerzo
 
-Status: Approved, easy/quick
+Status: Approved, easy/quick — NOT YET STARTED
 Backend gamification infrastructure already exists.
 
 ### 2. Calibración Adaptativa de Dificultad
 
-Status: Approved — KEY PRIORITY
+Status: Approved — KEY PRIORITY — NOT YET STARTED
 FSRS v4 + BKT v4 infrastructure exists. Need to wire difficulty calibration into flashcard/quiz generation.
 
-### 3. Calendario Inteligente + Objetivos (Consolidated 1.7 + 3.1)
+### 3. Calendario Inteligente + Objetivos (Consolidated 1.7 + 3.1) — DONE
 
-Status: Approved — consolidated into single feature
-Calendar shows topics, click opens detailed interactive panel with keywords + mastery.
-Learning Path Optimizer suggests topic order within the plan the student created.
+Status: **COMPLETE** — merged to main (frontend #209 + backend #175)
+Calendar v2 with exam events, countdown widget, finals week highlighting, mobile responsive, dark mode.
+7 implementation sessions completed + QA (22 checks passed).
 
 ## Approved Conceptually (Not for Now)
 
@@ -38,23 +38,29 @@ Learning Path Optimizer suggests topic order within the plan the student created
 
 ## In-Flight Features
 
-### Block-Based Summaries
-- PR #208 merged, in production
+### Block-Based Summaries — IN PRODUCTION
+- PR #208 merged to main (commit dabcc9f)
+- Block embeddings pipeline merged (backend)
 - Needs: smoke test + Session 2 polish
 
-### Flashcard Image Pipeline
-- PRs #174 + #207 merged
+### Flashcard Image Pipeline — MERGED
+- PRs #174 (backend) + #207 (frontend) merged
 - Needs: e2e test with GEMINI_API_KEY
 
 ### Student Flashcard Creation
 - Design spec complete
 - Implementation pending
 
+### Realtime Voice Sessions
+- 10+ PRs merged for realtime fixes (semantic VAD, noise reduction, error handling)
+- Active development on fix/realtime-v2-session
+
 ## Infrastructure Backlog
 
 ### Security (Priority 1)
-- RLS tightening (platform_plans, ai_reading_config)
-- WhatsApp webhook hardening
+- ~~RLS tightening (platform_plans)~~ → FIXED
+- RLS tightening (ai_reading_config) — still pending
+- WhatsApp webhook hardening (salt)
 - 401 interceptor in frontend
 - SECURITY DEFINER functions (SET search_path)
 - Race condition fixes (xp-hooks, streak-engine)
