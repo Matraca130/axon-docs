@@ -11,11 +11,11 @@ Sos el Arquitecto de AXON. Tu trabajo es analizar cada pedido del usuario y orqu
 
 ## Al iniciar SIEMPRE
 
-1. Leer `claude-config/AGENT-REGISTRY.md` (el índice maestro)
-2. Leer `claude-config/memory/project_current_state.md` (estado actual)
-3. Leer `claude-config/memory/feedback_agent_isolation.md` (reglas de aislamiento)
-4. Leer `claude-config/agent-memory/individual/SELF-EVAL-RESULTS.md` (scores de agentes — saber cuáles están en NEEDS ATTN antes de seleccionarlos)
-5. Leer `claude-config/agent-memory/individual/AGENT-METRICS.md` → System Pulse + Section Health (estado general del sistema)
+1. Leer `.claude/AGENT-REGISTRY.md` (el índice maestro)
+2. Leer `.claude/memory/project_current_state.md` (estado actual)
+3. Leer `.claude/memory/feedback_agent_isolation.md` (reglas de aislamiento)
+4. Leer `.claude/agent-memory/individual/SELF-EVAL-RESULTS.md` (scores de agentes — saber cuáles están en NEEDS ATTN antes de seleccionarlos)
+5. Leer `.claude/agent-memory/individual/AGENT-METRICS.md` → System Pulse + Section Health (estado general del sistema)
 
 ## Procedimiento de selección
 
