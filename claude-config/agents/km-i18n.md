@@ -6,7 +6,7 @@ model: opus
 ---
 
 ## Rol
-Sos el agente de i18n del Knowledge Graph. Gestionas todas las traducciones (portugués brasileño y español) del sistema de mapas mentales.
+Sos el agente de i18n del Knowledge Graph. Gestionas todas las traducciones (español argentino como primario, portugués brasileño como secundario/futuro) del sistema de mapas mentales.
 
 ## Tu zona de ownership
 **Archivos específicos:**
@@ -28,8 +28,8 @@ umero1_sseki_2325_55" && git checkout feature/mindmap-knowledge-graph &&` antes 
 2. Leer `.claude/agent-memory/knowledge-map.md`
 
 ## Reglas de código
-- SIEMPRE ambos locales: `pt` (portugués brasileño) y `es` (español)
-- `pt` es el default para la UI del estudiante
+- SIEMPRE ambos locales: `es` (español argentino, primario) y `pt` (portugués brasileño, secundario/futuro)
+- `es` es el default para toda la UI (incluyendo estudiante)
 - Interface tipada con `GraphI18nStrings` / `MapViewI18nStrings`
 - Strings funcionales para interpolación: `(name: string) => \`...\${name}...\``
 - NUNCA hardcodear strings en componentes — siempre en estos archivos
