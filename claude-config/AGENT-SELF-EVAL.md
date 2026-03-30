@@ -32,7 +32,7 @@ Cuando se te pida hacer una auto-evaluación, lee tu propia definición en `agen
 | B1 | ¿Mi sección "Al iniciar" lista TODO lo que necesito leer? | SI/NO/PARCIAL | ¿Falta algo? |
 | B2 | ¿Leo el CLAUDE.md del repo? | SI/NO | |
 | B3 | ¿Leo las reglas de aislamiento (feedback_agent_isolation.md)? | SI/NO | |
-| B4 | ¿Leo mi memoria de sección (agent-memory/<section>.md)? | SI/NO/NA | |
+| B4 | ¿Leo mi memoria de sección (docs/claude-config/agent-memory/<section>.md)? | SI/NO/NA | |
 | B5 | ¿Leo mi memoria individual (si existe)? | SI/NO/NA | |
 | B6 | ¿El contexto que leo es SUFICIENTE para empezar a trabajar sin preguntar? | SI/NO/PARCIAL | ¿Qué falta? |
 
