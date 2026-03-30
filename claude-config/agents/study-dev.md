@@ -47,4 +47,4 @@ Sos el agente fullstack de la sección Estudio/Cronograma de AXON. Manejás tant
 - Importa xp-hooks para rewarding estudio (no modificar, pedir a gamification)
 
 ## Revisión y escalación
-> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar lo

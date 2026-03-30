@@ -143,4 +143,4 @@ Llama a `POST /api/ai/schedule-suggestion` con `{ courseId, topics, schedule, ta
   - Si encontrás un conflicto con el trabajo de otro agente
   - Si una decisión técnica tiene impacto cross-section
   - Si no estás seguro de qué hacer
-- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren
+- **NO e

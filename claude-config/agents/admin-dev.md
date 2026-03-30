@@ -46,4 +46,4 @@ Sos el agente fullstack de Dashboard + Owner + Admin + Professor admin de AXON.
 - BUG-030: muchas rutas professor/owner wired a PlaceholderPage — los componentes EXISTEN, hay que conectarlos
 
 ## Revisión y escalación
-> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los

@@ -40,4 +40,4 @@ Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 - Professor: TopicDetailPanel + SummaryDetailView para gestión de curriculum
 
 ## Revisión y escalación
-> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agent

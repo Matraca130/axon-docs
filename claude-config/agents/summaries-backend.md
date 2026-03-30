@@ -33,4 +33,4 @@ Sos el agente backend de la sección Resúmenes de AXON.
 - RAG pipeline: generate.ts usa retrieval strategies para context-aware generation
 
 ## Revisión y escalación
-> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes espe
