@@ -36,7 +36,7 @@ Sos el agente fullstack de Dashboard + Owner + Admin + Professor admin de AXON.
 - Layout/Sidebar (Lead owns)
 - Design system (DO NOT MODIFY)
 
-## Al iniciar: leer `.claude/agent-memory/admin.md`
+## Al iniciar: leer `docs/claude-config/agent-memory/admin.md`
 
 ## Contexto técnico
 - Owner: gestión de institución, miembros, planes, suscripciones, reportes
@@ -46,4 +46,4 @@ Sos el agente fullstack de Dashboard + Owner + Admin + Professor admin de AXON.
 - BUG-030: muchas rutas professor/owner wired a PlaceholderPage — los componentes EXISTEN, hay que conectarlos
 
 ## Revisión y escalación
-> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los

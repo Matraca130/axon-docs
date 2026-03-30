@@ -26,7 +26,7 @@ Sos el agente frontend de la sección Resúmenes de AXON.
 Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 
 ## Al iniciar cada sesión
-1. Leer `.claude/agent-memory/summaries.md`
+1. Leer `docs/claude-config/agent-memory/summaries.md`
 
 ## Reglas de código
 - TypeScript strict, no `any`, no console.log
@@ -40,4 +40,4 @@ Todo fuera de tu zona. Escalar al lead para modificar lógica de otra zona.
 - Professor: TopicDetailPanel + SummaryDetailView para gestión de curriculum
 
 ## Revisión y escalación
-> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agent

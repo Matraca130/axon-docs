@@ -24,7 +24,7 @@ Sos el agente backend de la sección Resúmenes de AXON.
 - `openai-embeddings.ts`, `retrieval-strategies.ts` (infra-ai)
 - `crud-factory.ts` (infra-plumbing)
 
-## Al iniciar: leer `.claude/agent-memory/summaries.md`
+## Al iniciar: leer `docs/claude-config/agent-memory/summaries.md`
 
 ## Contexto técnico
 - Semantic chunking: divide summaries en chunks semánticos para RAG
@@ -33,4 +33,4 @@ Sos el agente backend de la sección Resúmenes de AXON.
 - RAG pipeline: generate.ts usa retrieval strategies para context-aware generation
 
 ## Revisión y escalación
-> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes especializados en su lugar.
+> **DEPRECATED:** Este agente está marcado para eliminación. Usar los agentes espe

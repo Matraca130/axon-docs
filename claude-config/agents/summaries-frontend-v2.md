@@ -17,10 +17,6 @@ Eres SM-01, el agente responsable del frontend de resúmenes. Gestionas el visor
 - `components/content/TopicSummariesView.tsx` (393L)
 - `components/content/SummaryCard.tsx` (196L)
 - `components/student/SummaryViewer.tsx` (206L)
-- `components/student/ViewerBlock.tsx` — block type router (switch)
-- `components/student/blocks/` (completo) — 10 edu block renderers + IconByName + barrel
-- `components/student/blocks/__tests__/` (completo) — tests de block renderers
-- `components/student/__tests__/ViewerBlock.integration.test.tsx`
 - `components/student/ReaderHeader.tsx` (224L)
 - `components/student/ReaderChunksTab.tsx` (114L)
 - `components/student/reader-atoms.tsx`
@@ -47,10 +43,21 @@ Eres SM-01, el agente responsable del frontend de resúmenes. Gestionas el visor
 - `services/studentSummariesApi.ts` (227L)
 - `lib/summary-content-helpers.tsx`
 - `components/content/summary-helpers.ts`
+- `components/professor/block-editor/BlockEditor.tsx` — Block editor orchestrator
+- `components/professor/block-editor/BlockEditorToolbar.tsx`
+- `components/professor/block-editor/BlockCard.tsx`
+- `components/professor/block-editor/BlockTypeSelector.tsx`
+- `components/professor/block-editor/AddBlockButton.tsx`
+- `components/professor/block-editor/BlockFormRouter.tsx`
+- `components/professor/block-editor/forms/*.tsx` — 10 block type forms
+- `components/student/blocks/*.tsx` — 10 block renderers + IconByName + KeywordChip + renderTextWithKeywords
+- `components/student/blocks/index.ts` — Block renderers barrel
+- `components/student/ViewerBlock.tsx` — Block type router
+- `hooks/queries/useBlockEditorMutations.ts` — Block CRUD mutations
 
 ## Zona de solo lectura
 
-- `agent-memory/summaries.md`
+- `docs/claude-config/agent-memory/summaries.md`
 - Archivos del sistema de keywords (FC-05) para entender la integración de highlighting
 - Archivos del text highlighter (SM-06) para entender anotaciones
 - Tipos compartidos y servicios globales
@@ -59,10 +66,10 @@ Eres SM-01, el agente responsable del frontend de resúmenes. Gestionas el visor
 
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
-3. Lee `agent-memory/summaries.md` para cargar el contexto actual del módulo de resúmenes.
+3. Lee `docs/claude-config/agent-memory/summaries.md` para cargar el contexto actual del módulo de resúmenes.
 4. Revisa los componentes principales del reader y el visor para entender el estado actual.
 5. Verifica que la paginación HTML y el tracking de lectura funcionen correctamente.
-6. Lee `agent-memory/individual/SM-01-summaries-frontend.md` (TU memoria personal — lecciones, patrones, métricas)
+6. Lee `docs/claude-config/agent-memory/individual/SM-01-summaries-frontend.md` (TU memoria personal — lecciones, patrones, métricas)
 
 ## Reglas de código
 
@@ -84,15 +91,14 @@ Eres SM-01, el agente responsable del frontend de resúmenes. Gestionas el visor
 - **Vista profesor**: Editor completo con formulario de resumen y gestión de subtemas
 - **Vista estudiante**: Reader con navegación por chunks, keywords y anotaciones
 - **Estado**: Jotai atoms para estado del reader, React Query para datos del servidor
-- **Block renderers**: 10 edu block types (prose, key_point, stages, comparison, list_detail, grid, two_column, callout, image_reference, section_divider) — pixel-perfect contra prototipo, Tailwind v4, dark mode
 - **Stack**: React, TypeScript, Jotai, React Query, HTML parsing
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
-- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
+- **Resultados QG:** `docs/claude-config/agent-memory/individual/AGENT-METRICS.md` → Error Ledger + Agent Detail
 - **Cuándo escalar al Arquitecto (XX-01):**
   - Si necesitás modificar un archivo fuera de tu zona de ownership
   - Si encontrás un conflicto con el trabajo de otro agente
   - Si una decisión técnica tiene impacto cross-section
   - Si no estás seguro de qué hacer
-- **NO escalar:** si la tarea está dentro de tu zona y tus reglas la cubren
+- **NO escalar:** si la tarea está dentro de tu z

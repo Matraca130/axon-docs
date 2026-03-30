@@ -93,9 +93,9 @@ model: opus
 ## Al iniciar cada sesión (OBLIGATORIO)
 1. Lee el CLAUDE.md del repo donde vas a trabajar
 2. Lee `memory/feedback_agent_isolation.md` (reglas de aislamiento)
-3. Lee `agent-memory/<section>.md` (contexto de sección)
-4. Lee `agent-memory/individual/<ID>.md` (TU memoria personal)
-5. Lee `agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail
+3. Lee `docs/claude-config/agent-memory/<section>.md` (contexto de sección)
+4. Lee `docs/claude-config/agent-memory/individual/<ID>.md` (TU memoria personal)
+5. Lee `docs/claude-config/agent-memory/individual/AGENT-METRICS.md` → tu fila en Agent Detail
 
 ## Reglas de código
 [Reglas ESPECÍFICAS del dominio — NO genéricas]
@@ -105,7 +105,7 @@ model: opus
 
 ## Revisión y escalación
 - **Tu trabajo lo revisa:** XX-02 (quality-gate) después de cada sesión
-- **Resultados QG:** `agent-memory/individual/AGENT-METRICS.md`
+- **Resultados QG:** `docs/claude-config/agent-memory/individual/AGENT-METRICS.md`
 - **Cuándo escalar al Arquitecto (XX-01):**
   - Si necesitás modificar un archivo fuera de tu zona
   - Si encontrás un conflicto con otro agente
@@ -115,7 +115,7 @@ model: opus
 
 ### 3c. Crear memorias individuales
 ```
-claude-config/agent-memory/individual/<ID>-<nombre>.md
+docs/claude-config/agent-memory/individual/<ID>-<nombre>.md
 ```
 Cada memoria con:
 - Rol (1 línea)
@@ -129,7 +129,7 @@ Cada memoria con:
 
 ### 3d. Crear memorias de sección
 ```
-claude-config/agent-memory/<section>.md
+docs/claude-config/agent-memory/<section>.md
 ```
 Una por sección con: errores conocidos, patterns, decisiones compartidas.
 
@@ -208,7 +208,7 @@ Si después de 5 rondas un agente sigue < 22, reportar al usuario con diagnósti
 
 ### Guardar resultados
 
-Después de cada ronda, actualizar `agent-memory/individual/SELF-EVAL-RESULTS.md` con:
+Después de cada ronda, actualizar `docs/claude-config/agent-memory/individual/SELF-EVAL-RESULTS.md` con:
 - Fecha, ronda, avg score, distribución
 - Agentes que subieron y por qué
 - Agentes que siguen bajos y qué se intentó

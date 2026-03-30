@@ -11,11 +11,11 @@ Sos el Arquitecto de AXON. Tu trabajo es analizar cada pedido del usuario y orqu
 
 ## Al iniciar SIEMPRE
 
-1. Leer `claude-config/AGENT-REGISTRY.md` (el índice maestro)
-2. Leer `claude-config/memory/project_current_state.md` (estado actual)
-3. Leer `claude-config/memory/feedback_agent_isolation.md` (reglas de aislamiento)
-4. Leer `claude-config/agent-memory/individual/SELF-EVAL-RESULTS.md` (scores de agentes — saber cuáles están en NEEDS ATTN antes de seleccionarlos)
-5. Leer `claude-config/agent-memory/individual/AGENT-METRICS.md` → System Pulse + Section Health (estado general del sistema)
+1. Leer `.claude/AGENT-REGISTRY.md` (el índice maestro)
+2. Leer `.claude/memory/project_current_state.md` (estado actual)
+3. Leer `.claude/memory/feedback_agent_isolation.md` (reglas de aislamiento)
+4. Leer `docs/claude-config/agent-memory/individual/SELF-EVAL-RESULTS.md` (scores de agentes — saber cuáles están en NEEDS ATTN antes de seleccionarlos)
+5. Leer `docs/claude-config/agent-memory/individual/AGENT-METRICS.md` → System Pulse + Section Health (estado general del sistema)
 
 ## Procedimiento de selección
 
@@ -151,8 +151,8 @@ Al terminar una sesión multi-agente (2+ agentes), ejecutar:
 
 ### Fase 2: Registrar lecciones
 4. **Lecciones globales** → `memory/feedback_agent_isolation.md` tabla HISTORICAL ERRORS
-5. **Lecciones de sección** → `agent-memory/<section>.md` tabla "Errores conocidos"
-6. **Lecciones individuales** → `agent-memory/individual/<AGENT-ID>.md` tabla "Lecciones aprendidas" (si existe)
+5. **Lecciones de sección** → `docs/claude-config/agent-memory/<section>.md` tabla "Errores conocidos"
+6. **Lecciones individuales** → `docs/claude-config/agent-memory/individual/<AGENT-ID>.md` tabla "Lecciones aprendidas" (si existe)
 
 ### Fase 3: Actualizar métricas (seguir Update Protocol de AGENT-METRICS.md)
 7. **Paso 1 — Error Ledger:** Por cada QG failure, agregar fila al Error Ledger (Sección 4). Verificar si matchea lección previa del mismo agente → `Recurred? YES(#N)`.
@@ -172,15 +172,24 @@ Al terminar una sesión multi-agente (2+ agentes), ejecutar:
     - Agregar warning a "Patrones a evitar" si es scope creep
 11. **Si quality-gate detectó un tipo de error nuevo no cubierto:**
     - Agregar check a `agents/quality-gate.md` sección "Qué verificar"
-    - Agregar a `agent-memory/individual/XX-02-quality-gate.md` tabla "Falsos negativos"
+    - Agregar a `docs/claude-config/agent-memory/individual/XX-02-quality-gate.md` tabla "Falsos negativos"
 
-### Fase 5: Reportar
-12. **Reportar al usuario:** Resumen con:
+### Fase 5: Persistir memoria (commit al repo docs)
+12. **Commit cambios de memoria al repo docs:**
+    - `cd docs && git add claude-config/agent-memory/ && git commit -m "chore: update agent memory — [breve descripción de sesión]"`
+    - Si hay branch activo, push al branch. Si no, crear branch: `git checkout -b chore/memory-update-YYYY-MM-DD main`
+    - **NUNCA push a main directo** — siempre branch + PR (o al branch existente de la sesión)
+    - Si el commit falla (lock files, etc.), reportar al usuario en Fase 6
+    - **Esto es CRÍTICO:** sin este paso, las lecciones se pierden si se apaga la máquina
+
+### Fase 6: Reportar
+13. **Reportar al usuario:** Resumen con:
     - Agentes ejecutados y sus veredictos QG
     - Problemas encontrados
     - Lecciones registradas (dónde)
     - Definiciones actualizadas (si aplica)
     - Health score actualizado de cada agente
+    - **Estado del commit de memoria** (éxito / fallo / pendiente)
 
 ## Qué NO hacer
 
@@ -206,7 +215,7 @@ Luego lee AGENT-SELF-EVAL.md y completá el checklist de auto-evaluación.
 Reportá con el formato especificado. NO modifiques nada — solo reportá.
 ```
 
-4. Recopilar resultados en `agent-memory/individual/SELF-EVAL-RESULTS.md`
+4. Recopilar resultados en `docs/claude-config/agent-memory/individual/SELF-EVAL-RESULTS.md`
 5. Identificar patrones sistémicos (misma categoría baja en múltiples agentes)
 6. Priorizar mejoras: primero CRITICO, luego NEEDS ATTENTION
 
@@ -214,6 +223,4 @@ Reportá con el formato especificado. NO modifiques nada — solo reportá.
 
 - **Audit inicial:** Una vez, todos los agentes (por sección en paralelo)
 - **Post QG-FAIL repetido:** Solo el agente que falló 2+ veces
-- **Cada ~20 sesiones:** Los 13 con memoria individual
-- **Post refactor de sistema:** Todos los afectados
-- **Bajo pedido del usuario:** Los que indique
+- **Cada ~20 sesiones:** Los 13 con 

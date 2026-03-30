@@ -1,5 +1,5 @@
 # Axon — Known Bugs
-> Updated: 2026-03-27
+> Updated: 2026-03-29
 > Sources: Bug Hunter (33 errors, 8 fixed) + legacy bug tracker (BUG-001 through BUG-034)
 
 ## Open — CRITICAL
@@ -64,7 +64,7 @@
 | BUG-023 | aiFlashcardGenerator.ts — NOT dead code, used by SmartFlashcardGenerator |
 | BUG-025 | ANON_KEY hardcoded x3 — by design (Supabase public key pattern) |
 
-## Recently FIXED (2026-03-19 — 2026-03-27)
+## Recently FIXED (2026-03-19 — 2026-03-29)
 
 | ID | Severity | Description | Resolution |
 |---|---|---|---|
@@ -83,7 +83,13 @@
 | SEC-AI-INJECT | HIGH | AI prompt injection | Fixed 2026-03-19 |
 | SEC-XSS | HIGH | dangerouslySetInnerHTML unsanitized | Fixed 2026-03-19 — DOMPurify |
 
+| — | HIGH | platform_plans RLS too permissive | Fixed 2026-03-28 — restrict writes to service_role (fix/rls-platform-plans) |
+| — | HIGH | WhatsApp tool call 100% failure (Claude→Gemini format) | Fixed 2026-03-28 — tool format adapter (#172) |
+| — | MEDIUM | Auto-ingest embedding rate limit crash | Fixed 2026-03-28 — exponential backoff + content_hash (#171) |
+| — | MEDIUM | Gamification dispatcher double badge XP | Fixed 2026-03-28 — advisory lock (fix/dispatcher-advisory-lock) |
+| — | MEDIUM | summary_blocks schema out of sync with prod | Fixed 2026-03-28 — idempotent migration (fix/summary-blocks-schema-sync) |
+
 ## Security Audit Summary
 Full 3-pass security audit completed 2026-03-19. Details in security-audit/ folder.
-Major items resolved: RLS, JWT verification, CORS, XSS, AI injection, Telegram hardening.
-Remaining: platform_plans RLS, webhook salt, 401 interceptor, 3 SECURITY DEFINER functions, 6 SQL REVOKEs.
+Major items resolved: RLS, JWT verification, CORS, XSS, AI injection, Telegram hardening, platform_plans RLS.
+Remaining: ai_reading_config RLS, webhook salt, 401 interceptor, 3 SECURITY DEFINER functions, 6 SQL REVOKEs.

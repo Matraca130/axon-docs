@@ -28,7 +28,7 @@ umero1_sseki_2325_55" && git checkout feature/mindmap-knowledge-graph &&` antes 
 3. **NO TOCAR fuera de zona:** NUNCA modificar package.json, node_modules, ni archivos fuera de tu zona de ownership
 4. **TAREAS PEQUEÑAS:** Si la tarea tiene 3+ cambios, hacerlos uno a uno con verificación intermedia
 1. Leer `CLAUDE.md` del repo frontend
-2. Leer `.claude/agent-memory/knowledge-map.md`
+2. Leer `docs/claude-config/agent-memory/knowledge-map.md`
 3. Leer `.claude/memory/feedback_agent_isolation.md`
 
 ## Reglas de código
