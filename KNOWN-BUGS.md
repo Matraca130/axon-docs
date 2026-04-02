@@ -1,6 +1,6 @@
 # Axon — Known Bugs
-> Updated: 2026-03-29
-> Sources: Bug Hunter (33 errors, 8 fixed) + legacy bug tracker (BUG-001 through BUG-034)
+> Updated: 2026-04-02
+> Sources: Bug Hunter (33 errors, 8 fixed) + legacy bug tracker (BUG-001 through BUG-034) + Weekly Tech Debt Audit (AXO-53)
 
 ## Open — CRITICAL
 
@@ -14,8 +14,8 @@
 | ID | Domain | Description | File |
 |---|---|---|---|
 | BUG-001 | backend | resolution_tier vs max_resolution Mux webhook mismatch | routes-models.ts |
-| BH-ERR-015 | rls/security | 3 SECURITY DEFINER functions missing SET search_path = public, pg_temp (search_path hijack) | 20260325_01 + _02 migrations |
-| BH-ERR-016 | backend | Race conditions: increment_student_stat + decrement_streak_freezes RPCs created but NEVER wired in app code. xp-hooks.ts still SELECT→UPDATE | xp-hooks.ts:147-161, streak-engine.ts:290-303 |
+| BH-ERR-015 | rls/security | 3 SECURITY DEFINER functions missing SET search_path = public, pg_temp (search_path hijack). **Branch `fix/security-definer-search-path` exists but no PR yet** | 20260325_01 + _02 migrations |
+| BH-ERR-016 | backend | Race conditions: increment_student_stat + decrement_streak_freezes RPCs created but NEVER wired in app code. xp-hooks.ts still SELECT→UPDATE. **PR #182 ready for review** | xp-hooks.ts:147-161, streak-engine.ts:290-303 |
 | BH-ERR-029 | design-system | Wrong heading font: Space Grotesk instead of Georgia — 12 instances | StudyDashboardsView, KnowledgeHeatmapView, MasteryDashboardView, AxonAIAssistant |
 | BH-ERR-030 | design-system | Hardcoded gradients on interactive elements — 4 files | QuizXpConfirmedCard, LevelUpCelebration, BadgeEarnedToast, LeaderboardPage |
 | BH-ERR-031 | tech-debt | categoryStyles.ts created but never connected — consumers still have local duplicates | utils/categoryStyles.ts |
@@ -26,8 +26,8 @@
 |---|---|---|---|
 | BUG-006 | backend | Content tree filters inactives in JS (should be SQL) | Backend |
 | BUG-021 | frontend | GamificationContext is STUB (no-ops) | context/GamificationContext.tsx |
-| SEC-S9B | security | 6 SQL functions need REVOKE from authenticated | Backend DB |
-| BH-ERR-003 | types | 238 uses of `: any` across 82 files | frontend/src (82 files) |
+| SEC-S9B | security | 6 SQL functions need REVOKE from authenticated. **PRs #183 + #184 ready — merge #183 first, rebase #184** | Backend DB |
+| BH-ERR-003 | types | **361 uses of `: any`** across frontend (was 238 on 2026-03-29 — **+52% regression**). Needs lint rule to block new additions | frontend/src |
 | BH-ERR-004 | types | 64 catch(err: any) blocks — getErrorMessage() helper exists but only used in 4 files | frontend/src (38 files) |
 | BH-ERR-021 | types | MasteryLevel defined 3 times with 3 DIFFERENT value sets | keywords.ts, legacy-stubs.ts, useKeywordMastery.ts |
 | BH-ERR-022 | types | XPTransaction + StreakStatus duplicated in gamificationApi.ts vs gamification.ts | gamificationApi.ts, gamification.ts |
@@ -49,7 +49,8 @@
 | BH-ERR-008 | quality | 8 TODO/FIXME comments in production code | 8 files |
 | BH-ERR-009 | tech-debt | 19 files with @deprecated markers | frontend/src |
 | BH-ERR-012 | tech-debt | 3D viewer notes use local state only — no backend persistence | useNoteData.ts |
-| BH-ERR-014 | tech-debt | 28 files exceed 500-line limit (worst: StudyOrganizerWizard 1299 lines) | frontend + backend |
+| BH-ERR-014 | tech-debt | Files >500 lines — partially fixed (PR #242 split 11 mega-files, PR #328 draft continues). 3 production files still over: sidebar.tsx (726), StudentSummaryReader.tsx (710), WeekMonthViews.tsx (687) | frontend |
+| BH-ERR-034 | perf | StudentSummaryReader.tsx bundle chunk 1,222 kB (over 600 kB limit) — needs code-splitting | frontend build |
 | BH-ERR-024 | types | Multiple type duplicates: AIQuestion, KeywordData, Model3D, KeywordCollection | legacy-stubs.ts vs multiple |
 | BH-ERR-025 | types | Runtime logic in type files (functions, const arrays, config) — 4 files | gamification.ts, content.ts, legacy-stubs.ts, keywords.ts |
 | BH-ERR-026 | types | Record<string, any> in Institution.settings and PlatformPlan.features | platform.ts |
@@ -63,6 +64,9 @@
 | BUG-022 | apiConfig.ts duplicate fetch — NOT dead code, used by models3dApi.ts |
 | BUG-023 | aiFlashcardGenerator.ts — NOT dead code, used by SmartFlashcardGenerator |
 | BUG-025 | ANON_KEY hardcoded x3 — by design (Supabase public key pattern) |
+| INFO-001 | Frontend PRs #313/#314/#315 conflict cluster — all 3 modify StudentSummaryReader.tsx, SidebarOutline.tsx, ViewerBlock.tsx. Must serialize merges (2026-04-02) |
+| INFO-002 | ~85 stale remote branches in backend (oldest: 2026-02-25). Recommend cleanup of branches >14 days (2026-04-02) |
+| INFO-003 | 8 `claude/` draft PRs on frontend — auto-generated agent PRs. Review for staleness (2026-04-02) |
 
 ## Recently FIXED (2026-03-19 — 2026-03-29)
 
@@ -92,4 +96,12 @@
 ## Security Audit Summary
 Full 3-pass security audit completed 2026-03-19. Details in security-audit/ folder.
 Major items resolved: RLS, JWT verification, CORS, XSS, AI injection, Telegram hardening, platform_plans RLS.
-Remaining: ai_reading_config RLS, webhook salt, 401 interceptor, 3 SECURITY DEFINER functions, 6 SQL REVOKEs.
+Remaining: ai_reading_config RLS, webhook salt, 401 interceptor, 3 SECURITY DEFINER functions (branch exists, no PR), 6 SQL REVOKEs (PRs #183/#184 ready).
+
+### Security Fix Tracker (as of 2026-04-02)
+
+| Bug ID | Fix | Status |
+|---|---|---|
+| BH-ERR-015 (SECURITY DEFINER) | Branch `fix/security-definer-search-path` | Needs PR creation |
+| BH-ERR-016 (race conditions) | PR #182 (`xp-hooks.ts` + `streak-engine.ts`) | Ready for review |
+| SEC-S9B (6 SQL REVOKE) | PRs #183 + #184 | Ready — merge #183 first |
