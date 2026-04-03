@@ -1,6 +1,6 @@
 # Project State
 
-> Updated: 2026-03-29
+> Updated: 2026-04-02
 
 ## Agent System Status
 
@@ -105,15 +105,17 @@
 
 ### Tech Debt
 
-- 238 uses of `: any` across 82 files (BH-ERR-003)
-- 28 files exceed 500-line limit (BH-ERR-014)
+- **361 uses of `: any`** across frontend (was 238 on 2026-03-29 — +52% regression) (BH-ERR-003)
+- Files >500 lines: partially fixed (PR #242 split 11 mega-files). 3 production files remain: sidebar.tsx (726), StudentSummaryReader.tsx (710), WeekMonthViews.tsx (687) (BH-ERR-014)
+- StudentSummaryReader.tsx bundle chunk 1,222 kB — over 600 kB limit, needs code-splitting (BH-ERR-034)
 - 4 deprecated files still present (BH-ERR-005)
 
 ## Build Status
 
-- **Frontend:** npm run build passes (primary validation)
-- **Backend:** deno test passes
+- **Frontend:** npm run build passes (28.74s). One warning: StudentSummaryReader chunk 1,222 kB (over 600 kB limit)
+- **Backend:** Cannot verify — `deno` not available in audit environment
 - **Vercel:** PR #208 deployed successfully
+- **Open PRs:** Frontend 30, Backend 6 (as of 2026-04-02)
 
 ## Config
 
@@ -150,11 +152,16 @@
 | feat/block-embeddings (backend) | Block embeddings pipeline |
 | fix/dispatcher-advisory-lock, fix/rls-platform-plans, fix/summary-blocks-schema-sync | Backend stability + security |
 
-## Next Steps
+## Next Steps (Priority Order, updated 2026-04-02)
 
-1. Smoke test summaries + calendar in production
-2. Security fixes (ai_reading_config RLS + webhook salt + 401 interceptor + SECURITY DEFINER functions)
-3. Complete recon Batch 3+4 (36 agents)
-4. Student flashcard creation feature (design spec complete, implementation pending)
-5. Calibración Adaptativa de Dificultad (Sprint 0 priority — wire FSRS+BKT into generation)
-6. Badges de Esfuerzo (Sprint 0 — quick win, backend infra exists)
+1. **Serialize frontend summary PRs**: Merge #313→#314→#315 one at a time with rebase between each (conflict cluster)
+2. **Merge backend security PRs**: #183 first, rebase #184, then merge (SEC-S9B)
+3. **Create PR for BH-ERR-015**: Branch `fix/security-definer-search-path` exists but no PR — push it
+4. **Split StudentSummaryReader.tsx**: 710 lines + 1.2 MB chunk — #1 frontend hot spot
+5. **Stop `:any` regression**: 361 instances (+52%). Add lint rule to block new `:any` additions
+6. Security fixes (ai_reading_config RLS + webhook salt + 401 interceptor)
+7. Clean ~85 stale backend branches (>14 days old)
+8. Address glassmorphism (BH-ERR-027/028) — CRITICAL design-system violation with no fix in progress
+9. Complete recon Batch 3+4 (36 agents)
+10. Calibración Adaptativa de Dificultad (Sprint 0 priority — wire FSRS+BKT into generation)
+11. Badges de Esfuerzo (Sprint 0 — quick win, backend infra exists)
